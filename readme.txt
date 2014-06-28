@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 3.9.1
-Stable tag: 0.1b
+Stable tag: 0.2b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,26 @@ Click the download link, install and click activate.  Just like any other plugin
 
 = 0.1b =
 * The initial version is released.  This is a testing beta, so there will be revisions, and some features may not work as planned.
+
+= 0.11b =
+* Incompletely implemented post_order and post_orderby parameters fixed
+* Default max_width and max_height parameters changed to "none"
+* Default horizontal_spacing and vertical_spacing set to 0
+* Minor correction made to the parameters section of the readme.txt to reflect these changes
+* Minor correction made to the parameters section of the readme.txt to fix incorrect parameter options
+* Additional information added to the parameters section of the readme.txt to clarify the behaviour of the vertical and horizontal spacing
+
+= 0.15b =
+* Added upscaling feature.  Now images that are shorter or narrower than a specified width or height can be upscaled until they reach the specified size.  The image thumbnail quality will be increased until it reaches the largest size available, reaches the largest size specified under the max_upscale_size parameter, or reaches or exceeds the max_height or max_width parameters. 
+* Removed support for percentages in the max_height and max_width fields
+* Updates readme.txt to include new features
+* Added padding to the top of the loading box
+
+= 0.2b =
+* Updated upscaling feature.  Now has the option to independently set max_height and max_width for upscaled objects.
+* Made MPG more functional in the absence of JavaScript.
+* Added to option to specify a grid layout that will take effect when JavaScript is disabled
+* Updated readme.txt to recognize these changes 
 
 == Dependencies ==
 
@@ -74,7 +94,7 @@ Parameters are optional and must be separated by a space.
 
 IMPORTANT:  Note that each parameter is case and context sensitive.  A capital in the wrong place can cause a parameter not to work. Also note that each parameter may or may not have inverted commas around it (“…”).  Incorrect inverted comma use will affect whether a parameter works.  Finally, words such as centre use the American spelling, center.  Follow the parameter format listed in the table below.
 
-== Gallery Parameter List ==
+== MPG Image Quality Parameters ==
 
 = quality =
 This sets the quality of the thumbnails loaded.  Using a quality that is too low will lead to low image quality.  Using a quality too high will make the page too slow to load and use up your bandwidth.  Consider the physical size of the images you are displaying and how your image sizes are configures in WordPress.  You can find this option under the Settings | Media menu within WordPress.
@@ -83,6 +103,43 @@ Default value:    "thumbnail"
 
 Possible values:  "thumbnail", "medium", "large", "full"
 
+= upscale_narrow_images =
+If an image is less wide than this figure (in pixels) then it will be displayed as the next size up, e.g. a thumbnail will be displayed as a medium if it is narrower than the specified figure.  If this figure is set to 0, then this feature is disabled.
+
+Default value:    0
+
+Possible values:  Any whole number
+
+= upscale_short_images =
+If an image is less tall than this figure (in pixels) then it will be displayed as the next size up, e.g. a thumbnail will be displayed as a medium if it is narrower than the specified figure.  If this figure is set to 0, then this feature is disabled.
+
+Default value:    0
+
+Possible values:  Any whole number
+
+= max_upscale_quality =
+Sets the maximum size an image can upscale to when the upscale_short_images or upscale_narror_images features are enabled.
+
+Default value:    "large"
+
+Possible values:  "thumbnail", "medium", "large", "full"
+
+= upscale_max_width =
+Sets the maximum width of upscaled items.  It is likely that items that have been scaled by height will have a larger width to height ratio.  Therefore, it makes sense to give them more space on screen.  Perhaps double that of the regular items with a max_width setting.
+
+Default value:    "none" 
+
+Possible values:  "##px" or "none", e.g. "300px"
+
+= upscale_max_height =
+Sets the maximum height of upscaled items.  It is likely that items that have been scaled by width will have a larger height to width ratio.  Therefore, it makes sense to give them more space on screen.  
+
+Default value:    "none" 
+
+Possible values:  "##px" or "none", e.g. "300px"
+
+== MPG Function Parameter ==
+
 = masonry =
 Turns masonry layout on or off.  With masonry off, the images will be displayed as a grid.  This would work best if each images width and height is uniform.
 
@@ -90,43 +147,45 @@ Default value:    true
 
 Possible values:  true, false
 
+== MPG Image Appearance & Layout Parameters ==
+
 = max_width =
 Limits the maximum width of each image.  Setting this will form a column layout of the same width.  Smaller items won’t be affected.
 
-Default value:    "300px" 
+Default value:    "none" 
 
-Possible values:  "##px" or "##%" or "auto"
+Possible values:  "##px" or "none", e.g. "300px"
 
 = max_height =
 Limits the maximum height of each image.
 
-Default value:    "300px"
+Default value:    "none"
 
-Possible values:  "##px" or "##%" or "auto"
+Possible values:  "##px" or "none", e.g. "300px"
 
 = width =
 Forces the width of each image, regardless of its actual size.  This can cause an image to stretch.
 
 Default value:    "auto"
 
-Possible values:  "##px" or "##%" or "auto"
+Possible values:  "##px" or "##%" or "auto", e.g. "150px"
 
 = height =
 Forces the height of each image, regardless of its actual size.  This can cause an image to stretch.
 
 Default value:    "auto"
 
-Possible values:  "##px" or "##%" or "auto"
+Possible values:  "##px" or "##%" or "auto", e.g. "150px"
 
 = horizontal_spacing =
-The horizontal spacing between each image – measured in pixels.
+The horizontal spacing between each image – measured in pixels.  Use a thick, background-coloured border for a more exact spacing.
 
 Default value:    10
 
 Possible values:  Any whole number, e.g. 0, 5, 25, etc
 
 = vertical_spacing =
-The vertical spacing between each image – measured in pixels.
+The vertical spacing between each image – measured in pixels.  Use a thick, background-coloured border for a more exact spacing.
 
 Default value:    10
 
@@ -160,6 +219,8 @@ Default value:    "0.5"
 
 Possible values:  Any decimal between "1" and "0", e.g. "0.75", "0.4", "1", "0.1", etc
 
+== MPG Post Search & Display Parameters ==
+
 = post_category =
 The category of posts to show in the gallery.  You can specify a post’s category while editing it in WordPress.  Omitting this parameter will cause the gallery to show all posts.  Only posts with a thumbnail image will display in the gallery.
 
@@ -181,12 +242,48 @@ Default value:    "DESC"
 
 Possible values:  "ASC", "DESC"
 
+== MPG Gallery Display Parameter ==
+
 = gallery_align =
 Specifies whether the entire gallery is aligned to the left, right, or centre of the page.  This does not align the images within the gallery.
 
 Default value:    "center"
 
 Possible values:  "left", "right", "center
+
+== MPG JavaScript Contingency Parameters ==
+
+These parameters exist for when JavaScript is turned off.  Masonry cannot function without JavaScript, so these parameters help you display a workable gallery even when Masonry is not functioning.  Without JavaScript the gallery will revert to a grid layout. 
+
+= noscript_max_width =
+This setting here allows you to specify the max_width of each image should JavaScript be disabled. 
+
+This value can be set to a percentage.  "33%" will generate three columns as that is 30% of the layout area.  This can be used in conjunction with the parameters below to create a centred grid layout. 
+
+Default value:    "none"
+
+Possible values:  "##px", "##%" or "none", e.g. "300px" or "33%"
+
+= noscript_max_height =
+This allows you to specify the max_height of each image should JavaScript be disabled.
+
+Default value:    "none"
+
+Possible values:  "##px" or "none", e.g. "300px"
+
+= noscript_width =
+This allows you to force the width of each element should JavaScript be disabled.
+
+Default value:    "auto"
+
+Possible values:  "##px" or "##%" or "auto", e.g. "150px"
+
+= noscript_height =
+This allows you to force the height of each element should JavaScript be disabled.
+
+Default value:    "auto"
+
+Possible values:  "##px" or "##%" or "auto", e.g. "150px"
 
 == Frequently Asked Questions == 
 

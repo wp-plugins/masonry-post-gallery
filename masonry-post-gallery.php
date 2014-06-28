@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.1b
+ * @version 0.11b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.1b
+ * Version: 0.2b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au
  * License: Licenced to Thrill
@@ -62,18 +62,23 @@ function prep_scripts()
 $MPG_QUALITY_DEF = "thumbnail";  //thumbnail, medium, large, full
 
 $MPG_IMAGE_COLUMNS_DEF = false;
-$MPG_MAX_WIDTH_DEF = "300px";
-$MPG_MAX_HEIGHT_DEF = "300px";
+$MPG_MAX_WIDTH_DEF = "none";
+$MPG_MAX_HEIGHT_DEF = "none";
 $MPG_WIDTH_DEF = "auto";
 $MPG_HEIGHT_DEF = "auto";
+
+$MPG_NOSCRIPT_WIDTH = "auto";
+$MPG_NOSCRIPT_HEIGHT = "auto";
+$MPG_NOSCRIPT_MAX_WIDTH = "none";
+$MPG_NOSCRIPT_MAX_HEIGHT = "none";
 
 $MPG_HOVER_COLOR = "#ffffff";
 $MPG_HOVER_INTENSITY = "0.5";
 
 $MPG_MASONRY_DEF = true;
 
-$MPG_HORIZONTAL_SPACING = 10;
-$MPG_VERTICAL_SPACING = 10;
+$MPG_HORIZONTAL_SPACING = 0;
+$MPG_VERTICAL_SPACING = 0;
 
 $MPG_FIT_WIDTH = true;
 
@@ -86,6 +91,12 @@ $MPG_POST_ORDERBY = "post_date";
 
 $MPG_GALLERY_ALIGN = "center";
 
+$MPG_UPSCALE_NARROW_IMAGES = 0;
+$MPG_UPSCALE_FLAT_IMAGES = 0;
+$MPG_UPSCALE_MAX_SIZE = "large";
+$MPG_MAX_UPSCALE_WIDTH = "none";
+$MPG_MAX_UPSCALE_HEIGHT = "none";
+
 function masonrypostgallery_handler($atts)
 {
 	global $MPG_QUALITY_DEF;
@@ -94,6 +105,10 @@ function masonrypostgallery_handler($atts)
 	global $MPG_MAX_HEIGHT_DEF;
 	global $MPG_WIDTH_DEF;
 	global $MPG_HEIGHT_DEF;
+	global $MPG_NOSCRIPT_WIDTH;
+	global $MPG_NOSCRIPT_HEIGHT;
+	global $MPG_NOSCRIPT_MAX_WIDTH;
+	global $MPG_NOSCRIPT_MAX_HEIGHT;
 	global $MPG_HOVER_COLOR;
 	global $MPG_HOVER_INTENSITY;
 	global $MPG_MASONRY_DEF;
@@ -106,6 +121,11 @@ function masonrypostgallery_handler($atts)
 	global $MPG_POST_ORDER;
 	global $MPG_POST_ORDERBY;
 	global $MPG_GALLERY_ALIGN;
+	global $MPG_UPSCALE_NARROW_IMAGES;
+	global $MPG_UPSCALE_FLAT_IMAGES;
+	global $MPG_UPSCALE_MAX_SIZE;
+	global $MPG_MAX_UPSCALE_WIDTH;
+	global $MPG_MAX_UPSCALE_HEIGHT;
 	$a = shortcode_atts(array('quality' => $MPG_QUALITY_DEF, 'masonry' => $MPG_MASONRY_DEF,
 	'max_width' => $MPG_MAX_WIDTH_DEF, 'max_height' => $MPG_MAX_HEIGHT_DEF, 'width' => $MPG_WIDTH_DEF,
 	'height' => $MPG_HEIGHT_DEF, 'horizontal_spacing' => $MPG_HORIZONTAL_SPACING,
@@ -113,11 +133,16 @@ function masonrypostgallery_handler($atts)
 	'border_color' => $MPG_BORDER_COLOR, 'border_thickness' => $MPG_BORDER_WEIGHT,
 	'post_category' => $MPG_POST_CATEGORY, 'post_order' => $MPG_POST_ORDER, 
 	'post_orderby' => $MPG_POST_ORDERBY, 'gallery_align' => $MPG_GALLERY_ALIGN,
-	'hover_color' => $MPG_HOVER_COLOR, 'hover_intensity' => $MPG_HOVER_INTENSITY), $atts);
+	'hover_color' => $MPG_HOVER_COLOR, 'hover_intensity' => $MPG_HOVER_INTENSITY,
+	'upscale_narrow_images' => $MPG_UPSCALE_NARROW_IMAGES, 
+	'upscale_short_images' => $MPG_UPSCALE_FLAT_IMAGES, 'max_upscale_quality' => $MPG_UPSCALE_MAX_SIZE,
+	'noscript_width' => $MPG_NOSCRIPT_WIDTH, 'noscript_height' => $MPG_NOSCRIPT_HEIGHT,
+	'noscript_max_width' => $MPG_NOSCRIPT_MAX_WIDTH, 'noscript_max_height' => $MPG_NOSCRIPT_MAX_HEIGHT,
+	'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT), $atts);
 	mpg_get_started($a);
 	global $post;
 		
-	$args = array('posts_per_page' => 100, 'category' => $a['post_category'], 'orderby' => $MPG_POST_ORDERBY);
+	$args = array('posts_per_page' => 100, 'category' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
 	$lastposts = get_posts($args);
 
 	foreach($lastposts as $post):
@@ -125,19 +150,23 @@ function masonrypostgallery_handler($atts)
 		if(has_post_thumbnail())
 		{	
 			$tit = get_post_field("post_title",($post->ID), "display");
-			$lnk = get_permalink();
-			$thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),$a['quality']);
+			$lnk = get_permalink();	
+			$thumbnail = upsize_image($post->ID, $a['quality'], $a['max_upscale_quality'], $a['upscale_max_width'], $a['upscale_max_height'], $a['upscale_narrow_images'], $a['upscale_short_images']);		
 			if($a['masonry'] === true)
 			{
 			?>
 			
 			<script type="text/javascript">
 			<!--
-				var s = "<a class='masonry_brick_a' href='<?php echo $lnk ?>'><img class='masonry_brick_img' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'></a>";
+				var s = "<a class='masonry_brick_a' style='display: block;' href='<?php echo $lnk ?>'><img class='masonry_brick_img' style='max-height: <?php if($thumbnail[4]){echo $a['upscale_max_height'];}else{echo $a['max_height'];}?>; max-width: <?php if($thumbnail[5]){echo $a['upscale_max_width'];}else{echo $a['max_width'];}?>; height: <?php echo $a['height'];?>; width: <?php echo $a['width'];?>;' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'></a>";
+				
 				var el = document.createElement('div');
 				el.innerHTML = s;
 				el.className = "masonry_brick";
 				el.style.opacity = "0";
+				el.style.display = "inline-block";
+				el.style.height = "auto";
+				el.style.width = "auto";
 				elems.push(el);
 			//--></script>
 			<noscript>
@@ -166,7 +195,78 @@ function masonrypostgallery_handler($atts)
 	mpg_finish_up($a);
 }
 
+function search_array_for_index($value, $arr, $default)
+{
+	for($i = 0; $i < count($arr); $i++)
+	{
+		if($arr[$i] == $value)
+		{
+			return $i;
+		}
+	}
+	return $default;
+}
 
+function get_next_image_size($original, $max)
+{
+	$sizes = array("thumbnail", "medium", "large", "full");
+	//Get index of $max size - this will be as far as we search
+	$max_size_index = search_array_for_index($max, $sizes, count($sizes)-1)+1;
+	//Return the next index value after the original element
+	$found = false;
+	for($i = 0; $i < $max_size_index; $i++)
+	{
+		if($found)
+		{
+			return $sizes[$i];
+		}
+		$found = ($sizes[$i] == $original);
+	}
+	return $original;
+}
+
+function text_to_number($txt)
+{
+	$out = filter_var($txt, FILTER_SANITIZE_NUMBER_INT);
+	if($out == "")
+	{
+		return 0;
+	}
+	return $out;
+}
+
+function upsize_image($ID, $quality, $max_quality, $max_width, $max_height, $min_width, $min_height)
+{
+	$thumb = wp_get_attachment_image_src(get_post_thumbnail_id($ID),$quality);
+	//1 - width - 2 - height
+	//Exit if required
+	if(($min_width == 0 && $min_height == 0) || ($thumb[1] >= $min_width && $thumb[2] >= $min_height))
+	{
+		array_push($thumb, false);
+		array_push($thumb, false);
+		return $thumb;
+	}
+	$nextsize = get_next_image_size($quality, $max_quality);
+	//Sanitize maximums
+	$max_height = text_to_number($max_height);
+	$max_width = text_to_number($max_width);
+	//Record nature of upsize
+	$width_resize = (/*($nextsize != $quality) && */($thumb[1] < $min_width) && ($thumb[1] < $max_width || $max_width == 0));
+	$height_resize = (/*($nextsize != $quality) && */($thumb[2] < $min_height) && ($thumb[2] < $max_height || $max_height == 0));
+	//While
+	//	- Either thumb width or height is less than minimum
+	//	- There is a larger size thumbnail available
+	//	- Both thumb width and height are less than maximum (unless maximum is 0)
+	while(($thumb[1] < $min_width || $thumb[2] < $min_height) && ($nextsize != $quality) && ($thumb[1] < $max_width || $max_width == 0) && ($thumb[2] < $max_height || $max_height == 0))
+	{
+		$quality = $nextsize;
+		$thumb = wp_get_attachment_image_src(get_post_thumbnail_id($ID),$nextsize);	
+		$nextsize = get_next_image_size($quality, $max_quality);
+	}
+	array_push($thumb, $width_resize);
+	array_push($thumb, $height_resize);
+	return $thumb;
+}
 
 function mpg_get_started($a)
 {
@@ -176,10 +276,10 @@ function mpg_get_started($a)
 		{
 			box-sizing:border-box;
 			-moz-box-sizing:border-box;
-			display: inline-block;
-			height: auto;
-			width: auto;
-			float:left;
+			display: table;
+			height: <?php echo $a['noscript_max_height'];?>;
+			width: <?php echo $a['noscript_max_width'];?>;
+			float: left;
 			background-color: <?php echo $a['hover_color'];?>;
 		}
 		a.masonry_brick_a, img.masonry_brick_img
@@ -188,10 +288,17 @@ function mpg_get_started($a)
 			-moz-box-sizing:border-box;
 			padding: 0px;
 			margin: 0px;
-			display:block;
+		}
+		img.masonry_brick_img
+		{
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
 		}
 		a.masonry_brick_a
 		{	
+			display: table-cell;
+			vertical-align: middle;
 			-webkit-transition: all 0.5s ease-in-out;
 			-moz-transition: all 0.5s ease-in-out;
 			-o-transition: all 0.5s ease-in-out;
@@ -205,6 +312,7 @@ function mpg_get_started($a)
 		{
 			box-sizing:border-box;
 			-moz-box-sizing:border-box;
+			display: block;
 			width: 100%;
 			text-align: center;
 			height: auto;
@@ -225,10 +333,12 @@ function mpg_get_started($a)
 		}
 		img.masonry_brick_img
 		{
-			max-height: <?php echo $a['max_height'];?>;
-			max-width: <?php echo $a['max_width'];?>;
-			height: <?php echo $a['height'];?>;
-			width: <?php echo $a['width'];?>;
+		
+			
+			height: <?php echo $a['noscript_height'];?>;
+			width: <?php echo $a['noscript_width'];?>;
+				
+				
 		<?php
 			if($a['masonry'] === true)
 			{
@@ -255,8 +365,9 @@ function mpg_get_started($a)
 		{
 			width: 100%;
 			text-align: center;
-			display: block;
+			display: none;
 			position: relative;
+			margin-top: 20px;
 			-webkit-transition: all 1s;
 			-moz-transition: all 1s;
 			-ms-transition: all 1s;
@@ -291,9 +402,6 @@ function mpg_get_started($a)
 			padding: 0px 10px 0px 10px;			
 			display: inline-block;
 		}
-		
-		
-		
 	</style>
 	<div id="masonry_post_gallery">
 	<?php
@@ -336,7 +444,6 @@ function mpg_finish_up($a)
 				});	
 			}
 		</script>
-
 		<div id="MPG_Loader_Container">
 			<div id="MPG_Loader_Color">
 				<div id="MPG_Spin_Box">
@@ -368,6 +475,8 @@ function mpg_finish_up($a)
 			var spinbox = document.getElementById("MPG_Spin_Box");
 			spinbox.style.width = "50px";
 			spinbox.appendChild(new Spinner(opts).spin().el);
+			var spincontainer = document.getElementById("MPG_Loader_Container");
+			spincontainer.style.display = "block";
 		</script>
 	<?php
 	}
