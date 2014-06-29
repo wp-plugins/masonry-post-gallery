@@ -47,12 +47,20 @@ function prep_masonry()
 
 function prep_scripts()
 {
-	wp_register_script('Masonry','/wp-content/plugins/masonry-post-gallery/masonry.pkgd.min.js');
-	wp_register_script('ImagesLoaded','/wp-content/plugins/masonry-post-gallery/imagesloaded.pkgd.min.js');
-	wp_register_script('Spin','/wp-content/plugins/masonry-post-gallery/spin.min.js');
+	//Register Styles
+	wp_register_style('Lightbox_style', plugins_url() . '/masonry-post-gallery/lightbox.css');
+	//Enqueue Styles
+	wp_enqueue_style('Lightbox_style');
+	//Register Scripts
+	wp_register_script('Masonry', plugins_url() . '/masonry-post-gallery/masonry.pkgd.min.js');
+	wp_register_script('ImagesLoaded', plugins_url() . '/masonry-post-gallery/imagesloaded.pkgd.min.js');
+	wp_register_script('Spin', plugins_url() . '/masonry-post-gallery/spin.min.js');
+	wp_register_script('Lightbox', plugins_url() . '/masonry-post-gallery/lightbox.min.js', array('jquery'));
+	//Enqueue Scripts
 	wp_enqueue_script('Masonry');
 	wp_enqueue_script('ImagesLoaded');
 	wp_enqueue_script('Spin');
+	wp_enqueue_script('Lightbox');
 }
 //Define that shit
 
@@ -61,7 +69,7 @@ function prep_scripts()
 
 $MPG_QUALITY_DEF = "thumbnail";  //thumbnail, medium, large, full
 
-$MPG_IMAGE_COLUMNS_DEF = false;
+
 $MPG_MAX_WIDTH_DEF = "none";
 $MPG_MAX_HEIGHT_DEF = "none";
 $MPG_WIDTH_DEF = "auto";
@@ -97,10 +105,15 @@ $MPG_UPSCALE_MAX_SIZE = "large";
 $MPG_MAX_UPSCALE_WIDTH = "none";
 $MPG_MAX_UPSCALE_HEIGHT = "none";
 
+$MPG_LINK_LOCATION = "post";
+$MPG_LINK_LIGHTBOX = false;
+$MPG_LINK_LIGHTBOX_SCROLL = false;
+$MPG_LINK_LIGHTBOX_TITLE = false;
+
+
 function masonrypostgallery_handler($atts)
 {
 	global $MPG_QUALITY_DEF;
-	global $MPG_IMAGE_COLUMNS_DEF;
 	global $MPG_MAX_WIDTH_DEF;
 	global $MPG_MAX_HEIGHT_DEF;
 	global $MPG_WIDTH_DEF;
@@ -126,6 +139,10 @@ function masonrypostgallery_handler($atts)
 	global $MPG_UPSCALE_MAX_SIZE;
 	global $MPG_MAX_UPSCALE_WIDTH;
 	global $MPG_MAX_UPSCALE_HEIGHT;
+	global $MPG_LINK_LOCATION;
+	global $MPG_LINK_LIGHTBOX;
+	global $MPG_LINK_LIGHTBOX_SCROLL;
+	global $MPG_LINK_LIGHTBOX_TITLE;
 	$a = shortcode_atts(array('quality' => $MPG_QUALITY_DEF, 'masonry' => $MPG_MASONRY_DEF,
 	'max_width' => $MPG_MAX_WIDTH_DEF, 'max_height' => $MPG_MAX_HEIGHT_DEF, 'width' => $MPG_WIDTH_DEF,
 	'height' => $MPG_HEIGHT_DEF, 'horizontal_spacing' => $MPG_HORIZONTAL_SPACING,
@@ -138,7 +155,17 @@ function masonrypostgallery_handler($atts)
 	'upscale_short_images' => $MPG_UPSCALE_FLAT_IMAGES, 'max_upscale_quality' => $MPG_UPSCALE_MAX_SIZE,
 	'noscript_width' => $MPG_NOSCRIPT_WIDTH, 'noscript_height' => $MPG_NOSCRIPT_HEIGHT,
 	'noscript_max_width' => $MPG_NOSCRIPT_MAX_WIDTH, 'noscript_max_height' => $MPG_NOSCRIPT_MAX_HEIGHT,
-	'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT), $atts);
+	'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT,
+	'link_location' => $MPG_LINK_LOCATION, 'show_lightbox' => $MPG_LINK_LIGHTBOX,
+	'browse_with_lightbox' => $MPG_LINK_LIGHTBOX_SCROLL, 
+	'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE), $atts);
+	//Fix boolean values
+	$a['show_lightbox'] = fix_boolean($a['show_lightbox'], $MPG_LINK_LIGHTBOX);
+	$a['browse_with_lightbox'] = fix_boolean($a['browse_with_lightbox'], $MPG_LINK_LIGHTBOX_SCROLL);
+	$a['show_lightbox_title'] = fix_boolean($a['show_lightbox_title'], $MPG_LINK_LIGHTBOX_TITLE);
+	$a['masonry'] = fix_boolean($a['masonry'], $MPG_MASONRY_DEF);
+	$a['fit_width'] = fix_boolean($a['fit_width'], $MPG_FIT_WIDTH);
+	
 	mpg_get_started($a);
 	global $post;
 		
@@ -150,30 +177,96 @@ function masonrypostgallery_handler($atts)
 		if(has_post_thumbnail())
 		{	
 			$tit = get_post_field("post_title",($post->ID), "display");
-			$lnk = get_permalink();	
 			$thumbnail = upsize_image($post->ID, $a['quality'], $a['max_upscale_quality'], $a['upscale_max_width'], $a['upscale_max_height'], $a['upscale_narrow_images'], $a['upscale_short_images']);		
+			$link_type = "a";
+			$lightbox_text = " data-lightbox='";
+			if($a['browse_with_lightbox'] === true)
+			{
+				$lightbox_text .= "thispage'";
+			}
+			else
+			{
+				$lightbox_text .= $post->ID . "'";
+			}
+			if($a['show_lightbox_title'] === true)
+			{
+				$lightbox_text .= " data-title='" . $tit . "'";
+			}
+			//Set Link Location
+			switch($a['link_location'])
+			{
+				case "image":
+					$lnk = $thumbnail[0];
+					break;
+				case "thumbnail":
+					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail')[0];
+					break;
+				case "medium":
+					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium')[0];
+					break;
+				case "large":
+					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large')[0];
+					break;
+				case "full":
+					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full')[0];
+					break;
+				case "none":
+					$lnk = "";
+					$link_type = "div";
+					$a['show_lightbox'] = false;
+					break;
+				default:
+					$lnk = get_permalink();	
+					$a['show_lightbox'] = false;
+			}
+			if(!($a['show_lightbox'] === true))
+			{
+				$lightbox_text = "";
+			}
 			if($a['masonry'] === true)
 			{
 			?>
 			
 			<script type="text/javascript">
 			<!--
-				var s = "<a class='masonry_brick_a' style='display: block;' href='<?php echo $lnk ?>'><img class='masonry_brick_img' style='max-height: <?php if($thumbnail[4]){echo $a['upscale_max_height'];}else{echo $a['max_height'];}?>; max-width: <?php if($thumbnail[5]){echo $a['upscale_max_width'];}else{echo $a['max_width'];}?>; height: <?php echo $a['height'];?>; width: <?php echo $a['width'];?>;' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'></a>";
+				var s = "<<?php echo $link_type; echo $lightbox_text;?> class='masonry_brick_a' style='display: block;' href='<?php echo $lnk; ?>'><img class='masonry_brick_img size-thumbnail' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>' style='<?php if($a['width'] != 'auto'){echo "width: 100%; ";} if($a['height'] != 'auto'){echo "height: 100%; ";}?>'></<?php echo $link_type;?>>";
 				
 				var el = document.createElement('div');
 				el.innerHTML = s;
 				el.className = "masonry_brick";
 				el.style.opacity = "0";
 				el.style.display = "inline-block";
-				el.style.height = "auto";
-				el.style.width = "auto";
+				el.style.height = "<?php echo $a['height'];?>";
+				el.style.width = "<?php echo $a['width'];?>";
+				
+				
+				//Do max heights
+				<?php 
+					if($thumbnail[4])
+					{
+						echo "el.style.maxHeight = '" . $a['upscale_max_height'] . "';";
+					}
+					else
+					{
+						echo "el.style.maxHeight = '" . $a['max_height'] . "';";
+					}
+					if($thumbnail[5])
+					{
+						echo "el.style.maxWidth = '" . $a['upscale_max_width'] . "';";
+					}
+					else
+					{
+						echo "el.style.maxWidth = '" . $a['max_width'] . "';";
+					}
+				?>
+				
 				elems.push(el);
 			//--></script>
 			<noscript>
 				<div class='masonry_brick'><!--
-					--><a class='masonry_brick_a' href='<?php echo $lnk ?>'><!--
+					--><<?php echo $link_type;?> class='masonry_brick_a' href='<?php echo $lnk ?>'><!--
 						--><img class='masonry_brick_img' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'><!--
-					--></a><!--
+					--></<?php echo $link_type;?>><!--
 				--></div>
 			</noscript>
 			<?php
@@ -182,9 +275,9 @@ function masonrypostgallery_handler($atts)
 			{
 			?>
 			<div class='masonry_brick'><!--
-				--><a class='masonry_brick_a' href='<?php echo $lnk ?>'><!--
+				--><<?php echo $link_type; echo $lightbox_text;?> class='masonry_brick_a' href='<?php echo $lnk ?>'><!--
 					--><img class='masonry_brick_img' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'><!--
-				--></a><!--
+				--></<?php echo $link_type;?>><!--
 			--></div>
 			<?php
 			}
@@ -193,6 +286,23 @@ function masonrypostgallery_handler($atts)
 	endforeach;	
 	wp_reset_postdata();
 	mpg_finish_up($a);
+}
+
+function fix_boolean($val, $default)
+{
+	if($val === true || $val === false)
+	{
+		return $val;
+	}
+	if($val == "true")
+	{
+		return true;
+	}
+	if($val == "false")
+	{
+		return false;
+	}
+	return $default;
 }
 
 function search_array_for_index($value, $arr, $default)
@@ -282,7 +392,7 @@ function mpg_get_started($a)
 			float: left;
 			background-color: <?php echo $a['hover_color'];?>;
 		}
-		a.masonry_brick_a, img.masonry_brick_img
+		a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img
 		{
 			box-sizing:border-box;
 			-moz-box-sizing:border-box;
@@ -295,7 +405,7 @@ function mpg_get_started($a)
 			margin-left: auto;
 			margin-right: auto;
 		}
-		a.masonry_brick_a
+		a.masonry_brick_a, div.masonry_brick_a 
 		{	
 			display: table-cell;
 			vertical-align: middle;

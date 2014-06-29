@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 3.9.1
-Stable tag: 0.2b
+Stable tag: 0.3b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,13 +14,19 @@ Displays a customizable gallery of your posts in either a grid or a masonry layo
 
 Creates a customizable grid or masonry styled gallery of posts using just a shortcode.
 
+This is a FREE and FULL VERSION plugin that does NOT limit its functionality until you have payed.  While a donation would be nice, no money is required to use this plugin.
+
 Posts can be searched by category and ordered by title, date, random, and so forth.
 
 This plugin will show a gallery of post thumbnails that link to said posts.  Great for an art, image, or photo site... i guess :).
 
-Just install and enter the [masonry-post-gallery] shortcode to get started.  There are a whole bunch of parameters in the documentation to help you customize your results.
+The images can also link to themselves, a different sized thumbnail, or a lightbox gallery.
 
-Feel free to comment or [donate something](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%40tpg%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted "yey!") if you like it... or don't.  I'm just a readme and cannot tell you want to do.
+Just install and enter the [masonry-post-gallery] shortcode to get started.  There are a whole bunch of parameters in the documentation under "Other Notes" to help you customize your results.
+
+Feel free to comment or [donate something](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%40tpg%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted "yey!") if you like it... or don't.  I'm just writing, I can't tell you want to do.
+
+Please not that while I will try to improve this plugin and fix any bugs, it is distributed as is.  It's still in beta and may have issues.
 
 == Installation ==
 
@@ -51,6 +57,17 @@ Click the download link, install and click activate.  Just like any other plugin
 * Added to option to specify a grid layout that will take effect when JavaScript is disabled
 * Updated readme.txt to recognize these changes 
 
+= 0.3b =
+* Fixed the percentage column/row width/height functionality.  Now 33% will give three columns with images fitting their column sizes.
+* Added the option to specify whether each image will link to its post, itself, a different sized version of itself, or nowhere
+* Added the capability to display a lightbox style gallery using the show_lightbox parameter
+* Removed any absolute paths to the plugins directory to make plugin more robust to future WordPress versions
+* Fixed some more bugs that have arose with certain image size and alignment functionality
+* Fixed the percentage width and height functionalities
+* Fixed a problem with boolean shortcode parameters
+* Fixed an inconsistancy in the wording of the shortcode instructions
+* Updated the readme.txt to recognize these changes
+
 == Dependencies ==
 
 Masonry Post Gallery requires the following js files, which are included in the package, i.e. you don't have to worry about it.  But credit where credit is due, thus this section.
@@ -76,6 +93,11 @@ This allows the little round loading animation to exist.
 
 By Felix Gnass - you can [find it here](http://fgnass.github.io/spin.js/ "Spin JS") under an MIT licence
 
+**Lightbox**
+This is used to display the lightbox style galleries used by the plugin.  This requires JQuery to function.
+
+By Lokesh Dhakar - you can [find it here](http://www.lokeshdhakar.com/projects/lightbox2/ "Lightbox") under a [Creative Commons Attribution 2.5](http://creativecommons.org/licenses/by/2.5/ "CC 2.5") licence
+
 == How to Use ==
 
 Call Masonry Post Gallery (MPG) by using the MPG shortcode in a post or page.
@@ -95,7 +117,6 @@ Parameters are optional and must be separated by a space.
 IMPORTANT:  Note that each parameter is case and context sensitive.  A capital in the wrong place can cause a parameter not to work. Also note that each parameter may or may not have inverted commas around it (“…”).  Incorrect inverted comma use will affect whether a parameter works.  Finally, words such as centre use the American spelling, center.  Follow the parameter format listed in the table below.
 
 == MPG Image Quality Parameters ==
-
 = quality =
 This sets the quality of the thumbnails loaded.  Using a quality that is too low will lead to low image quality.  Using a quality too high will make the page too slow to load and use up your bandwidth.  Consider the physical size of the images you are displaying and how your image sizes are configures in WordPress.  You can find this option under the Settings | Media menu within WordPress.
 
@@ -138,17 +159,59 @@ Default value:    "none"
 
 Possible values:  "##px" or "none", e.g. "300px"
 
-== MPG Function Parameter ==
-
+== MPG Function and Link Parameters ==
 = masonry =
 Turns masonry layout on or off.  With masonry off, the images will be displayed as a grid.  This would work best if each images width and height is uniform.
 
-Default value:    true
+Default value:    "true"
 
-Possible values:  true, false
+Possible values:  "true" or "false"
+
+= show_lightbox =
+Should clicking on an image display an enlarged view of that image on the screen – or should it take the user to another page specified by the link_location parameter.
+
+When set to "true", clicking on an image will show a lightbox gallery of the clicked image rather than change pages.
+
+The size (i.e. thumbnail through to full) of the image to be displayed by the lightbox gallery can be specified using the link_location parameter.
+
+If show_lightbox is "true" and link_location is "medium" then the medium sized version of the image will be shown in the lightbox gallery.
+
+Default value:    "false"
+
+Possible values:  "true" or "false"
+
+= link_location = 
+Specifies to where each image will link if clicked.
+
+If set to "post", each image will link to its associated post.  If set to "image", each image will link to the image file displayed in the results (at the size that is displayed).  A specific size of each image can be linked to by specifying "thumbnail", "medium", "large", or "full".  Finally, specifying "none" will remove each image’s linking capability and hover effect.
+
+This parameter will set the show_lightbox parameter to "false" if "post" or "none" is selected.  Otherwise, the lightbox gallery is set to "true" it will show the image size chosen by this parameter.
+
+Default value:    "post"
+
+Possible values:  "post", "image", "thumbnail", "medium", "large", "full", or "none"
+
+= show_lightbox_title =
+Specifies whether the title of each post should be displayed in the lightbox.  This parameter has no effect if show_lightbox is set to "false".
+
+Default value:    "false"
+
+Possible values:  "true" or "false"
+
+= browse_with_lightbox =
+Determines whether the user can browse each image on the page from within the lightbox.  
+
+If set to "true", the user can change images from within the lightbox.
+
+If set to "false", the user will have to exit the lightbox and select another image to move on.
+
+This parameter has no effect if show_lightbox is set to "false".
+
+Default value:    "false"
+
+Possible values:  "true" or "false"
 
 == MPG Image Appearance & Layout Parameters ==
-
 = max_width =
 Limits the maximum width of each image.  Setting this will form a column layout of the same width.  Smaller items won’t be affected.
 
@@ -164,7 +227,7 @@ Default value:    "none"
 Possible values:  "##px" or "none", e.g. "300px"
 
 = width =
-Forces the width of each image, regardless of its actual size.  This can cause an image to stretch.
+Forces the width of each image, regardless of its actual size.  This can cause an image to stretch.  By setting this width to a percentage (e.g. "33%") and leaving the height unspecified, you can create a set of evenly sized columns without stretching the images.
 
 Default value:    "auto"
 
@@ -220,7 +283,6 @@ Default value:    "0.5"
 Possible values:  Any decimal between "1" and "0", e.g. "0.75", "0.4", "1", "0.1", etc
 
 == MPG Post Search & Display Parameters ==
-
 = post_category =
 The category of posts to show in the gallery.  You can specify a post’s category while editing it in WordPress.  Omitting this parameter will cause the gallery to show all posts.  Only posts with a thumbnail image will display in the gallery.
 
@@ -243,7 +305,6 @@ Default value:    "DESC"
 Possible values:  "ASC", "DESC"
 
 == MPG Gallery Display Parameter ==
-
 = gallery_align =
 Specifies whether the entire gallery is aligned to the left, right, or centre of the page.  This does not align the images within the gallery.
 
@@ -252,7 +313,6 @@ Default value:    "center"
 Possible values:  "left", "right", "center
 
 == MPG JavaScript Contingency Parameters ==
-
 These parameters exist for when JavaScript is turned off.  Masonry cannot function without JavaScript, so these parameters help you display a workable gallery even when Masonry is not functioning.  Without JavaScript the gallery will revert to a grid layout. 
 
 = noscript_max_width =
