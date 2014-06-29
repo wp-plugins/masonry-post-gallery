@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.11b
+ * @version 0.3b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.2b
+ * Version: 0.3b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au
  * License: Licenced to Thrill
