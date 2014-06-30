@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 3.9.1
-Stable tag: 0.31b
+Stable tag: 0.3.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,10 +37,10 @@ Click the download link, install and click activate.  Just like any other plugin
 
 == Changelog ==
 
-= 0.1b =
+= 0.1.0b =
 * The initial version is released.  This is a testing beta, so there will be revisions, and some features may not work as planned.
 
-= 0.11b =
+= 0.1.1b =
 * Incompletely implemented post_order and post_orderby parameters fixed
 * Default max_width and max_height parameters changed to "none"
 * Default horizontal_spacing and vertical_spacing set to 0
@@ -48,19 +48,19 @@ Click the download link, install and click activate.  Just like any other plugin
 * Minor correction made to the parameters section of the documentation to fix incorrect parameter options
 * Additional information added to the parameters section of the documentation to clarify the behaviour of the vertical and horizontal spacing
 
-= 0.15b =
+= 0.1.5b =
 * Added upscaling feature.  Now images that are shorter or narrower than a specified width or height can be upscaled until they reach the specified size.  The image thumbnail quality will be increased until it reaches the largest size available, reaches the largest size specified under the max_upscale_size parameter, or reaches or exceeds the max_height or max_width parameters. 
 * Removed support for percentages in the max_height and max_width fields
 * Updated the documentation to include new features
 * Added padding to the top of the loading box
 
-= 0.2b =
+= 0.2.0b =
 * Updated upscaling feature.  Now has the option to independently set max_height and max_width for upscaled objects.
 * Made MPG more functional in the absence of JavaScript.
 * Added to option to specify a grid layout that will take effect when JavaScript is disabled
 * Updated the documentation to recognize these changes 
 
-= 0.3b =
+= 0.3.0b =
 * Fixed the percentage column/row width/height functionality.  Now 33% will give three columns with images fitting their column sizes.
 * Added the option to specify whether each image will link to its post, itself, a different sized version of itself, or nowhere
 * Added the capability to display a lightbox style gallery using the show_lightbox parameter
@@ -71,8 +71,9 @@ Click the download link, install and click activate.  Just like any other plugin
 * Fixed an inconsistancy in the wording of the shortcode instructions
 * Updated the documentation to recognize these changes
 
-= 0.31b =
-* Fixed a bug where the gallery wold always appear at the top of the page
+= 0.3.1b =
+* Fixed a bug where the gallery would always appear at the top of the page
+* Added a number of code improvements including an external CSS file
 * Changed how the borders work to make them more reliable and even
 * Changed how the spacing and widths behave to make percentage based column layouts more reliable
 * Added a flexible border parameter called soft_gutter
@@ -82,6 +83,7 @@ Click the download link, install and click activate.  Just like any other plugin
 * Small documentation errors have been fixed
 * Published fit_width parameter to documentation
 * Updated documentation to suite changes
+* Changed the plugins version numbering system to better match WordPress standards and easier to update
 
 == Dependencies ==
 
