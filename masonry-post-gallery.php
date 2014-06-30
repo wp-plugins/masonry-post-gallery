@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3b
+ * @version 0.31b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3b
+ * Version: 0.31b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au
  * License: Licenced to Thrill
@@ -48,8 +48,10 @@ function prep_masonry()
 function prep_scripts()
 {
 	//Register Styles
+	wp_register_style('MPG_style', plugins_url() . '/masonry-post-gallery/masonry-post-gallery.css');
 	wp_register_style('Lightbox_style', plugins_url() . '/masonry-post-gallery/lightbox.css');
 	//Enqueue Styles
+	wp_enqueue_style('MPG_style');
 	wp_enqueue_style('Lightbox_style');
 	//Register Scripts
 	wp_register_script('Masonry', plugins_url() . '/masonry-post-gallery/masonry.pkgd.min.js');
@@ -88,10 +90,12 @@ $MPG_MASONRY_DEF = true;
 $MPG_HORIZONTAL_SPACING = 0;
 $MPG_VERTICAL_SPACING = 0;
 
-$MPG_FIT_WIDTH = true;
+$MPG_FIT_WIDTH = false;
 
 $MPG_BORDER_WEIGHT = "0px";
 $MPG_BORDER_COLOR = "#000000";
+$MPG_OUTER_BORDER_WEIGHT = "0px";
+$MPG_OUTER_BORDER_COLOR = "#000000";
 
 $MPG_POST_CATEGORY = "";
 $MPG_POST_ORDER = "DESC";
@@ -110,9 +114,14 @@ $MPG_LINK_LIGHTBOX = false;
 $MPG_LINK_LIGHTBOX_SCROLL = false;
 $MPG_LINK_LIGHTBOX_TITLE = false;
 
+$MPG_SOFT_GUTTER = 0;
 
 function masonrypostgallery_handler($atts)
 {
+	//Prepare output variable
+	$output = "";
+	//Find global variables
+	global $post;
 	global $MPG_QUALITY_DEF;
 	global $MPG_MAX_WIDTH_DEF;
 	global $MPG_MAX_HEIGHT_DEF;
@@ -130,6 +139,8 @@ function masonrypostgallery_handler($atts)
 	global $MPG_FIT_WIDTH;
 	global $MPG_BORDER_WEIGHT;
 	global $MPG_BORDER_COLOR;
+	global $MPG_OUTER_BORDER_WEIGHT;
+	global $MPG_OUTER_BORDER_COLOR;
 	global $MPG_POST_CATEGORY;
 	global $MPG_POST_ORDER;
 	global $MPG_POST_ORDERBY;
@@ -143,11 +154,14 @@ function masonrypostgallery_handler($atts)
 	global $MPG_LINK_LIGHTBOX;
 	global $MPG_LINK_LIGHTBOX_SCROLL;
 	global $MPG_LINK_LIGHTBOX_TITLE;
+	global $MPG_SOFT_GUTTER;
+	//Accept input parameters
 	$a = shortcode_atts(array('quality' => $MPG_QUALITY_DEF, 'masonry' => $MPG_MASONRY_DEF,
 	'max_width' => $MPG_MAX_WIDTH_DEF, 'max_height' => $MPG_MAX_HEIGHT_DEF, 'width' => $MPG_WIDTH_DEF,
 	'height' => $MPG_HEIGHT_DEF, 'horizontal_spacing' => $MPG_HORIZONTAL_SPACING,
 	'vertical_spacing' => $MPG_VERTICAL_SPACING, 'fit_width' => $MPG_FIT_WIDTH,
 	'border_color' => $MPG_BORDER_COLOR, 'border_thickness' => $MPG_BORDER_WEIGHT,
+	'outer_border_color' => $MPG_OUTER_BORDER_COLOR, 'outer_border_thickness' => $MPG_OUTER_BORDER_WEIGHT,
 	'post_category' => $MPG_POST_CATEGORY, 'post_order' => $MPG_POST_ORDER, 
 	'post_orderby' => $MPG_POST_ORDERBY, 'gallery_align' => $MPG_GALLERY_ALIGN,
 	'hover_color' => $MPG_HOVER_COLOR, 'hover_intensity' => $MPG_HOVER_INTENSITY,
@@ -158,20 +172,21 @@ function masonrypostgallery_handler($atts)
 	'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT,
 	'link_location' => $MPG_LINK_LOCATION, 'show_lightbox' => $MPG_LINK_LIGHTBOX,
 	'browse_with_lightbox' => $MPG_LINK_LIGHTBOX_SCROLL, 
-	'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE), $atts);
-	//Fix boolean values
+	'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE, 'soft_gutter' => $MPG_SOFT_GUTTER), $atts);
+	//Fix boolean parameter values
 	$a['show_lightbox'] = fix_boolean($a['show_lightbox'], $MPG_LINK_LIGHTBOX);
 	$a['browse_with_lightbox'] = fix_boolean($a['browse_with_lightbox'], $MPG_LINK_LIGHTBOX_SCROLL);
 	$a['show_lightbox_title'] = fix_boolean($a['show_lightbox_title'], $MPG_LINK_LIGHTBOX_TITLE);
 	$a['masonry'] = fix_boolean($a['masonry'], $MPG_MASONRY_DEF);
 	$a['fit_width'] = fix_boolean($a['fit_width'], $MPG_FIT_WIDTH);
-	
-	mpg_get_started($a);
-	global $post;
-		
+	//Create the stylesheet
+	$output .= mpg_create_styles($a);
+	//Start the Main DIV
+	$output .= "<div id='masonry_post_gallery'>\n";
+	//Prepare & Execute WordPress query
 	$args = array('posts_per_page' => 100, 'category' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
 	$lastposts = get_posts($args);
-
+	//For each post found by the query:
 	foreach($lastposts as $post):
 		setup_postdata($post);
 		if(has_post_thumbnail())
@@ -192,7 +207,7 @@ function masonrypostgallery_handler($atts)
 			{
 				$lightbox_text .= " data-title='" . $tit . "'";
 			}
-			//Set Link Location
+			//Set where each image links and handle any interference with the show_lightbox parameter
 			switch($a['link_location'])
 			{
 				case "image":
@@ -225,67 +240,88 @@ function masonrypostgallery_handler($atts)
 			}
 			if($a['masonry'] === true)
 			{
-			?>
-			
-			<script type="text/javascript">
-			<!--
-				var s = "<<?php echo $link_type; echo $lightbox_text;?> class='masonry_brick_a' style='display: block;' href='<?php echo $lnk; ?>'><img class='masonry_brick_img size-thumbnail' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>' style='<?php if($a['width'] != 'auto'){echo "width: 100%; ";} if($a['height'] != 'auto'){echo "height: 100%; ";}?>'></<?php echo $link_type;?>>";
-				
-				var el = document.createElement('div');
-				el.innerHTML = s;
-				el.className = "masonry_brick";
-				el.style.opacity = "0";
-				el.style.display = "inline-block";
-				el.style.height = "<?php echo $a['height'];?>";
-				el.style.width = "<?php echo $a['width'];?>";
-				
-				
+				/*
+					DRAW JAVASCRIPT BOX
+				*/
+				//Start script <script ...>
+				$output .= "<script type='text/javascript'>\n";
+				//Write the JavaScript
+				//Start with the innerHTML of the masonry_brick DIVs
+				$output .= "var s = \"<{$link_type} {$lightbox_text} class='masonry_brick_a' style='display: block;' href=\'{$lnk}\'><img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
+				if($a['width'] != 'auto')
+				{
+					$output .= "width: 100%; ";
+				}
+				if($a['height'] != 'auto')
+				{
+					$output .= "height: 100%; ";
+				}
+				$output .= "'/></{$link_type}>\";\n";
+				//Create DOM Element for masonry_brick DIV
+				$output .= ""
+. "				var el = document.createElement('div');\n"
+. "				el.innerHTML = s;\n"
+. "				el.className = 'masonry_brick';\n"
+. "				el.style.opacity = '0';\n"
+. "				el.style.display = 'inline-block';\n"
+. "				el.style.height = '{$a['height']}';\n"
+. "				el.style.width = '{$a['width']}';\n";
 				//Do max heights
-				<?php 
-					if($thumbnail[4])
-					{
-						echo "el.style.maxHeight = '" . $a['upscale_max_height'] . "';";
-					}
-					else
-					{
-						echo "el.style.maxHeight = '" . $a['max_height'] . "';";
-					}
-					if($thumbnail[5])
-					{
-						echo "el.style.maxWidth = '" . $a['upscale_max_width'] . "';";
-					}
-					else
-					{
-						echo "el.style.maxWidth = '" . $a['max_width'] . "';";
-					}
-				?>
-				
-				elems.push(el);
-			//--></script>
-			<noscript>
-				<div class='masonry_brick'><!--
-					--><<?php echo $link_type;?> class='masonry_brick_a' href='<?php echo $lnk ?>'><!--
-						--><img class='masonry_brick_img' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'><!--
-					--></<?php echo $link_type;?>><!--
-				--></div>
-			</noscript>
-			<?php
+				if($thumbnail[4])
+				{
+					$output .= "el.style.maxHeight = '{$a['upscale_max_height']}';\n";
+				}
+				else
+				{
+					$output .= "el.style.maxHeight = '{$a['max_height']}';\n";
+				}
+				if($thumbnail[5])
+				{
+					$output .= "el.style.maxWidth = '{$a['upscale_max_width']}';\n";
+				}
+				else
+				{
+					$output .= "el.style.maxWidth = '{$a['max_width']}';\n";
+				}
+				$output .= "elems.push(el);\n";
+				$output .= "</script>\n";
+				/*
+					DRAW NOSCRIPT BOX
+				*/
+				$output .= ""
+. "				<noscript>\n"
+. "				<div class='masonry_brick'><!--\n"
+. "					--><{$link_type} class='masonry_brick_a' href='{$lnk}'><!--\n"
+. "						--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'/><!--\n"
+. "					--></{$link_type}><!--\n"
+. "				--></div>\n"
+. "			</noscript>\n";
+			/*
+				MASONRY IS OFF
+			*/
 			}
 			else//Masonry OFF
 			{
-			?>
-			<div class='masonry_brick'><!--
-				--><<?php echo $link_type; echo $lightbox_text;?> class='masonry_brick_a' href='<?php echo $lnk ?>'><!--
-					--><img class='masonry_brick_img' src='<?php echo $thumbnail[0]; ?>' alt='<?php echo $tit ?>'><!--
-				--></<?php echo $link_type;?>><!--
-			--></div>
-			<?php
+				$output .= ""
+. "			<div class='masonry_brick'><!--\n"
+. "				--><{$link_type} {$lightbox_text} class='masonry_brick_a' href='{$lnk}'><!--\n"
+. "					--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'><!--\n"
+. "				--></{$link_type}><!--\n"
+. "			--></div>\n";
 			}
-
 		}
 	endforeach;	
 	wp_reset_postdata();
-	mpg_finish_up($a);
+	//Close off the masonry gallery main div
+	$output .= "</div>\n";
+	//Draw the Masonry JavaScript
+	$output .= mpg_create_javascript($a);
+	return $output;
+}
+
+function bool_to_string($bool)
+{
+	return ($bool) ? "true" : "false";
 }
 
 function fix_boolean($val, $default)
@@ -378,217 +414,119 @@ function upsize_image($ID, $quality, $max_quality, $max_width, $max_height, $min
 	return $thumb;
 }
 
-function mpg_get_started($a)
+/**		Creates the stylesheet for the gallery		**/
+function mpg_create_styles($a)
 {
-	?>
-	<style scoped>
-		div.masonry_brick
-		{
-			box-sizing:border-box;
-			-moz-box-sizing:border-box;
-			display: table;
-			height: <?php echo $a['noscript_max_height'];?>;
-			width: <?php echo $a['noscript_max_width'];?>;
-			float: left;
-			background-color: <?php echo $a['hover_color'];?>;
-		}
-		a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img
-		{
-			box-sizing:border-box;
-			-moz-box-sizing:border-box;
-			padding: 0px;
-			margin: 0px;
-		}
-		img.masonry_brick_img
-		{
-			display: block;
-			margin-left: auto;
-			margin-right: auto;
-		}
-		a.masonry_brick_a, div.masonry_brick_a 
-		{	
-			display: table-cell;
-			vertical-align: middle;
-			-webkit-transition: all 0.5s ease-in-out;
-			-moz-transition: all 0.5s ease-in-out;
-			-o-transition: all 0.5s ease-in-out;
-			transition: all 0.5s ease-in-out;
-		}
-		a.masonry_brick_a:hover
-		{
-			opacity: <?php echo $a['hover_intensity'];?>;
-		}
-		div#masonry_post_gallery
-		{
-			box-sizing:border-box;
-			-moz-box-sizing:border-box;
-			display: block;
-			width: 100%;
-			text-align: center;
-			height: auto;
-		<?php
-			if($a['gallery_align'] == "left" || $a['gallery_align'] == "center")
-			{
-		?>
-				margin-right: auto;
-		<?php
-			}
-			if($a['gallery_align'] == "right" || $a['gallery_align'] == "center")
-			{
-		?>
-				margin-left: auto;
-		<?php
-			}
-		?>
-		}
-		img.masonry_brick_img
-		{
-		
-			
-			height: <?php echo $a['noscript_height'];?>;
-			width: <?php echo $a['noscript_width'];?>;
-				
-				
-		<?php
-			if($a['masonry'] === true)
-			{
-		?>			
-				margin-bottom: <?php echo $a['vertical_spacing'] . "px";?>;
-		<?php
-			}
-			else
-			{
-		?>
-				margin-bottom: <?php echo $a['vertical_spacing'] . "px";?>;
-				margin-right: <?php echo $a['horizontal_spacing'] . "px";?>;
-				margin-left: 0px;
-				margin-top: 0px;
-		<?php
-			}
-		?>
-			border-style: solid;
-			border-width: <?php echo $a['border_thickness'];?>;
-			border-color: <?php echo $a['border_color'];?>;
-		}
-		
-		div#MPG_Loader_Container
-		{
-			width: 100%;
-			text-align: center;
-			display: none;
-			position: relative;
-			margin-top: 20px;
-			-webkit-transition: all 1s;
-			-moz-transition: all 1s;
-			-ms-transition: all 1s;
-			-o-transition: all 1s;
-		}
-		div#MPG_Loader_Color
-		{
-			background-color: #353535;
-			color: #FFF;
-			border-radius: 4px;
-			display: inline-block;
-			font-size: 1.4em;
-			font-weight: bold;
-			text-align: center;
-			vertical-align: middle;
-		}
-		div#MPG_Spin_Box, div#MPG_Loader
-		{
-			height: 50px;
-			text-align: center;
-			margin: 0px;
-			vertical-align: middle;
-		}
-		div#MPG_Spin_Box
-		{
-			display: inline-block;
-			position: relative;
-		}
-		div#MPG_Loader
-		{
-			line-height: 50px;
-			padding: 0px 10px 0px 10px;			
-			display: inline-block;
-		}
-	</style>
-	<div id="masonry_post_gallery">
-	<?php
+	$output = "<style scoped>\n"
+."		div.masonry_brick\n"
+."		{\n"
+."			height: {$a['noscript_max_height']};\n"
+."			width: {$a['noscript_max_width']};\n"
+."			background-color: {$a['hover_color']};\n"
+."			border-width: {$a['outer_border_thickness']};\n"
+."			border-color: {$a['outer_border_color']};\n"
+."			padding-bottom: " . round($a['vertical_spacing']/2,1) . "px;\n"
+."			padding-right: " .round($a['horizontal_spacing']/2,1) . "px;\n"
+."			padding-left: " . round($a['horizontal_spacing']/2,1) . "px;\n"
+."			padding-top: " . round($a['vertical_spacing']/2,1) . "px;\n"
+."		}\n"
+."		a.masonry_brick_a:hover\n"
+."		{\n"
+."			opacity: {$a['hover_intensity']};\n"
+."		}\n"
+."		div#masonry_post_gallery\n"
+."		{\n";
+
+	if($a['gallery_align'] == "left" || $a['gallery_align'] == "center")
+	{
+		$output .= "margin-right: auto;\n";
+	}
+	if($a['gallery_align'] == "right" || $a['gallery_align'] == "center")
+	{
+		$output .= "margin-left: auto;\n";
+	}
+	$output .= ""
+."		}\n"
+."		img.masonry_brick_img\n"
+."		{\n"
+."			height: {$a['noscript_height']};\n"
+."			width: {$a['noscript_width']};\n"
+."			border-width: {$a['border_thickness']};\n"
+."			border-color: {$a['border_color']};\n"
+."		}\n"
+."	</style>\n";
+	return $output;
 }
 
-function mpg_finish_up($a)
+function mpg_create_javascript($a)
 {
 	//Show loading bar
 	if($a['masonry'] === true)
 	{
-	?>
-		</div>
-		<script type="text/javascript">
-			if(elems.length > 0)
-			{
-				add_elem(0);		
-			}else
-			{
-				document.getElementById("MPG_Loader_Container").style.display = "none";
-			}
-			
-			function add_elem(count)
-			{
-				document.getElementById("masonry_post_gallery").appendChild(elems[count]);
-				imagesLoaded('#masonry_post_gallery', function()
-				{
-					var msnry = new Masonry('#masonry_post_gallery', {columnWidth: 1, gutter: <?php echo $a['horizontal_spacing'];?>, isFitWidth: <?php echo $a['fit_width'];?>});
-					elems[count].style.transition = "opacity 0.5s";
-					elems[count].style.opacity = "1";
-					if(count+1 < elems.length)
-					{
-						add_elem(count+1);	
-						document.getElementById("MPG_Loader").innerHTML = "Loading (" + ((((count+1)/elems.length)*100) | 0) + "%)"; 	
-					}
-					else
-					{
-						document.getElementById("MPG_Loader").innerHTML = "Loaded (" + ((((count+1)/elems.length)*100) | 0) + "%)"; 
-						document.getElementById("MPG_Loader_Container").style.opacity = "0";
-					}
-				});	
-			}
-		</script>
-		<div id="MPG_Loader_Container">
-			<div id="MPG_Loader_Color">
-				<div id="MPG_Spin_Box">
-				</div>
-				<div id="MPG_Loader">
-					Loading...
-				</div>
-			</div>
-		</div>
-		<script type="text/javascript">
-			var opts = {
-				lines: 13, // The number of lines to draw
-				length: 0, // The length of each line
-				width: 6, // The line thickness
-				radius: 12, // The radius of the inner circle
-				corners: 1, // Corner roundness (0..1)
-				rotate: 0, // The rotation offset
-				direction: 1, // 1: clockwise, -1: counterclockwise
-				color: '#DFDFDF', // #rgb or #rrggbb or array of colors
-				speed: 1.2, // Rounds per second
-				trail: 100, // Afterglow percentage
-				shadow: false, // Whether to render a shadow
-				hwaccel: false, // Whether to use hardware acceleration
-				className: 'spinner', // The CSS class to assign to the spinner
-				zIndex: 2e9, // The z-index (defaults to 2000000000)
-				top: '50%', // Top position relative to parent
-				left: '50%' // Left position relative to parent
-			};		
-			var spinbox = document.getElementById("MPG_Spin_Box");
-			spinbox.style.width = "50px";
-			spinbox.appendChild(new Spinner(opts).spin().el);
-			var spincontainer = document.getElementById("MPG_Loader_Container");
-			spincontainer.style.display = "block";
-		</script>
-	<?php
+		return ""	
+. "		<script type='text/javascript'>\n"
+. "			if(elems.length > 0)\n"
+. "			{\n"
+. "				add_elem(0);\n"	
+. "			}else\n"
+. "			{\n"
+. "				document.getElementById('MPG_Loader_Container').style.display = 'none';\n"
+. "			}\n"
+. "			function add_elem(count)\n"
+. "			{\n"
+. "				document.getElementById('masonry_post_gallery').appendChild(elems[count]);\n"
+. "				imagesLoaded('#masonry_post_gallery', function()\n"
+. "				{\n"
+. "					var msnry = new Masonry('#masonry_post_gallery', {columnWidth: 1, gutter: {$a['soft_gutter']}, isFitWidth: " . bool_to_string($a['fit_width']) . "});\n"
+. "					elems[count].style.transition = 'opacity 0.5s';\n"
+. "					elems[count].style.opacity = '1';\n"
+. "					if(count+1 < elems.length)\n"
+. "					{\n"
+. "						add_elem(count+1);\n"
+. "						document.getElementById('MPG_Loader').innerHTML = 'Loading (' + ((((count+1)/elems.length)*100) | 0) + '%)';\n"
+. "					}\n"
+. "					else\n"
+. "					{\n"
+. "						document.getElementById('MPG_Loader').innerHTML = 'Loaded (' + ((((count+1)/elems.length)*100) | 0) + '%)';\n"
+. "						document.getElementById('MPG_Loader_Container').style.opacity = '0';\n"
+. "					}\n"
+. "				});\n"
+. "			}\n"
+. "		</script>\n"
+. "		<div id='MPG_Loader_Container'>\n"
+. "			<div id='MPG_Loader_Color'>\n"
+. "				<div id='MPG_Spin_Box'>\n"
+. "				</div>\n"
+. "				<div id='MPG_Loader'>\n"
+. "					Loading...\n"
+. "				</div>\n"
+. "			</div>\n"
+. "		</div>\n"
+. "		<script type='text/javascript'>\n"
+. "			var opts = {\n"
+. "				lines: 13, // The number of lines to draw\n"
+. "				length: 0, // The length of each line\n"
+. "				width: 6, // The line thickness\n"
+. "				radius: 12, // The radius of the inner circle\n"
+. "				corners: 1, // Corner roundness (0..1)\n"
+. "				rotate: 0, // The rotation offset\n"
+. "				direction: 1, // 1: clockwise, -1: counterclockwise\n"
+. "				color: '#DFDFDF', // #rgb or #rrggbb or array of colors\n"
+. "				speed: 1.2, // Rounds per second\n"
+. "				trail: 100, // Afterglow percentage\n"
+. "				shadow: false, // Whether to render a shadow\n"
+. "				hwaccel: false, // Whether to use hardware acceleration\n"
+. "				className: 'spinner', // The CSS class to assign to the spinner\n"
+. "				zIndex: 2e9, // The z-index (defaults to 2000000000)\n"
+. "				top: '50%', // Top position relative to parent\n"
+. "				left: '50%' // Left position relative to parent\n"
+. "			};\n"
+. "			var spinbox = document.getElementById('MPG_Spin_Box');\n"
+. "			spinbox.style.width = '50px';\n"
+. "			spinbox.appendChild(new Spinner(opts).spin().el);\n"
+. "			var spincontainer = document.getElementById('MPG_Loader_Container');\n"
+. "			spincontainer.style.display = 'block';\n"
+. "		</script>\n";
 	}
 }
 

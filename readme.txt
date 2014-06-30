@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 3.9.1
-Stable tag: 0.3b
+Stable tag: 0.31b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ Feel free to comment or [donate something](https://www.paypal.com/cgi-bin/webscr
 
 Please not that while I will try to improve this plugin and fix any bugs, it is distributed as is.  It's still in beta and may have issues.
 
+Also, [email any FEEDBACK, BUGS and IDEAS](mailto:cactus@cactuscomputers.com.au "me!") you may have for the plugin!
+
+
 == Installation ==
 
 Click the download link, install and click activate.  Just like any other plugin.  Nothing different here.
@@ -41,21 +44,21 @@ Click the download link, install and click activate.  Just like any other plugin
 * Incompletely implemented post_order and post_orderby parameters fixed
 * Default max_width and max_height parameters changed to "none"
 * Default horizontal_spacing and vertical_spacing set to 0
-* Minor correction made to the parameters section of the readme.txt to reflect these changes
-* Minor correction made to the parameters section of the readme.txt to fix incorrect parameter options
-* Additional information added to the parameters section of the readme.txt to clarify the behaviour of the vertical and horizontal spacing
+* Minor correction made to the parameters section of the documentation to reflect these changes
+* Minor correction made to the parameters section of the documentation to fix incorrect parameter options
+* Additional information added to the parameters section of the documentation to clarify the behaviour of the vertical and horizontal spacing
 
 = 0.15b =
 * Added upscaling feature.  Now images that are shorter or narrower than a specified width or height can be upscaled until they reach the specified size.  The image thumbnail quality will be increased until it reaches the largest size available, reaches the largest size specified under the max_upscale_size parameter, or reaches or exceeds the max_height or max_width parameters. 
 * Removed support for percentages in the max_height and max_width fields
-* Updates readme.txt to include new features
+* Updated the documentation to include new features
 * Added padding to the top of the loading box
 
 = 0.2b =
 * Updated upscaling feature.  Now has the option to independently set max_height and max_width for upscaled objects.
 * Made MPG more functional in the absence of JavaScript.
 * Added to option to specify a grid layout that will take effect when JavaScript is disabled
-* Updated readme.txt to recognize these changes 
+* Updated the documentation to recognize these changes 
 
 = 0.3b =
 * Fixed the percentage column/row width/height functionality.  Now 33% will give three columns with images fitting their column sizes.
@@ -66,7 +69,19 @@ Click the download link, install and click activate.  Just like any other plugin
 * Fixed the percentage width and height functionalities
 * Fixed a problem with boolean shortcode parameters
 * Fixed an inconsistancy in the wording of the shortcode instructions
-* Updated the readme.txt to recognize these changes
+* Updated the documentation to recognize these changes
+
+= 0.31b =
+* Fixed a bug where the gallery wold always appear at the top of the page
+* Changed how the borders work to make them more reliable and even
+* Changed how the spacing and widths behave to make percentage based column layouts more reliable
+* Added a flexible border parameter called soft_gutter
+* Fixed a bug where the fit_width parameter would break the code
+* Set fit_width to "false" by default as it interacts with columns set to a percentage width causing the page to look wrong while loading
+* Made stylesheet improvements to fix minor display issues
+* Small documentation errors have been fixed
+* Published fit_width parameter to documentation
+* Updated documentation to suite changes
 
 == Dependencies ==
 
@@ -241,18 +256,25 @@ Default value:    "auto"
 Possible values:  "##px" or "##%" or "auto", e.g. "150px"
 
 = horizontal_spacing =
-The horizontal spacing between each image – measured in pixels.  Use a thick, background-coloured border for a more exact spacing.
+The hard horizontal spacing between each image – measured in pixels.
 
-Default value:    10
+Default value:    0
 
 Possible values:  Any whole number, e.g. 0, 5, 25, etc
 
 = vertical_spacing =
-The vertical spacing between each image – measured in pixels.  Use a thick, background-coloured border for a more exact spacing.
+The hard vertical spacing between each image – measured in pixels.
 
-Default value:    10
+Default value:    0
 
 Possible values:  Any whole number, e.g. 0, 5, 25, etc 
+
+= soft_gutter =
+The soft horizontal spacing between each image.  This spacing will only appear if there is enough room - the images will take priority.
+
+Default value:    0
+
+Possible values:  Any whole number, e.g. 0, 5, 25, etc
 
 = border_color =
 The colour of the image’s borders.  Borders won’t show up unless their thickness is greater than zero – see below.
@@ -311,6 +333,15 @@ Specifies whether the entire gallery is aligned to the left, right, or centre of
 Default value:    "center"
 
 Possible values:  "left", "right", "center
+
+= fit_width =
+Specifies whether the gallery width grows with its contents.  If "false", then the gallery will be 100% of the width of its parent window, div or DOM object.  If "true" then the gallery will be as wide as its contents.
+
+This parameter should be set to "false" if the image width parameter is set to a percentage
+
+Default value:    "false"
+
+Possible values:  "true" or "false"
 
 == MPG JavaScript Contingency Parameters ==
 These parameters exist for when JavaScript is turned off.  Masonry cannot function without JavaScript, so these parameters help you display a workable gallery even when Masonry is not functioning.  Without JavaScript the gallery will revert to a grid layout. 
