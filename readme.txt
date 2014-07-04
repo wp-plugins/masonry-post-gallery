@@ -1,10 +1,10 @@
-=== Plugin Name ===
+﻿=== Plugin Name ===
 Contributors: bortpress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%40tpg%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 3.9.1
-Stable tag: 0.3.1b
+Stable tag: 0.3.2b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,9 @@ Click the download link, install and click activate.  Just like any other plugin
 * Published fit_width parameter to documentation
 * Updated documentation to suite changes
 * Changed the plugins version numbering system to better match WordPress standards and easier to update
+
+= 0.3.2b =
+* Fixed a bug that stopped the category parameter from working
 
 == Dependencies ==
 

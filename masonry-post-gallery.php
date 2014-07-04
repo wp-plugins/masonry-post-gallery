@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3.1b
+ * @version 0.3.2b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3.1b
+ * Version: 0.3.2b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au
  * License: Licenced to Thrill
@@ -184,7 +184,7 @@ function masonrypostgallery_handler($atts)
 	//Start the Main DIV
 	$output .= "<div id='masonry_post_gallery'>\n";
 	//Prepare & Execute WordPress query
-	$args = array('posts_per_page' => 100, 'category' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
+	$args = array('posts_per_page' => 100, 'category_name' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
 	$lastposts = get_posts($args);
 	//For each post found by the query:
 	foreach($lastposts as $post):
