@@ -293,7 +293,7 @@ function masonrypostgallery_handler($atts)
 				$output .= "<script type='text/javascript'>\n";
 				//Write the JavaScript
 				//Start with the innerHTML of the masonry_brick DIVs
-				$output .= "var s = \"<{$link_type} {$lightbox_text} class='masonry_brick_a' style='display: block;' href='{$lnk}'><img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
+				$output .= "var s = \"<{$link_type} {$lightbox_text} class='masonry_brick_a' style='display: block;' href=\'{$lnk}\'><img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
 				if(!($thumbnail[5] && strpos($a['upscale_max_width'], '%') !== false) && ($a['width'] != 'auto'))
 				{
 					$output .= "width: 100%; ";
