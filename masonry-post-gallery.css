@@ -13,18 +13,19 @@ a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img
 {
 	padding: 0px;
 	margin: 0px;
+	border-style: solid;
 }
 a.masonry_brick_a, div.masonry_brick_a 
 {	
 	display: table-cell;
 	vertical-align: middle;
+}
+img.masonry_brick_img:hover
+{
 	-webkit-transition: all 0.5s ease-in-out;
 	-moz-transition: all 0.5s ease-in-out;
 	-o-transition: all 0.5s ease-in-out;
 	transition: all 0.5s ease-in-out;
-}
-a.masonry_brick_a:hover
-{
 	opacity: 0.5;
 }
 div#masonry_post_gallery
@@ -37,14 +38,20 @@ div#masonry_post_gallery
 img.masonry_brick_img
 {
 	display: block;
-	border-style: solid;
 }	
+div#MPG_Loader_Container, div#MPG_Loader_Color, div#MPG_Spin_Box, div#MPG_Loader, div#MPG_Spin_Box, div#MPG_Loader
+{
+	pointer-events: none;
+}
 div#MPG_Loader_Container
 {
+	background:none !important;
+	position: fixed;
+	top: 75px;
+	left: 0px;
 	width: 100%;
 	text-align: center;
 	display: none;
-	position: relative;
 	margin-top: 20px;
 	-webkit-transition: all 1s;
 	-moz-transition: all 1s;

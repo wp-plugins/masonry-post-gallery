@@ -88,6 +88,22 @@ Click the download link, install and click activate.  Just like any other plugin
 = 0.3.2b =
 * Fixed a bug that stopped the category parameter from working
 
+= 0.3.3b =
+* Added infinite scroll functionality to improve loading speed on larger pages
+* Added the infinite_scroll parameter to toggle infinite scroll
+* Added the posts_per_page to determine the number of images to load each time with the infinite scroll
+* Made the loading box float at the top centre of the screen
+* Addressed graphical bugs with the loading box
+* Improved code efficiency
+* Removed support for the height parameter set as a percentage
+* Fixed a bug that stopped the height parameter from working properly
+* Fixed a bug that stopped the vertical spacing parameter from working properly
+* Fixed a bug that made the vertical spacing half that of the horizontal spacing
+* Fixed a bug with the hover colour parameter
+* Fixed a bug where the loading box will block mouse clicks
+* Set the default horizontal and vertical spacing values to 10
+
+
 == Dependencies ==
 
 Masonry Post Gallery requires the following js files, which are included in the package, i.e. you don't have to worry about it.  But credit where credit is due, thus this section.
@@ -258,7 +274,7 @@ Forces the height of each image, regardless of its actual size.  This can cause 
 
 Default value:    "auto"
 
-Possible values:  "##px" or "##%" or "auto", e.g. "150px"
+Possible values:  "##px" or "auto", e.g. "150px"
 
 = horizontal_spacing =
 The hard horizontal spacing between each image – measured in pixels.
