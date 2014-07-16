@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3.3b
+ * @version 0.3.4.1b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3.3b
+ * Version: 0.3.4.1b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au
  * License: Licenced to Thrill
@@ -260,16 +260,20 @@ function masonrypostgallery_handler($atts)
 					$lnk = $thumbnail[0];
 					break;
 				case "thumbnail":
-					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail')[0];
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail');
+					$lnk = $lnka[0];
 					break;
 				case "medium":
-					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium')[0];
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium');
+					$lnk = $lnka[0];
 					break;
 				case "large":
-					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large')[0];
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large');
+					$lnk = $lnka[0];
 					break;
 				case "full":
-					$lnk = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full')[0];
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full');
+					$lnk = $lnka[0];
 					break;
 				case "none":
 					$lnk = "";

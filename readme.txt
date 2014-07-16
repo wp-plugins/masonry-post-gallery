@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 3.9.1
-Stable tag: 0.3.3b
+Stable tag: 0.3.4.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -102,6 +102,9 @@ Click the download link, install and click activate.  Just like any other plugin
 * Fixed a bug with the hover colour parameter
 * Fixed a bug where the loading box will block mouse clicks
 * Set the default horizontal and vertical spacing values to 10
+
+= 0.3.4.1b =
+* A compatibility fix for different versions of PHP
 
 
 == Dependencies ==
