@@ -3,8 +3,8 @@ Contributors: bortpress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%40tpg%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
-Tested up to: 3.9.1
-Stable tag: 0.3.4.1b
+Tested up to: 4.0.0
+Stable tag: 0.3.4.2b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,12 @@ Click the download link, install and click activate.  Just like any other plugin
 
 = 0.3.4.1b =
 * A compatibility fix for different versions of PHP
+
+= 0.3.4.2b =
+* Fixed error on IE8 that stopped images from loading
+* Fixed incompatibility with IE8 that affected the loading box
+* Now masonry disables on IE7 and earlier 
+
 
 
 == Dependencies ==

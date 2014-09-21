@@ -1,15 +1,15 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3.4.1b
+ * @version 0.3.4.2b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3.4.1b
+ * Version: 0.3.4.2b
  * Author: N. E - Cactus Computers
- * Author URI: http://www.cactuscomputers.com.au
+ * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
  */
  /*  Copyright 2014  Cactus Computers  (email : cactus@cactuscomputers.com.au)
@@ -58,6 +58,7 @@ function prep_scripts()
 function prep_JS_globals()
 {
 ?>
+	<style>
 	<script type="text/javascript">
 		//DOM Array
 		elems = Array();
@@ -91,7 +92,18 @@ function prep_JS_globals()
 		masonryLoadEvent.initEvent('CustomEvent', true, true);
 		masonryFinishedEvent = document.createEvent('CustomEvent');
 		masonryFinishedEvent.initEvent('CustomEvent', true, true);
-	</script>
+		//Version Check
+		</script>
+		<!--[if lt IE 9 ]>
+			<script type="text/javascript">
+				IE_LT_9 = true;
+			</script>
+		<![endif]-->
+		<!--[if (gt IE 8)|!(IE)]>
+			<script type="text/javascript">
+				IE_LT_9 = false;
+			</script>
+		<![endif]-->
 <?php
 }
 
@@ -218,6 +230,12 @@ function masonrypostgallery_handler($atts)
 	$a['fit_width'] = fix_boolean($a['fit_width'], $MPG_FIT_WIDTH);
 	$a['infinite_scroll'] = fix_boolean($a['infinite_scroll'], $MPG_INFINITE_SCROLL);
 	$a['show_loader'] = fix_boolean($a['show_loader'], $MPG_SHOW_LOADER);
+	$a['show_browser_warning'] = fix_boolean($a['show_browser_warning'], $MPG_SHOW_BROWSER_WARNING);
+	//Disable masonry in IE 7 and lower
+	if(preg_match('/(?i)msie [5-7]/',$_SERVER['HTTP_USER_AGENT']))
+	{
+		$a['masonry'] = false;
+	}	
 	//Start the Main DIV
 	$output = ""
 . "	<div id='masonry_post_gallery'>\n"
@@ -565,7 +583,7 @@ function mpg_create_javascript()
 			pageStart = 0;
 			pageEnd = <?php echo return_if_true($a['infinite_scroll'], "Math.min(elems.length, {$a['posts_per_page']})", "elems.length"); ?>;
 			pagePosition = 0;
-			masonryFinishedEvent
+			//masonryFinishedEvent
 			add_elem(0);
 		}
 		else
@@ -591,6 +609,10 @@ function mpg_create_javascript()
 				{
 					document.getElementById('MPG_Loader').innerHTML = 'Loaded (100%)';
 					document.getElementById('MPG_Loader_Container').style.opacity = '0';
+					if(IE_LT_9)
+					{
+						document.getElementById('MPG_Loader_Container').style.visibility = 'hidden';
+					}	
 					MPG_spinner.stop();
 <?php if($a['infinite_scroll']){ ?>
 					if(pagePosition+1 < elems.length)
@@ -617,6 +639,10 @@ function mpg_create_javascript()
 					MPG_Loading = true;
 					document.getElementById('MPG_Spin_Box').appendChild(MPG_spinner.spin().el);
 					document.getElementById('MPG_Loader_Container').style.opacity = '1';
+					if(IE_LT_9)
+					{
+						document.getElementById('MPG_Loader_Container').style.visibility = 'visible';
+					}					
 					window.onscroll = null;
 					add_elem(pagePosition);
 				}
