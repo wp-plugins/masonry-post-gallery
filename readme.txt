@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.4.3b
+Stable tag: 0.3.4.4b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -113,6 +113,9 @@ Click the download link, install and click activate.  Just like any other plugin
 
 = 0.3.4.3b =
 * Fixed script breaking bug caused by typo
+
+= 0.3.4.4b =
+* Fixed error that occurs on multipage galleries
 
 == Dependencies ==
 

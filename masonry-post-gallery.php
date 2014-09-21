@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3.4.3b
+ * @version 0.3.4.4b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3.4.3b
+ * Version: 0.3.4.4b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -93,15 +93,11 @@ function prep_JS_globals()
 		masonryFinishedEvent = document.createEvent('CustomEvent');
 		masonryFinishedEvent.initEvent('CustomEvent', true, true);
 		//Version Check
+		IE_LT_9 = false;
 	</script>
 		<!--[if lt IE 9 ]>
 			<script type="text/javascript">
 				IE_LT_9 = true;
-			</script>
-		<![endif]-->
-		<!--[if (gt IE 8)|!(IE)]>
-			<script type="text/javascript">
-				IE_LT_9 = false;
 			</script>
 		<![endif]-->
 <?php
