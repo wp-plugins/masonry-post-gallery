@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3.4.2b
+ * @version 0.3.4.3b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3.4.2b
+ * Version: 0.3.4.3b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -30,9 +30,10 @@
 
 $a = null;
 //Add Shortcode
+add_action('wp_head', 'prep_JS_globals');
+
 add_shortcode("masonry-post-gallery", "masonrypostgallery_handler");
 add_action('wp_enqueue_scripts', 'prep_scripts');
-add_action('wp_head', 'prep_JS_globals');
 
 
 function prep_scripts()
@@ -58,7 +59,6 @@ function prep_scripts()
 function prep_JS_globals()
 {
 ?>
-	<style>
 	<script type="text/javascript">
 		//DOM Array
 		elems = Array();
@@ -93,7 +93,7 @@ function prep_JS_globals()
 		masonryFinishedEvent = document.createEvent('CustomEvent');
 		masonryFinishedEvent.initEvent('CustomEvent', true, true);
 		//Version Check
-		</script>
+	</script>
 		<!--[if lt IE 9 ]>
 			<script type="text/javascript">
 				IE_LT_9 = true;

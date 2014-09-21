@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.4.2b
+Stable tag: 0.3.4.3b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,7 +111,8 @@ Click the download link, install and click activate.  Just like any other plugin
 * Fixed incompatibility with IE8 that affected the loading box
 * Now masonry disables on IE7 and earlier 
 
-
+= 0.3.4.3b =
+* Fixed script breaking bug caused by typo
 
 == Dependencies ==
 
