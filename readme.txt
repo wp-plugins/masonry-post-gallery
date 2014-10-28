@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.4.4b
+Stable tag: 0.3.5.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,6 +117,15 @@ Click the download link, install and click activate.  Just like any other plugin
 = 0.3.4.4b =
 * Fixed error that occurs on multipage galleries
 
+= 0.3.5.0b =
+* Greatly improved gallery efficiency on load and window resize
+* Fixed a layout sizing error when maxWidth is set
+
+= 0.3.5.1b =
+* Implemented an option to show or hide the infinite scroll loader
+* Updated the documentation to use the masonry website and shortcode generator
+* Added links to the masonry home page to the Wordpress plugin page
+
 == Dependencies ==
 
 Masonry Post Gallery requires the following js files, which are included in the package, i.e. you don't have to worry about it.  But credit where credit is due, thus this section.
@@ -165,250 +174,7 @@ Parameters are optional and must be separated by a space.
 
 IMPORTANT:  Note that each parameter is case and context sensitive.  A capital in the wrong place can cause a parameter not to work. Also note that each parameter may or may not have inverted commas around it (“…”).  Incorrect inverted comma use will affect whether a parameter works.  Finally, words such as centre use the American spelling, center.  Follow the parameter format listed in the table below.
 
-== MPG Image Quality Parameters ==
-= quality =
-This sets the quality of the thumbnails loaded.  Using a quality that is too low will lead to low image quality.  Using a quality too high will make the page too slow to load and use up your bandwidth.  Consider the physical size of the images you are displaying and how your image sizes are configures in WordPress.  You can find this option under the Settings | Media menu within WordPress.
-
-Default value:    "thumbnail"
-
-Possible values:  "thumbnail", "medium", "large", "full"
-
-= upscale_narrow_images =
-If an image is less wide than this figure (in pixels) then it will be displayed as the next size up, e.g. a thumbnail will be displayed as a medium if it is narrower than the specified figure.  If this figure is set to 0, then this feature is disabled.
-
-Default value:    0
-
-Possible values:  Any whole number
-
-= upscale_short_images =
-If an image is less tall than this figure (in pixels) then it will be displayed as the next size up, e.g. a thumbnail will be displayed as a medium if it is narrower than the specified figure.  If this figure is set to 0, then this feature is disabled.
-
-Default value:    0
-
-Possible values:  Any whole number
-
-= max_upscale_quality =
-Sets the maximum size an image can upscale to when the upscale_short_images or upscale_narror_images features are enabled.
-
-Default value:    "large"
-
-Possible values:  "thumbnail", "medium", "large", "full"
-
-= upscale_max_width =
-Sets the maximum width of upscaled items.  It is likely that items that have been scaled by height will have a larger width to height ratio.  Therefore, it makes sense to give them more space on screen.  Perhaps double that of the regular items with a max_width setting.
-
-Default value:    "none" 
-
-Possible values:  "##px" or "none", e.g. "300px"
-
-= upscale_max_height =
-Sets the maximum height of upscaled items.  It is likely that items that have been scaled by width will have a larger height to width ratio.  Therefore, it makes sense to give them more space on screen.  
-
-Default value:    "none" 
-
-Possible values:  "##px" or "none", e.g. "300px"
-
-== MPG Function and Link Parameters ==
-= masonry =
-Turns masonry layout on or off.  With masonry off, the images will be displayed as a grid.  This would work best if each images width and height is uniform.
-
-Default value:    "true"
-
-Possible values:  "true" or "false"
-
-= show_lightbox =
-Should clicking on an image display an enlarged view of that image on the screen – or should it take the user to another page specified by the link_location parameter.
-
-When set to "true", clicking on an image will show a lightbox gallery of the clicked image rather than change pages.
-
-The size (i.e. thumbnail through to full) of the image to be displayed by the lightbox gallery can be specified using the link_location parameter.
-
-If show_lightbox is "true" and link_location is "medium" then the medium sized version of the image will be shown in the lightbox gallery.
-
-Default value:    "false"
-
-Possible values:  "true" or "false"
-
-= link_location = 
-Specifies to where each image will link if clicked.
-
-If set to "post", each image will link to its associated post.  If set to "image", each image will link to the image file displayed in the results (at the size that is displayed).  A specific size of each image can be linked to by specifying "thumbnail", "medium", "large", or "full".  Finally, specifying "none" will remove each image’s linking capability and hover effect.
-
-This parameter will set the show_lightbox parameter to "false" if "post" or "none" is selected.  Otherwise, the lightbox gallery is set to "true" it will show the image size chosen by this parameter.
-
-Default value:    "post"
-
-Possible values:  "post", "image", "thumbnail", "medium", "large", "full", or "none"
-
-= show_lightbox_title =
-Specifies whether the title of each post should be displayed in the lightbox.  This parameter has no effect if show_lightbox is set to "false".
-
-Default value:    "false"
-
-Possible values:  "true" or "false"
-
-= browse_with_lightbox =
-Determines whether the user can browse each image on the page from within the lightbox.  
-
-If set to "true", the user can change images from within the lightbox.
-
-If set to "false", the user will have to exit the lightbox and select another image to move on.
-
-This parameter has no effect if show_lightbox is set to "false".
-
-Default value:    "false"
-
-Possible values:  "true" or "false"
-
-== MPG Image Appearance & Layout Parameters ==
-= max_width =
-Limits the maximum width of each image.  Setting this will form a column layout of the same width.  Smaller items won’t be affected.
-
-Default value:    "none" 
-
-Possible values:  "##px" or "none", e.g. "300px"
-
-= max_height =
-Limits the maximum height of each image.
-
-Default value:    "none"
-
-Possible values:  "##px" or "none", e.g. "300px"
-
-= width =
-Forces the width of each image, regardless of its actual size.  This can cause an image to stretch.  By setting this width to a percentage (e.g. "33%") and leaving the height unspecified, you can create a set of evenly sized columns without stretching the images.
-
-Default value:    "auto"
-
-Possible values:  "##px" or "##%" or "auto", e.g. "150px"
-
-= height =
-Forces the height of each image, regardless of its actual size.  This can cause an image to stretch.
-
-Default value:    "auto"
-
-Possible values:  "##px" or "auto", e.g. "150px"
-
-= horizontal_spacing =
-The hard horizontal spacing between each image – measured in pixels.
-
-Default value:    0
-
-Possible values:  Any whole number, e.g. 0, 5, 25, etc
-
-= vertical_spacing =
-The hard vertical spacing between each image – measured in pixels.
-
-Default value:    0
-
-Possible values:  Any whole number, e.g. 0, 5, 25, etc 
-
-= soft_gutter =
-The soft horizontal spacing between each image.  This spacing will only appear if there is enough room - the images will take priority.
-
-Default value:    0
-
-Possible values:  Any whole number, e.g. 0, 5, 25, etc
-
-= border_color =
-The colour of the image’s borders.  Borders won’t show up unless their thickness is greater than zero – see below.
-
-Default value:    "#000000"
-
-Possible values:  A hexadecimal colour – e.g. "#ffffff" for white, "#000000" for black, and any combination in between.  Additionally approved CSS colour words can be used – e.g. "black", "white", "red", "blue", "darkgreen", etc 
-
-= border_thickness =
-The thickness of the image’s borders in pixels.  "0px" will hide the borders.
-
-Default value:    "0px"
-
-Possible values:  "##px"
-
-= hover_color =
-The colour each image turns (or glows) when the mouse is hovered overhead.  The default is a white hover.
-
-Default value:    "#ffffff"
-
-Possible values:  A hexadecimal colour – e.g. "#ffffff" for white, "#000000" for black, and any combination in between.  Additionally approved CSS colour words can be used – e.g. "black", "white", "red", "blue", "darkgreen", etc 
-
-= hover_intensity =
-The strength of the hover effect for each image when the mouse is overhead.  This is linked to the hover_color parameter above.  This value can range from "0" to "1".  Entering "1" will disable the hover effect, while entering "0" will make the image completely invisible on hover.  Decimals may be used.
-
-Default value:    "0.5"
-
-Possible values:  Any decimal between "1" and "0", e.g. "0.75", "0.4", "1", "0.1", etc
-
-== MPG Post Search & Display Parameters ==
-= post_category =
-The category of posts to show in the gallery.  You can specify a post’s category while editing it in WordPress.  Omitting this parameter will cause the gallery to show all posts.  Only posts with a thumbnail image will display in the gallery.
-
-Default value:    "" 
-
-Possible values:  "category name"
-
-= post_orderby =
-In what order should the posts be displayed.  They are sorted by date by default.
-
-Default value:    "post_date"
-
-Possible values:  "none", "ID", "author", "title", "date", "modified", "rand", "comment_count"
-
-= post_order =
-In which order should the posts be sorted – i.e. ascending or descending.  This relates to the post_orderby paramenter above.
-
-Default value:    "DESC"
-
-Possible values:  "ASC", "DESC"
-
-== MPG Gallery Display Parameter ==
-= gallery_align =
-Specifies whether the entire gallery is aligned to the left, right, or centre of the page.  This does not align the images within the gallery.
-
-Default value:    "center"
-
-Possible values:  "left", "right", "center
-
-= fit_width =
-Specifies whether the gallery width grows with its contents.  If "false", then the gallery will be 100% of the width of its parent window, div or DOM object.  If "true" then the gallery will be as wide as its contents.
-
-This parameter should be set to "false" if the image width parameter is set to a percentage
-
-Default value:    "false"
-
-Possible values:  "true" or "false"
-
-== MPG JavaScript Contingency Parameters ==
-These parameters exist for when JavaScript is turned off.  Masonry cannot function without JavaScript, so these parameters help you display a workable gallery even when Masonry is not functioning.  Without JavaScript the gallery will revert to a grid layout. 
-
-= noscript_max_width =
-This setting here allows you to specify the max_width of each image should JavaScript be disabled. 
-
-This value can be set to a percentage.  "33%" will generate three columns as that is 30% of the layout area.  This can be used in conjunction with the parameters below to create a centred grid layout. 
-
-Default value:    "none"
-
-Possible values:  "##px", "##%" or "none", e.g. "300px" or "33%"
-
-= noscript_max_height =
-This allows you to specify the max_height of each image should JavaScript be disabled.
-
-Default value:    "none"
-
-Possible values:  "##px" or "none", e.g. "300px"
-
-= noscript_width =
-This allows you to force the width of each element should JavaScript be disabled.
-
-Default value:    "auto"
-
-Possible values:  "##px" or "##%" or "auto", e.g. "150px"
-
-= noscript_height =
-This allows you to force the height of each element should JavaScript be disabled.
-
-Default value:    "auto"
-
-Possible values:  "##px" or "##%" or "auto", e.g. "150px"
+Go to http://cactuscomputers.com.au/masonry/ to see a full list of shortcode commands and to use our shortcode generator!
 
 == Frequently Asked Questions == 
 

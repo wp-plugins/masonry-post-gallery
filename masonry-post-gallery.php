@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Masonry Post Gallery
- * @version 0.3.4.4b
+ * @version 0.3.5.1b
  */
 /*
  * Plugin Name: Masonry Post Gallery
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A masonry style gallery of posts
- * Version: 0.3.4.4b
+ * Version: 0.3.5.1b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -34,6 +34,18 @@ add_action('wp_head', 'prep_JS_globals');
 
 add_shortcode("masonry-post-gallery", "masonrypostgallery_handler");
 add_action('wp_enqueue_scripts', 'prep_scripts');
+
+$plugin = plugin_basename(__FILE__);
+add_filter("plugin_action_links_$plugin", 'plugin_settings_link' );
+
+function plugin_settings_link($links)
+{
+	$newlink = "<a href='http://cactuscomputers.com.au/masonry/' target='_blank'>Home Page</a>";
+	array_unshift($links, $newlink);
+	$newlink = "<a href='http://cactuscomputers.com.au/masonry/how-to-use/' target='_blank'>How To Use</a>";
+	array_unshift($links, $newlink);
+	return $links;
+}
 
 
 function prep_scripts()
@@ -316,19 +328,24 @@ function masonrypostgallery_handler($atts)
 				{
 					$output .= "width: 100%; ";
 				}
-				//if($a['height'] != 'auto')
-				//{
-				//	$output .= "height: 100%; ";
-				//}
 				$output .= "height: {$a['height']}; ";
-				if(strpos($a['max_width'], '%') !== false) 
+				
+				//REMOVED DUE TO WIDTH PROBLEM
+				/*if(strpos($a['max_width'], '%') !== false) 
 				{
 					$output .= "max-width: none; ";
 				}
 				else
 				{
 					$output .= "max-width: {$a['max_width']}; ";
+				}*/
+				//if($a['max_width'] != 'none')
+				{
+					$output .= "max-width: 100%; ";
 				}
+				
+				
+				
 				$output .= "max-height: {$a['max_height']}; ";
 				$output .= "'/></{$link_type}>\";\n";
 				//Create DOM Element for masonry_brick DIV
@@ -494,8 +511,8 @@ function upsize_image($ID, $quality, $max_quality, $max_width, $max_height, $min
 	$max_height = text_to_number($max_height);
 	$max_width = text_to_number($max_width);
 	//Record nature of upsize
-	$width_resize = (/*($nextsize != $quality) && */($thumb[1] < $min_width) && ($thumb[1] < $max_width || $max_width == 0));
-	$height_resize = (/*($nextsize != $quality) && */($thumb[2] < $min_height) && ($thumb[2] < $max_height || $max_height == 0));
+	$width_resize = (($thumb[1] < $min_width) && ($thumb[1] < $max_width || $max_width == 0));
+	$height_resize = (($thumb[2] < $min_height) && ($thumb[2] < $max_height || $max_height == 0));
 	//While
 	//	- Either thumb width or height is less than minimum
 	//	- There is a larger size thumbnail available
@@ -568,11 +585,18 @@ function mpg_create_javascript()
 	{
 	?>
 	<script type='text/javascript'>
+<?php
+	if($a['show_loader'] === true)
+	{
+?>
 		var spinbox = document.getElementById('MPG_Spin_Box');
 		spinbox.style.width = '50px';
 		spinbox.appendChild(MPG_spinner.spin().el);
 		var spincontainer = document.getElementById('MPG_Loader_Container');
 		spincontainer.style.display = 'block';
+<?php
+	}
+?>
 		if(elems.length > 0)
 		{
 			MPG_Loading = true;
@@ -586,13 +610,30 @@ function mpg_create_javascript()
 		{
 			document.getElementById('MPG_Loader_Container').style.display = 'none';
 		}	
+		function gcd(o){
+			if(!o.length)
+				return 0;
+			for(var r, a, i = o.length - 1, b = o[i]; i;)
+				for(a = o[--i]; r = a % b; a = b, b = r);
+			return b;
+		};
+		function getColumnWidth()
+		{
+			var colWidths = new Array();
+			var elems = document.getElementsByClassName('masonry_brick');
+			for(var o = 0; o < elems.length; o++)
+			{
+				colWidths.push(elems[o].offsetWidth);
+			}
+			return gcd(colWidths);	
+		}
 		function add_elem(count)
 		{
 			MPG_Loading = true;
 			document.getElementById('masonry_post_gallery').appendChild(elems[count]);
 			imagesLoaded('#masonry_post_gallery', function()
 			{
-				var msnry = new Masonry('#masonry_post_gallery', {columnWidth: 1, gutter: <?php echo $a['soft_gutter']; ?>, isFitWidth: <?php echo bool_to_string($a['fit_width']); ?>});
+				var msnry = new Masonry('#masonry_post_gallery', {columnWidth: <?php if(strpos($a['width'],'%') !== false){echo "'.masonry_brick'";}else{echo "getColumnWidth()";} ?>, gutter: <?php echo $a['soft_gutter']; ?>, isFitWidth: <?php echo bool_to_string($a['fit_width']); ?>});
 				elems[count].style.transition = 'opacity 0.5s';
 				elems[count].style.opacity = '1';
 				if(count+1 < elems.length && (! <?php echo bool_to_string($a['infinite_scroll']); ?> || pagePosition < pageEnd))
