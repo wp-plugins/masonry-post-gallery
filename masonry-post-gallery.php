@@ -1,13 +1,13 @@
 <?php
 /**
- * @package Masonry Post Gallery
- * @version 0.3.5.1b
+ * @package Cactus Masonry
+ * @version 0.3.5.2b
  */
 /*
- * Plugin Name: Masonry Post Gallery
- * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
+ * Plugin Name: Cactus Masonry
+ * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A masonry style gallery of posts
- * Version: 0.3.5.1b
+ * Version: 0.3.5.2b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -32,6 +32,7 @@ $a = null;
 //Add Shortcode
 add_action('wp_head', 'prep_JS_globals');
 
+add_shortcode("cactus-masonry", "masonrypostgallery_handler");
 add_shortcode("masonry-post-gallery", "masonrypostgallery_handler");
 add_action('wp_enqueue_scripts', 'prep_scripts');
 
@@ -117,6 +118,8 @@ function prep_JS_globals()
 
 $MPG_QUALITY_DEF = "thumbnail";  //thumbnail, medium, large, full
 
+$MPG_SEARCH_START = 0;
+$MPG_PAGE_SIZE = 1000;
 
 $MPG_MAX_WIDTH_DEF = "none";
 $MPG_MAX_HEIGHT_DEF = "none";
@@ -174,6 +177,8 @@ function masonrypostgallery_handler($atts)
 	//Find global variables
 	global $a;
 	global $post;
+	global $MPG_SEARCH_START;
+	global $MPG_PAGE_SIZE;
 	global $MPG_QUALITY_DEF;
 	global $MPG_MAX_WIDTH_DEF;
 	global $MPG_MAX_HEIGHT_DEF;
@@ -229,7 +234,9 @@ function masonrypostgallery_handler($atts)
 	'browse_with_lightbox' => $MPG_LINK_LIGHTBOX_SCROLL, 
 	'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE, 'soft_gutter' => $MPG_SOFT_GUTTER,
 	'infinite_scroll' => $MPG_INFINITE_SCROLL, 'posts_per_page' => $MPG_POSTS_PER_PAGE,
-	'show_loader' => $MPG_SHOW_LOADER), $atts);
+	'show_loader' => $MPG_SHOW_LOADER, 'search_start' => $MPG_SEARCH_START, 
+	'page_size' => $MPG_PAGE_SIZE), $atts);
+	
 	//Fix boolean parameter values
 	$a['show_lightbox'] = fix_boolean($a['show_lightbox'], $MPG_LINK_LIGHTBOX);
 	$a['browse_with_lightbox'] = fix_boolean($a['browse_with_lightbox'], $MPG_LINK_LIGHTBOX_SCROLL);
@@ -256,7 +263,7 @@ function masonrypostgallery_handler($atts)
 . "		</script>\n";
 	$output .= mpg_create_styles();
 	//Prepare & Execute WordPress query
-	$args = array('posts_per_page' => 100, 'category_name' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
+	$args = array('posts_per_page' => $a['page_size'], 'offset' => $a['search_start'], 'category_name' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
 	$lastposts = get_posts($args);
 	//For each post found by the query:
 	foreach($lastposts as $post):
