@@ -164,12 +164,15 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 * Added links to the masonry home page to the WordPress plugin page
 
 = 0.3.5.2b =
-* Masonry Post Gallery gains an identity - it has become Cactus Masonry 
+* Masonry Post Gallery is renamed to Cactus Masonry 
 * Improved documentation on Cactus Masonry website
 * Plugin documentation has been rewritten
 * The [cactus-masonry] shortcode can now be used (while maintaining reverse compatibility)
 * Added the search_start parameter which allows the post query to be offset by a given number of posts
 * Added the page_size parameter which allows the post query to be limited to a given number of matches
+
+= 0.3.5.3b =
+* Fixed an error that could occur when displaying posts with an apostrophe in their title
 
 == Dependencies ==
 

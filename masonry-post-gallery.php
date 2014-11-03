@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.5.2b
+ * @version 0.3.5.3b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A masonry style gallery of posts
- * Version: 0.3.5.2b
+ * Version: 0.3.5.3b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -270,7 +270,7 @@ function masonrypostgallery_handler($atts)
 		setup_postdata($post);
 		if(has_post_thumbnail())
 		{	
-			$tit = get_post_field("post_title",($post->ID), "display");
+			$tit = str_replace("'", "&#39;", get_post_field("post_title",($post->ID), "display"));
 			$thumbnail = upsize_image($post->ID, $a['quality'], $a['max_upscale_quality'], $a['upscale_max_width'], $a['upscale_max_height'], $a['upscale_narrow_images'], $a['upscale_short_images']);		
 			$link_type = "a";
 			$lightbox_text = " data-lightbox='";
