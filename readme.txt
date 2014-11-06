@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.5.3b
+Stable tag: 0.3.5.4b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,15 +42,6 @@ Yes. Contact us and we will consider any requests that are feasible and within t
 == Installation ==
 
 Just click the Download link and Activate it!
-
-Cactus Masonry is currently undergoing a name change to match the documentation website, so these instructions may change shortly. This will unfortunately require older copies of Masonry Post Gallery to be replaced with the newer Cactus Masonry – although backwards compatibility will remain.
-
-To Upgrade from Masonry Post Gallery within WordPress:
-
-    Disable Masonry Post Gallery from within WordPress
-    Choose Add New Plugin
-    Search for Cactus Masonry
-    Download and activate the new plugin. As Cactus Masonry is reverse compatible, no code changes will be required.
 
 To Install Cactus Masonry within WordPress:
 
@@ -173,6 +164,12 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 = 0.3.5.3b =
 * Fixed an error that could occur when displaying posts with an apostrophe in their title
+
+= 0.3.5.4b =
+* Improved plugin short description to reduce confusion
+* Reorganized code output to fix a W3C compliance issue
+* Small code layout fixes
+
 
 == Dependencies ==
 

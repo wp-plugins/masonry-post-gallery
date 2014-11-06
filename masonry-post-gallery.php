@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.5.3b
+ * @version 0.3.5.4b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
- * Description: A masonry style gallery of posts
- * Version: 0.3.5.3b
+ * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the plugin Home Page for detailed instructions.
+ * Version: 0.3.5.4b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -37,7 +37,7 @@ add_shortcode("masonry-post-gallery", "masonrypostgallery_handler");
 add_action('wp_enqueue_scripts', 'prep_scripts');
 
 $plugin = plugin_basename(__FILE__);
-add_filter("plugin_action_links_$plugin", 'plugin_settings_link' );
+add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
 
 function plugin_settings_link($links)
 {
@@ -252,16 +252,16 @@ function masonrypostgallery_handler($atts)
 		$a['masonry'] = false;
 	}	
 	//Start the Main DIV
-	$output = ""
-. "	<div id='masonry_post_gallery'>\n"
-. "		<script type='text/javascript'>\n"
-. "			elems = Array();\n"
-. "			pageStart = 0;\n"
-. "			pageEnd = 0;\n"
-. "			pagePosition = 0;\n"
-. "			lastImageOffset = 0;\n"
-. "		</script>\n";
-	$output .= mpg_create_styles();
+	$output = "
+	<div id='masonry_post_gallery'>
+		" . mpg_create_styles() . "
+		<script type='text/javascript'>
+			elems = Array();
+			pageStart = 0;
+			pageEnd = 0;
+			pagePosition = 0;
+			lastImageOffset = 0;
+	</script>\n";
 	//Prepare & Execute WordPress query
 	$args = array('posts_per_page' => $a['page_size'], 'offset' => $a['search_start'], 'category_name' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
 	$lastposts = get_posts($args);
@@ -356,13 +356,13 @@ function masonrypostgallery_handler($atts)
 				$output .= "max-height: {$a['max_height']}; ";
 				$output .= "'/></{$link_type}>\";\n";
 				//Create DOM Element for masonry_brick DIV
-				$output .= ""
-. "				var el = document.createElement('div');\n"
-. "				el.innerHTML = s;\n"
-. "				el.className = 'masonry_brick';\n"
-. "				el.style.opacity = '0';\n"
-. "				el.style.display = 'inline-block';\n"
-. "				el.style.height = '{$a['height']}';\n";
+				$output .= "
+				var el = document.createElement('div');
+				el.innerHTML = s;
+				el.className = 'masonry_brick';
+				el.style.opacity = '0';
+				el.style.display = 'inline-block';
+				el.style.height = '{$a['height']}';\n";
 				if($thumbnail[5] && strpos($a['upscale_max_width'], '%') !== false)
 				{
 					$output .= "el.style.width = 'auto';\n";
@@ -393,26 +393,26 @@ function masonrypostgallery_handler($atts)
 				/*
 					DRAW NOSCRIPT BOX
 				*/
-				$output .= ""
-. "				<noscript>\n"
-. "				<div class='masonry_brick'><!--\n"
-. "					--><{$link_type} class='masonry_brick_a' href='{$lnk}'><!--\n"
-. "						--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'/><!--\n"
-. "					--></{$link_type}><!--\n"
-. "				--></div>\n"
-. "			</noscript>\n";
+				$output .= "
+				<noscript>
+					<div class='masonry_brick'><!--
+						--><{$link_type} class='masonry_brick_a' href='{$lnk}'><!--
+							--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'/><!--
+						--></{$link_type}><!--
+					--></div>
+				</noscript>\n";
 			/*
 				MASONRY IS OFF
 			*/
 			}
 			else//Masonry OFF
 			{
-				$output .= ""
-. "			<div class='masonry_brick'><!--\n"
-. "				--><{$link_type} {$lightbox_text} class='masonry_brick_a' href='{$lnk}'><!--\n"
-. "					--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'><!--\n"
-. "				--></{$link_type}><!--\n"
-. "			--></div>\n";
+				$output .= "
+			<div class='masonry_brick'><!--
+				--><{$link_type} {$lightbox_text} class='masonry_brick_a' href='{$lnk}'><!--
+					--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'><!--
+				--></{$link_type}><!--
+			--></div>\n";
 			}
 		}
 	endforeach;	
@@ -420,22 +420,20 @@ function masonrypostgallery_handler($atts)
 	//Close off the masonry gallery main div
 	$output .= "</div>\n";
 	//Draw loading box
-	$output .= ""
-. "		<div id='MPG_Loader_Container'>\n"
-. "			<div id='MPG_Loader_Color'>\n"
-. "				<div id='MPG_Spin_Box'>\n"
-. "				</div>\n"
-. "				<div id='MPG_Loader'>\n"
-. "					Loading...\n"
-. "				</div>\n"
-. "			</div>\n"
-. "		</div>\n";
+	$output .= "
+		<div id='MPG_Loader_Container'>
+			<div id='MPG_Loader_Color'>
+				<div id='MPG_Spin_Box'>
+				</div>
+				<div id='MPG_Loader'>
+					Loading...
+				</div>
+			</div>
+		</div>\n";
 	//Send Header and Footer JS and CSS
-	
 	
 	add_action('wp_footer','mpg_create_javascript');
 	
-
 	return $output;
 }
 
@@ -539,40 +537,40 @@ function upsize_image($ID, $quality, $max_quality, $max_width, $max_height, $min
 function mpg_create_styles()
 {
 	global $a;
-	return ""
-. "	<style scoped>\n"
-. "		div.masonry_brick\n"
-. "		{\n"
-. "			height: {$a['noscript_max_height']};\n"
-. "			width: {$a['noscript_max_width']};\n"
-. "			margin-bottom: " . round($a['vertical_spacing']/2,1) . "px;\n"
-. "			padding-right: " . round($a['horizontal_spacing']/2,1) . "px;\n"
-. "			padding-left: " . round($a['horizontal_spacing']/2,1) . "px;\n"
-. "			margin-top: " . round($a['vertical_spacing']/2,1) . "px;\n"
-. "		}\n"
-. "		.masonry_brick_a\n"
-. "		{\n"
-. "			border-width: {$a['outer_border_thickness']};\n"
-. "			border-color: {$a['outer_border_color']};\n"
-. "			background-color: {$a['hover_color']};\n"
-. "		}\n"
-. "		img.masonry_brick_img:hover\n"
-. "		{\n"
-. "			opacity: {$a['hover_intensity']};\n"
-. "		}\n"
-. "		div#masonry_post_gallery\n"
-. "		{\n"
-. 			return_if_true($a['gallery_align'] == "left" || $a['gallery_align'] == "center", "margin-right: auto;\n")
-. 			return_if_true($a['gallery_align'] == "right" || $a['gallery_align'] == "center", "margin-left: auto;\n") 
-. "		}\n"
-. "		img.masonry_brick_img\n"
-. "		{\n"
-. "			height: {$a['noscript_height']};\n"
-. "			width: {$a['noscript_width']};\n"
-. "			border-width: {$a['border_thickness']};\n"
-. "			border-color: {$a['border_color']};\n"
-. "		}\n"
-. "	</style>\n";
+	return "
+	<style scoped>
+		div.masonry_brick
+		{
+			height: {$a['noscript_max_height']};
+			width: {$a['noscript_max_width']};
+			margin-bottom: " . round($a['vertical_spacing']/2,1) . "px;
+			padding-right: " . round($a['horizontal_spacing']/2,1) . "px;
+			padding-left: " . round($a['horizontal_spacing']/2,1) . "px;
+			margin-top: " . round($a['vertical_spacing']/2,1) . "px;
+		}
+		.masonry_brick_a
+		{
+			border-width: {$a['outer_border_thickness']};
+			border-color: {$a['outer_border_color']};
+			background-color: {$a['hover_color']};
+		}
+		img.masonry_brick_img:hover
+		{
+			opacity: {$a['hover_intensity']};
+		}
+		div#masonry_post_gallery
+		{
+ 			" . return_if_true($a['gallery_align'] == "left" || $a['gallery_align'] == "center", "margin-right: auto;\n") . "
+ 			" . return_if_true($a['gallery_align'] == "right" || $a['gallery_align'] == "center", "margin-left: auto;\n") . "
+		}
+		img.masonry_brick_img
+		{
+			height: {$a['noscript_height']};
+			width: {$a['noscript_width']};
+			border-width: {$a['border_thickness']};
+			border-color: {$a['border_color']};
+		}
+	</style>\n";
 }
 
 function return_if_true($test, $text_if_true, $text_if_false = "")
