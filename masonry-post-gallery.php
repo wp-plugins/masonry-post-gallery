@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.6.0b
+ * @version 0.3.6.1b
  */
 /*
  * Plugin Name: Cactus Masonry
@@ -297,8 +297,8 @@ function masonrypostgallery_handler($atts)
 	$args = array(	'posts_per_page' => $a['page_size'], 
 					'offset' => $a['search_start'], 
 					'category_name' => $a['post_category'], 
-					'sort_column' => fix_sort_column($a['post_orderby']), 
-					'sort_order' => $a['post_order'],
+					'orderby' => fix_sort_column($a['post_orderby']), 
+					'order' => $a['post_order'],
 					'post_type' => $post_type);
 	$lastposts = get_posts($args);
 	
