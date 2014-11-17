@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%4
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.5.4b
+Stable tag: 0.3.6.0b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,36 +170,15 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 * Reorganized code output to fix a W3C compliance issue
 * Small code layout fixes
 
+= 0.3.6.0b =
+* Added link to plugin home page in short description
+* Updated function names to reduce the chance of a conflict
+* Restructured some code to improve flow and testing capabilities
+* Added the ability to specify a default image.  Now posts without a featured image can be shown if a default image is specified.
+* Added the ability to search for posts, pages, posts and pages, or nothing at all
+* Added an instructions page under the WordPress Dashboard Settings menu
+* Improved documentation on website to address new features
 
-== Dependencies ==
-
-Masonry Post Gallery requires the following js files, which are included in the package, i.e. you don't have to worry about it.  But credit where credit is due, thus this section.
-
-**The Amazing Cactus Masonry**
-Made by me!
-
-**Masonry**
-
-This JavaScript file handles the masonry layout.  This makes everything possible.
-
-By David DeSandro - you can [find it here](http://masonry.desandro.com/ "masonry JS") under an MIT licence
-
-**ImagesLoaded**
-
-This JavaScript file ensures each image is loaded before the layout is updated.  Otherwise, their sizes would be unknown and they would overlap.  This makes everything possible including the loading bar.
-
-By Tomas Sardyha and David DeSandro - you can [find it here](http://imagesloaded.desandro.com/ "ImagesLoaded JS") under an MIT licence
-
-**spin.js**
-
-This allows the little round loading animation to exist.
-
-By Felix Gnass - you can [find it here](http://fgnass.github.io/spin.js/ "Spin JS") under an MIT licence
-
-**Lightbox**
-This is used to display the lightbox style galleries used by the plugin.  This requires JQuery to function.
-
-By Lokesh Dhakar - you can [find it here](http://www.lokeshdhakar.com/projects/lightbox2/ "Lightbox") under a [Creative Commons Attribution 2.5](http://creativecommons.org/licenses/by/2.5/ "CC 2.5") licence
 
 == Frequently Asked Questions == 
 
@@ -207,13 +186,10 @@ No, nothing to see here.  Move along.
 
 == Upgrade Notice ==
 
-
-
-
-Uh?
+Upgrades will become available as new features are added and bug fixes are released.  Keep an eye on your WordPress plugins page and on the Cactus Masonry page for news!
 
 == Screenshots ==
 
-Sorry, I don't have enough pretty pictures yet.
+Check out the [Cactus Masonry Website](http://cactuscomputers.com.au/masonry) to see the plugin in action!
 
 
