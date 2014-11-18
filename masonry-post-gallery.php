@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.6.1b
+ * @version 0.3.7.0b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.6.1b
+ * Version: 0.3.7.0b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -52,8 +52,6 @@ function plugin_settings_link($links)
 	return $links;
 }
 
-
-
 function cmpg_prep_scripts()
 {
 	//Register Styles
@@ -78,6 +76,7 @@ function cmpg_prep_JS_globals()
 {
 ?>
 	<script type="text/javascript">
+		IE_LT_9 = false;//Lower than IE9
 		//DOM Array
 		elems = Array();
 		var opts = {
@@ -104,20 +103,13 @@ function cmpg_prep_JS_globals()
 		lastImageOffset = 0;
 		MPG_Loading = false;
 		MPG_spinner = new Spinner(opts);
-		infiniteScrollEvent = document.createEvent('CustomEvent');
-		infiniteScrollEvent.initEvent('CustomEvent', true, true);
-		masonryLoadEvent = document.createEvent('CustomEvent');
-		masonryLoadEvent.initEvent('CustomEvent', true, true);
-		masonryFinishedEvent = document.createEvent('CustomEvent');
-		masonryFinishedEvent.initEvent('CustomEvent', true, true);
 		//Version Check
-		IE_LT_9 = false;
 	</script>
-		<!--[if lt IE 9 ]>
-			<script type="text/javascript">
-				IE_LT_9 = true;
-			</script>
-		<![endif]-->
+	<!--[if lt IE 9 ]>
+		<script type="text/javascript">
+			IE_LT_9 = true;
+		</script>
+	<![endif]-->
 <?php
 }
 
@@ -172,6 +164,7 @@ $MPG_SOFT_GUTTER = 0;
 
 $MPG_INFINITE_SCROLL = true;
 $MPG_POSTS_PER_PAGE = 30;
+$MPG_INFINITE_SCROLL_BUFFER = 400;
 
 $MPG_SHOW_LOADER = true;
 
@@ -180,6 +173,9 @@ $MPG_DEFAULT_IMAGE = false;
 
 $MPG_SHOW_POSTS = true;
 $MPG_SHOW_PAGES = false;
+
+$MPG_REQUIRE_JAVASCRIPT = false;
+$MPG_JAVASCRIPT_MESSAGE = 'Please enable JavaScript to properly view this page.';
 
 function masonrypostgallery_handler($atts)
 {
@@ -230,30 +226,58 @@ function masonrypostgallery_handler($atts)
 	global $MPG_DEFAULT_IMAGE;
 	global $MPG_SHOW_POSTS;
 	global $MPG_SHOW_PAGES;
+	global $MPG_REQUIRE_JAVASCRIPT;
+	global $MPG_JAVASCRIPT_MESSAGE;
+	global $MPG_INFINITE_SCROLL_BUFFER;
 	
 	//Accept input parameters
-	$a = shortcode_atts(array('quality' => $MPG_QUALITY_DEF, 'masonry' => $MPG_MASONRY_DEF,
-	'max_width' => $MPG_MAX_WIDTH_DEF, 'max_height' => $MPG_MAX_HEIGHT_DEF, 'width' => $MPG_WIDTH_DEF,
-	'height' => $MPG_HEIGHT_DEF, 'horizontal_spacing' => $MPG_HORIZONTAL_SPACING,
-	'vertical_spacing' => $MPG_VERTICAL_SPACING, 'fit_width' => $MPG_FIT_WIDTH,
-	'border_color' => $MPG_BORDER_COLOR, 'border_thickness' => $MPG_BORDER_WEIGHT,
-	'outer_border_color' => $MPG_OUTER_BORDER_COLOR, 'outer_border_thickness' => $MPG_OUTER_BORDER_WEIGHT,
-	'post_category' => $MPG_POST_CATEGORY, 'post_order' => $MPG_POST_ORDER, 
-	'post_orderby' => $MPG_POST_ORDERBY, 'gallery_align' => $MPG_GALLERY_ALIGN,
-	'hover_color' => $MPG_HOVER_COLOR, 'hover_intensity' => $MPG_HOVER_INTENSITY,
-	'upscale_narrow_images' => $MPG_UPSCALE_NARROW_IMAGES, 
-	'upscale_short_images' => $MPG_UPSCALE_FLAT_IMAGES, 'max_upscale_quality' => $MPG_UPSCALE_MAX_SIZE,
-	'noscript_width' => $MPG_NOSCRIPT_WIDTH, 'noscript_height' => $MPG_NOSCRIPT_HEIGHT,
-	'noscript_max_width' => $MPG_NOSCRIPT_MAX_WIDTH, 'noscript_max_height' => $MPG_NOSCRIPT_MAX_HEIGHT,
-	'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT,
-	'link_location' => $MPG_LINK_LOCATION, 'show_lightbox' => $MPG_LINK_LIGHTBOX,
-	'browse_with_lightbox' => $MPG_LINK_LIGHTBOX_SCROLL, 
-	'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE, 'soft_gutter' => $MPG_SOFT_GUTTER,
-	'infinite_scroll' => $MPG_INFINITE_SCROLL, 'posts_per_page' => $MPG_POSTS_PER_PAGE,
-	'show_loader' => $MPG_SHOW_LOADER, 'search_start' => $MPG_SEARCH_START, 
-	'page_size' => $MPG_PAGE_SIZE, 'test_mode' => $MPG_TEST, 
-	'default_image_id' => $MPG_DEFAULT_IMAGE, 'show_posts' => $MPG_SHOW_POSTS,
-	'show_pages' => $MPG_SHOW_PAGES), $atts);
+	$a = shortcode_atts(array(
+		'quality' => $MPG_QUALITY_DEF, 
+		'masonry' => $MPG_MASONRY_DEF,
+		'max_width' => $MPG_MAX_WIDTH_DEF, 
+		'max_height' => $MPG_MAX_HEIGHT_DEF, 
+		'width' => $MPG_WIDTH_DEF,
+		'height' => $MPG_HEIGHT_DEF, 
+		'horizontal_spacing' => $MPG_HORIZONTAL_SPACING,
+		'vertical_spacing' => $MPG_VERTICAL_SPACING, 
+		'fit_width' => $MPG_FIT_WIDTH,
+		'border_color' => $MPG_BORDER_COLOR, 
+		'border_thickness' => $MPG_BORDER_WEIGHT,
+		'outer_border_color' => $MPG_OUTER_BORDER_COLOR, 
+		'outer_border_thickness' => $MPG_OUTER_BORDER_WEIGHT,
+		'post_category' => $MPG_POST_CATEGORY, 
+		'post_order' => $MPG_POST_ORDER, 
+		'post_orderby' => $MPG_POST_ORDERBY, 
+		'gallery_align' => $MPG_GALLERY_ALIGN,
+		'hover_color' => $MPG_HOVER_COLOR, 
+		'hover_intensity' => $MPG_HOVER_INTENSITY,
+		'upscale_narrow_images' => $MPG_UPSCALE_NARROW_IMAGES, 
+		'upscale_short_images' => $MPG_UPSCALE_FLAT_IMAGES, 
+		'max_upscale_quality' => $MPG_UPSCALE_MAX_SIZE,
+		'noscript_width' => $MPG_NOSCRIPT_WIDTH, 
+		'noscript_height' => $MPG_NOSCRIPT_HEIGHT,
+		'noscript_max_width' => $MPG_NOSCRIPT_MAX_WIDTH,
+		'noscript_max_height' => $MPG_NOSCRIPT_MAX_HEIGHT,
+		'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 
+		'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT,
+		'link_location' => $MPG_LINK_LOCATION, 
+		'show_lightbox' => $MPG_LINK_LIGHTBOX,
+		'browse_with_lightbox' => $MPG_LINK_LIGHTBOX_SCROLL, 
+		'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE, 
+		'soft_gutter' => $MPG_SOFT_GUTTER,
+		'infinite_scroll' => $MPG_INFINITE_SCROLL, 
+		'posts_per_page' => $MPG_POSTS_PER_PAGE,
+		'show_loader' => $MPG_SHOW_LOADER, 
+		'search_start' => $MPG_SEARCH_START, 
+		'page_size' => $MPG_PAGE_SIZE, 
+		'test_mode' => $MPG_TEST, 
+		'default_image_id' => $MPG_DEFAULT_IMAGE, 
+		'show_posts' => $MPG_SHOW_POSTS,
+		'show_pages' => $MPG_SHOW_PAGES,
+		'require_javascript' => $MPG_REQUIRE_JAVASCRIPT,
+		'javascript_error_message' => $MPG_JAVASCRIPT_MESSAGE,
+		'infinite_scroll_buffer' => $MPG_INFINITE_SCROLL_BUFFER
+		), $atts);
 	
 	//Fix boolean parameter values
 	$a['show_lightbox'] = cmpg_fix_boolean($a['show_lightbox'], $MPG_LINK_LIGHTBOX);
@@ -267,6 +291,8 @@ function masonrypostgallery_handler($atts)
 	$a['test_mode'] = cmpg_fix_boolean($a['test_mode'], $MPG_TEST);
 	$a['show_pages'] = cmpg_fix_boolean($a['show_pages'], $MPG_SHOW_PAGES);
 	$a['show_posts'] = cmpg_fix_boolean($a['show_posts'], $MPG_SHOW_POSTS);
+	$a['require_javascript'] = cmpg_fix_boolean($a['require_javascript'], $MPG_REQUIRE_JAVASCRIPT);
+	
 	//Disable masonry in IE 7 and lower
 	if(preg_match('/(?i)msie [5-7]/',$_SERVER['HTTP_USER_AGENT']))
 	{
@@ -275,7 +301,15 @@ function masonrypostgallery_handler($atts)
 	//Start the Main DIV
 	$output = "
 	<div id='masonry_post_gallery'>
-		" . cmpg_create_styles() . "
+		" . cmpg_create_styles() . "\n";
+	if($a['javascript_error_message'] != "")
+	{
+		$output.= "
+			<noscript>
+				<h3 class='cmpg_javascript_error'>{$a['javascript_error_message']}</h3>			
+			</noscript>\n";
+	}
+	$output .= "
 		<script type='text/javascript'>
 			elems = Array();
 			pageStart = 0;
@@ -284,7 +318,6 @@ function masonrypostgallery_handler($atts)
 			lastImageOffset = 0;
 	</script>\n";
 	//Prepare & Execute WordPress query
-	//$args = array('posts_per_page' => $a['page_size'], 'offset' => $a['search_start'], 'category_name' => $a['post_category'], 'orderby' => $a['post_orderby'], 'order' => $a['post_order']);
 	$post_type = ['cactus_none'];
 	if($a['show_pages'])
 	{
@@ -429,17 +462,6 @@ function render_post()
 			$output .= "width: 100%; ";
 		}
 		$output .= "height: {$a['height']}; ";
-		
-		//REMOVED DUE TO WIDTH PROBLEM
-		/*if(strpos($a['max_width'], '%') !== false) 
-		{
-			$output .= "max-width: none; ";
-		}
-		else
-		{
-			$output .= "max-width: {$a['max_width']}; ";
-		}*/
-		//if($a['max_width'] != 'none')
 		{
 			$output .= "max-width: 100%; ";
 		}
@@ -453,6 +475,7 @@ function render_post()
 		var el = document.createElement('div');
 		el.innerHTML = s;
 		el.className = 'masonry_brick';
+		el.style.display = 'table';
 		el.style.opacity = '0';
 		el.style.display = 'inline-block';
 		el.style.height = '{$a['height']}';\n";
@@ -486,24 +509,27 @@ function render_post()
 		/*
 			DRAW NOSCRIPT BOX
 		*/
-		$output .= "
-		<noscript>
-			<div class='masonry_brick'><!--
-				--><{$link_type} class='masonry_brick_a' href='{$lnk}'><!--
-					--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'/><!--
-				--></{$link_type}><!--
-			--></div>
-		</noscript>\n";
+		if(!$a['require_javascript'])
+		{
+			$output .= "
+			<noscript>		
+				<div class='masonry_brick' style='height: {$a['noscript_height']}; width: {$a['noscript_width']};	max-height: {$a['noscript_max_height']}; max-width: {$a['noscript_max_width']};'><!--
+					--><{$link_type} class='masonry_brick_a' style='display: block; height: 100%; width: 100%' href='{$lnk}'><!--
+						--><img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'/><!--
+					--></{$link_type}><!--
+				--></div>
+			</noscript>\n";
+		}
 	/*
 		MASONRY IS OFF
 	*/
 	}
-	else//Masonry OFF
+	else if(!$a['masonry'])//Masonry OFF
 	{
 		$output .= "
 	<div class='masonry_brick'><!--
 		--><{$link_type} {$lightbox_text} class='masonry_brick_a' href='{$lnk}'><!--
-			--><img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}'><!--
+			--><img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'><!--
 		--></{$link_type}><!--
 	--></div>\n";
 	}
@@ -622,12 +648,11 @@ function cmpg_create_styles()
 	<style scoped>
 		div.masonry_brick
 		{
-			height: {$a['noscript_max_height']};
-			width: {$a['noscript_max_width']};
 			margin-bottom: " . round($a['vertical_spacing']/2,1) . "px;
 			padding-right: " . round($a['horizontal_spacing']/2,1) . "px;
 			padding-left: " . round($a['horizontal_spacing']/2,1) . "px;
 			margin-top: " . round($a['vertical_spacing']/2,1) . "px;
+			display: block;
 		}
 		.masonry_brick_a
 		{
@@ -646,8 +671,6 @@ function cmpg_create_styles()
 		}
 		img.masonry_brick_img
 		{
-			height: {$a['noscript_height']};
-			width: {$a['noscript_width']};
 			border-width: {$a['border_thickness']};
 			border-color: {$a['border_color']};
 		}
@@ -675,27 +698,32 @@ function cmpg_create_javascript()
 	if($a['show_loader'] === true)
 	{
 ?>
-		var spinbox = document.getElementById('MPG_Spin_Box');
-		spinbox.style.width = '50px';
-		spinbox.appendChild(MPG_spinner.spin().el);
+		if(!IE_LT_9) 
+		{
+			var spinbox = document.getElementById('MPG_Spin_Box');
+			spinbox.style.width = '50px';
+			spinbox.appendChild(MPG_spinner.spin().el);
+		}
 		var spincontainer = document.getElementById('MPG_Loader_Container');
 		spincontainer.style.display = 'block';
+		
 <?php
 	}
 ?>
-		if(elems.length > 0)
+		//If there is anything to display - Start loading
+		if(elems.length > 0)//elems = array of HTML elements containing masonry objects to add
 		{
 			MPG_Loading = true;
 			pageStart = 0;
 			pageEnd = <?php echo cmpg_return_if_true($a['infinite_scroll'], "Math.min(elems.length, {$a['posts_per_page']})", "elems.length"); ?>;
 			pagePosition = 0;
-			//masonryFinishedEvent
-			add_elem(0);
+			add_elem(0);//Start infinite scroll
 		}
-		else
+		else //Otherwise, nothing to see here
 		{
 			document.getElementById('MPG_Loader_Container').style.display = 'none';
 		}	
+		//The greatest common denominator
 		function gcd(o){
 			if(!o.length)
 				return 0;
@@ -703,6 +731,7 @@ function cmpg_create_javascript()
 				for(a = o[--i]; r = a % b; a = b, b = r);
 			return b;
 		};
+		//Get the widths of columns.  This is used to set the col_width to the highest amount possible to improve masonry performance
 		function getColumnWidth()
 		{
 			var colWidths = new Array();
@@ -713,17 +742,22 @@ function cmpg_create_javascript()
 			}
 			return gcd(colWidths);	
 		}
+		//Add an element to the masonry display
 		function add_elem(count)
 		{
 			MPG_Loading = true;
-			document.getElementById('masonry_post_gallery').appendChild(elems[count]);
-			imagesLoaded('#masonry_post_gallery', function()
-			{
+			document.getElementById('masonry_post_gallery').appendChild(elems[count]);//Add element
+			imagesLoaded('#masonry_post_gallery', function() //Once the appended image has loaded:
+			{//Apply masonry to newly loaded image
 				var msnry = new Masonry('#masonry_post_gallery', {columnWidth: <?php if(strpos($a['width'],'%') !== false){echo "'.masonry_brick'";}else{echo "getColumnWidth()";} ?>, gutter: <?php echo $a['soft_gutter']; ?>, isFitWidth: <?php echo cmpg_bool_to_string($a['fit_width']); ?>});
 				elems[count].style.transition = 'opacity 0.5s';
 				elems[count].style.opacity = '1';
 				if(count+1 < elems.length && (! <?php echo cmpg_bool_to_string($a['infinite_scroll']); ?> || pagePosition < pageEnd))
 				{
+					if(MPG_end_of_page(MPG_getOffsetTop(elems[count])))
+					{
+						pageEnd = <?php echo cmpg_return_if_true($a['infinite_scroll'], "Math.min(elems.length, pageEnd+1)", "elems.length"); ?>;
+					}
 					pagePosition++;
 					add_elem(count+1);
 					document.getElementById('MPG_Loader').innerHTML = 'Loading (' + ((((count-pageStart)/(pageEnd-pageStart))*100) | 0) + '%)';
@@ -736,20 +770,16 @@ function cmpg_create_javascript()
 					{
 						document.getElementById('MPG_Loader_Container').style.visibility = 'hidden';
 					}	
-					MPG_spinner.stop();
+					if(!IE_LT_9) MPG_spinner.stop();
 <?php if($a['infinite_scroll']){ ?>
 					if(pagePosition+1 < elems.length)
 					{
 						pageStart = pageEnd;
 						pageEnd = Math.min(pageStart + <?php echo $a['posts_per_page'];?>,elems.length);
-						lastImageOffset = elems[count].offsetTop;
+						lastImageOffset = MPG_getOffsetTop(elems[count]);
 						window.onscroll = MPG_scroll_listener;
 					}
-					else
-					{
-						document.dispatchEvent(masonryLoadEvent);
-					}
-<?php } else { echo "document.dispatchEvent(masonryLoadEvent);\n"; } ?>
+<?php }?>
 					MPG_Loading = false;
 				}
 			});
@@ -757,10 +787,20 @@ function cmpg_create_javascript()
 <?php if($a['infinite_scroll']) { ?>
 			function MPG_scroll_listener(e)
 			{
-				if(window.pageYOffset + window.innerHeight >= lastImageOffset)
+				MPG_load_next_section();
+			}
+			function MPG_end_of_page(datum)
+			{
+				if(typeof(window.innerHeight) == 'number') return (window.pageYOffset + window.innerHeight*1.25 >= datum);
+				//For fucking IE8!
+				return (document.documentElement.scrollTop + document.documentElement.clientHeight*1.25 >= datum);
+			}
+			function MPG_load_next_section()
+			{
+				if(MPG_end_of_page(lastImageOffset))
 				{
 					MPG_Loading = true;
-					document.getElementById('MPG_Spin_Box').appendChild(MPG_spinner.spin().el);
+					if(!IE_LT_9) document.getElementById('MPG_Spin_Box').appendChild(MPG_spinner.spin().el);
 					document.getElementById('MPG_Loader_Container').style.opacity = '1';
 					if(IE_LT_9)
 					{
@@ -770,6 +810,17 @@ function cmpg_create_javascript()
 					add_elem(pagePosition);
 				}
 			}
+			function MPG_getOffsetTop(element)
+			{
+				var y = 0;
+				while(element && !isNaN(element.offsetLeft) && !isNaN(element.offsetTop))
+				{
+					y += element.offsetTop - element.scrollTop;
+					element = element.offsetParent;	
+				}
+				return y;
+			}
+			
 <?php } ?>
 	</script>
 <?php

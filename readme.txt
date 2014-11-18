@@ -1,10 +1,10 @@
 ﻿=== Plugin Name ===
 Contributors: bortpress
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=nge%40tpg%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactus%40cactuscomputers%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.6.1b
+Stable tag: 0.3.7.0b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,20 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 == Changelog ==
 
-= 0.3.6.1 =
+= 0.3.7.0b =
+* Updated the infinite scroll to allow for IE8 compatibility
+* Fixed bug in infinite scroll code that would sometimes stop a page from loading until the user scrolled the page up
+* Improved the infinite scroll loading buffer to better address a range of scenarios
+* Removed the spinner from the loading box when run within IE8 to reduce outdated browser related bugs
+* Cleaned up code to slightly improve performance and improve backwards compatibility
+* Added parameters to allow for better gallery handling on browsers where JavaScript is disabled
+* Added the require_javascript parameter which will hide the gallery when set to true on any browser without JavaScript
+* Added the javascript_error_message parameter to set an error message that should be displayed when JavaScript is disabled
+* Fixed noscript_height and noscript_width to force images to a specific size when JavaScript is disabled.
+* Fixed a small typo and updated a link in the documentation
+* Added the upgrade notice
+
+= 0.3.6.1b =
 * Modified documentation to improve readability
 * Fixed a bug that affected the post/page sort order since the last update
 
@@ -189,7 +202,62 @@ No, nothing to see here.  Move along.
 
 == Upgrade Notice ==
 
-Upgrades will become available as new features are added and bug fixes are released.  Keep an eye on your WordPress plugins page and on the Cactus Masonry page for news!
+= 0.3.7.0b =
+Upgrade for a number of new features and new IE8 backwards compatibility.  Cactus Masonry now has better error detection and handling abilities when dealing with browsers with JavaScript disabled.  Now default image sizes, error messages, and gallery behaviour can be modified to suit any browser with JavaScript disabled.  The infinite scroll feature has been improved to remove a bug, work on IE8, and perform under a variety of different conditions.  Upgrade notices have also been added and the Cactus Masonry WordPress.org listing has been improved.
+
+= 0.3.6.1b =
+Upgrade for a bug fix and some modified documentation to improve readability
+
+= 0.3.6.0b =
+Upgrade for a variety of new exciting features including improved documentation, a default image parameter (for posts with no image), the ability to show pages as well as posts, and an instructions page in WordPress itself!
+
+= 0.3.5.4b =
+Upgrade for improved W3C compliance, code fixes, and improved documentation
+
+= 0.3.5.3b =
+Upgrade to fix an error that could occur when displaying posts with an apostrophe in their title
+
+= 0.3.5.2b =
+Upgrade to enjoy the new version of Masonry Post Gallery - now called Cactus Masonry! The new version comes with some exciting new features to match its exciting new name.  The new version has a new shortcode (but maintains reverse compatibility), new search parameters, and some rewritten documentation.
+
+= 0.3.5.1b =
+Upgrade for an option to show/hide the loading box and for much improved documentation
+
+= 0.3.5.0b =
+Upgrade for greatly improved gallery efficiency on load and window resize and to fixed a layout sizing error that occurs when maxWidth is set
+
+= 0.3.4.4b =
+Upgrade to fix an error that occurs on multipage galleries
+
+= 0.3.4.3b =
+Upgrade to address a script breaking bug
+
+= 0.3.4.2b =
+Upgrade to fix a bug in IE8 that stopped images from loading and affected the loading box. The new version checks for older versions of IE to avoid displaying a broken website on an incompatible and outdated browser.
+
+= 0.3.4.1b =
+Upgrade for a compatibility fix to address some older versions of PHP
+
+= 0.3.3b =
+Upgrade for new infinite scroll functionality to heavily improve performance and user experience.  This update also contains various bug fixes.
+
+= 0.3.2b =
+Upgrade to fix a bug that stopped the category parameter from working
+
+= 0.3.1b =
+Upgrade for a major gallery positioning bug fix, coding improvements, border and spacing behaviour improvements, code fixes, and a variety of other improvements.
+
+= 0.3.0b =
+Upgrade for a width/height bug fix, new image link options, new lightbox functionality, redesigned code for future-proofing, a major shortcode bug fix, various smaller bug fixes, and more consistent documentation.
+
+= 0.2.0b =
+Upgrade for new features and some JavaScript free functionality.
+
+= 0.1.5b =
+Upgrade for new features, bug fixes, display improvements, and more documentation
+
+= 0.1.1b =
+Upgrade for fixed broken sort parameters, improved default sizing and spacing values, some parameter changes, and documentation improvements.
 
 == Screenshots ==
 
