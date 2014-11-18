@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.7.0b
+ * @version 0.3.7.1b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.7.0b
+ * Version: 0.3.7.1b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -318,7 +318,7 @@ function masonrypostgallery_handler($atts)
 			lastImageOffset = 0;
 	</script>\n";
 	//Prepare & Execute WordPress query
-	$post_type = ['cactus_none'];
+	$post_type = array('cactus_none');
 	if($a['show_pages'])
 	{
 		array_push($post_type, 'page');

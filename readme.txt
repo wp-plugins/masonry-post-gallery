@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.7.0b
+Stable tag: 0.3.7.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.7.1b =
+* Bug fix to address older versions of PHP
 
 = 0.3.7.0b =
 * Updated the infinite scroll to allow for IE8 compatibility
@@ -201,6 +204,9 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 No, nothing to see here.  Move along.
 
 == Upgrade Notice ==
+
+= 0.3.7.1b =
+Upgrade to address a PHP error triggered on older versions of PHP
 
 = 0.3.7.0b =
 Upgrade for a number of new features and new IE8 backwards compatibility.  Cactus Masonry now has better error detection and handling abilities when dealing with browsers with JavaScript disabled.  Now default image sizes, error messages, and gallery behaviour can be modified to suit any browser with JavaScript disabled.  The infinite scroll feature has been improved to remove a bug, work on IE8, and perform under a variety of different conditions.  Upgrade notices have also been added and the Cactus Masonry WordPress.org listing has been improved.
