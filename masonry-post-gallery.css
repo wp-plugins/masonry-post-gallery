@@ -1,0 +1,89 @@
+div.masonry_brick, a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img, div#masonry_post_gallery
+{
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+}
+div.masonry_brick
+{
+	display: table;
+	float: left;
+	border-style: solid;
+}
+a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img
+{
+	padding: 0px;
+	margin: 0px;
+	border-style: solid;
+}
+a.masonry_brick_a, div.masonry_brick_a 
+{	
+	display: table-cell;
+	vertical-align: middle;
+}
+img.masonry_brick_img:hover
+{
+	-webkit-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	transition: all 0.5s ease-in-out;
+	opacity: 0.5;
+}
+div#masonry_post_gallery
+{
+	display: block;
+	width: 100%;
+	text-align: center;
+	height: auto;
+}
+img.masonry_brick_img
+{
+	display: block;
+}	
+div#MPG_Loader_Container, div#MPG_Loader_Color, div#MPG_Spin_Box, div#MPG_Loader, div#MPG_Spin_Box, div#MPG_Loader
+{
+	pointer-events: none;
+}
+div#MPG_Loader_Container
+{
+	background:none !important;
+	position: fixed;
+	top: 75px;
+	left: 0px;
+	width: 100%;
+	text-align: center;
+	display: none;
+	margin-top: 20px;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-ms-transition: all 1s;
+	-o-transition: all 1s;
+}
+div#MPG_Loader_Color
+{
+	background-color: #353535;
+	color: #FFF;
+	border-radius: 4px;
+	display: inline-block;
+	font-size: 1.4em;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: middle;
+}
+div#MPG_Spin_Box, div#MPG_Loader
+{
+	height: 50px;
+	text-align: center;
+	margin: 0px;
+	vertical-align: middle;
+}
+div#MPG_Spin_Box
+{
+	display: inline-block;
+	position: relative;
+}
+div#MPG_Loader
+{
+	line-height: 50px;
+	padding: 0px 10px 0px 10px;			
+	display: inline-block;
+}
