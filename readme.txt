@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.7.1b
+Stable tag: 0.3.7.2b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.7.2b =
+* Bug fix to address issue that presents itself when infinite_scroll='false'
 
 = 0.3.7.1b =
 * Bug fix to address older versions of PHP
@@ -204,6 +207,9 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 No, nothing to see here.  Move along.
 
 == Upgrade Notice ==
+
+= 0.3.7.2b =
+Upgrade to fix a bug that stops the gallery from loading properly when infinite_scroll is set to false
 
 = 0.3.7.1b =
 Upgrade to address a PHP error triggered on older versions of PHP

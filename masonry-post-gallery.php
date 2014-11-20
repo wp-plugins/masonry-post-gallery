@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.7.1b
+ * @version 0.3.7.2b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.7.1b
+ * Version: 0.3.7.2b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -784,16 +784,25 @@ function cmpg_create_javascript()
 				}
 			});
 		}
+		function MPG_getOffsetTop(element)
+		{
+			var y = 0;
+			while(element && !isNaN(element.offsetLeft) && !isNaN(element.offsetTop))
+			{
+				y += element.offsetTop - element.scrollTop;
+				element = element.offsetParent;	
+			}
+			return y;
+		}
+		function MPG_end_of_page(datum)
+		{
+			if(typeof(window.innerHeight) == 'number') return (window.pageYOffset + window.innerHeight*1.25 >= datum);//Everyone
+			return (document.documentElement.scrollTop + document.documentElement.clientHeight*1.25 >= datum);//IE8
+		}
 <?php if($a['infinite_scroll']) { ?>
 			function MPG_scroll_listener(e)
 			{
 				MPG_load_next_section();
-			}
-			function MPG_end_of_page(datum)
-			{
-				if(typeof(window.innerHeight) == 'number') return (window.pageYOffset + window.innerHeight*1.25 >= datum);
-				//For fucking IE8!
-				return (document.documentElement.scrollTop + document.documentElement.clientHeight*1.25 >= datum);
 			}
 			function MPG_load_next_section()
 			{
@@ -809,18 +818,7 @@ function cmpg_create_javascript()
 					window.onscroll = null;
 					add_elem(pagePosition);
 				}
-			}
-			function MPG_getOffsetTop(element)
-			{
-				var y = 0;
-				while(element && !isNaN(element.offsetLeft) && !isNaN(element.offsetTop))
-				{
-					y += element.offsetTop - element.scrollTop;
-					element = element.offsetParent;	
-				}
-				return y;
-			}
-			
+			}			
 <?php } ?>
 	</script>
 <?php
