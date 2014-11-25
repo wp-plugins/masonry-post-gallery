@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.0
-Stable tag: 0.3.7.2b
+Stable tag: 0.3.7.3b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,13 +43,11 @@ Yes. Contact us and we will consider any requests that are feasible and within t
 
 Just click the Download link and Activate it!
 
-To Install Cactus Masonry within WordPress:
-
-    Choose Add New Plugin
-    Search for Cactus Masonry
-    Download and activate the new plugin.
-
 Cactus Masonry is also available from the [Cactus Masonry Website](http://cactuscomputers.com.au/masonry) as a zip file for manual installation. 
+
+If you choose to install Cactus Masonry manually it is important that you install the plugin in the correct folder.  While Cactus Masonry will work from any folder, changing the folder may affect your ability to receive new updates properly.
+
+The correct folder for Cactus Masonry is a folder called masonry-post-gallery within your WordPress plugins folder.  By default the path should be wp-content/plugins/masonry-post-gallery/. 
 
 = How Do I Use Cactus Masonry? =
 
@@ -64,6 +62,12 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.7.3b =
+* Added a fix that will allow Cactus Masonry to function even if its installed in an unexpected folder on the server
+* Added version number to main div class for easier debugging
+* Added some manual installation instructions
+* Added some detail to the FAQ section of the documentation
 
 = 0.3.7.2b =
 * Bug fix to address issue that presents itself when infinite_scroll='false'
@@ -204,9 +208,40 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 == Frequently Asked Questions == 
 
-No, nothing to see here.  Move along.
+= Can I change the hover animation speed when the user's mouse passes over a gallery image? =
+Yes, you can with CSS.
+
+This CSS controls the fade IN speed:
+img.masonry_brick_img:hover{
+-webkit-transition: all 0.5s ease-in-out !important;
+-moz-transition: all 0.5s ease-in-out !important;
+-o-transition: all 0.5s ease-in-out !important;
+transition: all 0.5s ease-in-out !important;
+}
+
+And this CSS controls the fade OUT speed:
+img.masonry_brick_img:hover{
+-webkit-transition: all 0.5s ease-in-out !important;
+-moz-transition: all 0.5s ease-in-out !important;
+-o-transition: all 0.5s ease-in-out !important;
+transition: all 0.5s ease-in-out !important;
+}
+
+Perhaps shortcode commands for this will appear in a future update.
+
+= The plugin isn't loading any images.  It's just blank! =
+This plugin only displays post and page featured images (formerly known as thumbnails).  If you have no posts or pages with thumbnails, then the gallery will have nothing to show.  If you only have pages with thumbnails, make sure you are using the show_pages='true' parameter.
+
+= The plugin isn't loading any images.  It just says "loading..." in plain text! =
+This can happen when important .js (JavaScript) files are missing from the plugin.  Perhaps the files are protected or inaccessible on the server.  Perhaps they are missing.
+
+Did you manually install a version of the plugin prior to 0.3.7.3b?  If so update the plugin or move it to the correct folder as per the manual install instructions.  You should always place Cactus Masonry in a folder called masonry-post-gallery within the WordPress plugin directory to ensure that WordPress knows where to send future updates.  By default the plugin should be in wp-content/plugins/masonry-post-gallery/.
+
 
 == Upgrade Notice ==
+
+= 0.3.7.3b =
+Upgrade for an update to handle different install locations more elegantly, improved documentation, and some added debug capabilities
 
 = 0.3.7.2b =
 Upgrade to fix a bug that stops the gallery from loading properly when infinite_scroll is set to false
@@ -274,5 +309,3 @@ Upgrade for fixed broken sort parameters, improved default sizing and spacing va
 == Screenshots ==
 
 Check out the [Cactus Masonry Website](http://cactuscomputers.com.au/masonry) to see the plugin in action!
-
-

@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.7.2b
+ * @version 0.3.7.3b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.7.2b
+ * Version: 0.3.7.3b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -27,7 +27,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
+$CM_version = "0.3.7.3b";
 $a = null;
 //Add Shortcode
 add_action('wp_head', 'cmpg_prep_JS_globals');
@@ -37,6 +37,7 @@ add_shortcode("masonry-post-gallery", "masonrypostgallery_handler");
 add_action('wp_enqueue_scripts', 'cmpg_prep_scripts');
 add_action('admin_menu', 'cmpg_add_instructions');
 $plugin = plugin_basename(__FILE__);
+
 add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
 
 include_once('cactus-masonry-options.php');
@@ -55,16 +56,16 @@ function plugin_settings_link($links)
 function cmpg_prep_scripts()
 {
 	//Register Styles
-	wp_register_style('MPG_style', plugins_url() . '/masonry-post-gallery/masonry-post-gallery.css');
-	wp_register_style('Lightbox_style', plugins_url() . '/masonry-post-gallery/lightbox.css');
+	wp_register_style('MPG_style', plugin_dir_url(__FILE__) . 'masonry-post-gallery.css');
+	wp_register_style('Lightbox_style', plugin_dir_url(__FILE__) . 'lightbox.css');
 	//Enqueue Styles
 	wp_enqueue_style('MPG_style');
 	wp_enqueue_style('Lightbox_style');
 	//Register Scripts
-	wp_register_script('Masonry', plugins_url() . '/masonry-post-gallery/masonry.pkgd.min.js');
-	wp_register_script('ImagesLoaded', plugins_url() . '/masonry-post-gallery/imagesloaded.pkgd.min.js');
-	wp_register_script('Spin', plugins_url() . '/masonry-post-gallery/spin.min.js');
-	wp_register_script('Lightbox', plugins_url() . '/masonry-post-gallery/lightbox.min.js', array('jquery'));
+	wp_register_script('Masonry', plugin_dir_url(__FILE__) . 'masonry.pkgd.min.js');
+	wp_register_script('ImagesLoaded', plugin_dir_url(__FILE__) . 'imagesloaded.pkgd.min.js');
+	wp_register_script('Spin', plugin_dir_url(__FILE__) . 'spin.min.js');
+	wp_register_script('Lightbox', plugin_dir_url(__FILE__) . 'lightbox.min.js', array('jquery'));
 	//Enqueue Scripts
 	wp_enqueue_script('Masonry');
 	wp_enqueue_script('ImagesLoaded');
@@ -184,6 +185,7 @@ function masonrypostgallery_handler($atts)
 	//Find global variables
 	global $a;
 	global $post;
+	global $CM_version;
 	global $MPG_SEARCH_START;
 	global $MPG_PAGE_SIZE;
 	global $MPG_QUALITY_DEF;
@@ -300,7 +302,7 @@ function masonrypostgallery_handler($atts)
 	}	
 	//Start the Main DIV
 	$output = "
-	<div id='masonry_post_gallery'>
+	<div id='masonry_post_gallery' class='{$CM_version}'>
 		" . cmpg_create_styles() . "\n";
 	if($a['javascript_error_message'] != "")
 	{
