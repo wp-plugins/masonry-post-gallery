@@ -3,8 +3,8 @@ Contributors: bortpress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactus%40cactuscomputers%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
-Tested up to: 4.0.0
-Stable tag: 0.3.7.3b
+Tested up to: 4.0.1
+Stable tag: 0.3.8.0b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,11 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.8.0b =
+* Added the ability to display a title and/or an exerpt on each image in a gallery
+* Added a CSS customization page to the website to assist with styling the gallery
+* Fixed a bug that causes the lightbox gallery to fail when loading a default image
 
 = 0.3.7.3b =
 * Added a fix that will allow Cactus Masonry to function even if its installed in an unexpected folder on the server
@@ -209,25 +214,7 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 == Frequently Asked Questions == 
 
 = Can I change the hover animation speed when the user's mouse passes over a gallery image? =
-Yes, you can with CSS.
-
-This CSS controls the fade IN speed:
-img.masonry_brick_img:hover{
--webkit-transition: all 0.5s ease-in-out !important;
--moz-transition: all 0.5s ease-in-out !important;
--o-transition: all 0.5s ease-in-out !important;
-transition: all 0.5s ease-in-out !important;
-}
-
-And this CSS controls the fade OUT speed:
-img.masonry_brick_img:hover{
--webkit-transition: all 0.5s ease-in-out !important;
--moz-transition: all 0.5s ease-in-out !important;
--o-transition: all 0.5s ease-in-out !important;
-transition: all 0.5s ease-in-out !important;
-}
-
-Perhaps shortcode commands for this will appear in a future update.
+Yes, you can with CSS.  You can do many things with CSS and some of them are documented on the [Custom CSS page](http://cactuscomputers.com.au/masonry/custom-css/) of the Cactus Masonry website.
 
 = The plugin isn't loading any images.  It's just blank! =
 This plugin only displays post and page featured images (formerly known as thumbnails).  If you have no posts or pages with thumbnails, then the gallery will have nothing to show.  If you only have pages with thumbnails, make sure you are using the show_pages='true' parameter.
@@ -239,6 +226,9 @@ Did you manually install a version of the plugin prior to 0.3.7.3b?  If so updat
 
 
 == Upgrade Notice ==
+
+= 0.3.8.0b =
+Upgrade for the ability to display titles and/or custom excepts in the Cactus Masonry gallery.  The update includes a bugfix for the lightbox gallery.
 
 = 0.3.7.3b =
 Upgrade for an update to handle different install locations more elegantly, improved documentation, and some added debug capabilities

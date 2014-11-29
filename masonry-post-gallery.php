@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.7.3b
+ * @version 0.3.8.0b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.7.3b
+ * Version: 0.3.8.0b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -27,7 +27,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-$CM_version = "0.3.7.3b";
+$CM_version = "0.3.8.0b";
 $a = null;
 //Add Shortcode
 add_action('wp_head', 'cmpg_prep_JS_globals');
@@ -178,6 +178,9 @@ $MPG_SHOW_PAGES = false;
 $MPG_REQUIRE_JAVASCRIPT = false;
 $MPG_JAVASCRIPT_MESSAGE = 'Please enable JavaScript to properly view this page.';
 
+$MPG_DISPLAY_POST_TITLES = false;
+$MPG_DISPLAY_POST_EXCERPTS = false;
+
 function masonrypostgallery_handler($atts)
 {
 	//Prepare output variable
@@ -231,6 +234,8 @@ function masonrypostgallery_handler($atts)
 	global $MPG_REQUIRE_JAVASCRIPT;
 	global $MPG_JAVASCRIPT_MESSAGE;
 	global $MPG_INFINITE_SCROLL_BUFFER;
+	global $MPG_DISPLAY_POST_TITLES;
+	global $MPG_DISPLAY_POST_EXCERPTS;
 	
 	//Accept input parameters
 	$a = shortcode_atts(array(
@@ -278,7 +283,9 @@ function masonrypostgallery_handler($atts)
 		'show_pages' => $MPG_SHOW_PAGES,
 		'require_javascript' => $MPG_REQUIRE_JAVASCRIPT,
 		'javascript_error_message' => $MPG_JAVASCRIPT_MESSAGE,
-		'infinite_scroll_buffer' => $MPG_INFINITE_SCROLL_BUFFER
+		'infinite_scroll_buffer' => $MPG_INFINITE_SCROLL_BUFFER,
+		'display_post_titles' => $MPG_DISPLAY_POST_TITLES,
+		'display_post_excerpts' => $MPG_DISPLAY_POST_EXCERPTS
 		), $atts);
 	
 	//Fix boolean parameter values
@@ -294,6 +301,8 @@ function masonrypostgallery_handler($atts)
 	$a['show_pages'] = cmpg_fix_boolean($a['show_pages'], $MPG_SHOW_PAGES);
 	$a['show_posts'] = cmpg_fix_boolean($a['show_posts'], $MPG_SHOW_POSTS);
 	$a['require_javascript'] = cmpg_fix_boolean($a['require_javascript'], $MPG_REQUIRE_JAVASCRIPT);
+	$a['display_post_titles'] = cmpg_fix_boolean($a['display_post_titles'], $MPG_DISPLAY_POST_TITLES);
+	$a['display_post_excerpts'] = cmpg_fix_boolean($a['display_post_excerpts'], $MPG_DISPLAY_POST_EXCERPTS);
 	
 	//Disable masonry in IE 7 and lower
 	if(preg_match('/(?i)msie [5-7]/',$_SERVER['HTTP_USER_AGENT']))
@@ -348,7 +357,6 @@ function masonrypostgallery_handler($atts)
 		}	
 	}
 		
-	
 	wp_reset_postdata();
 	//Close off the masonry gallery main div
 	$output .= "</div>\n";
@@ -384,7 +392,9 @@ function render_post()
 	global $a;
 	global $post;
 	$output = "";
-	$tit = str_replace("'", "&#39;", get_post_field("post_title",($post->ID), "display"));
+	$tit = trim(str_replace("'", "&#39;", get_post_field("post_title",($post->ID), "display")));
+	$excerpt = trim(str_replace("'", "&#39;", get_post_field("post_excerpt",($post->ID), "display")));
+	$show_databox = (($a['display_post_titles'] && strlen($tit) > 0) || ($a['display_post_excerpts'] && strlen($excerpt) > 0));
 	if(has_post_thumbnail())
 	{
 		$iid = get_post_thumbnail_id($post->ID);
@@ -415,35 +425,71 @@ function render_post()
 		$lightbox_text .= " data-title='" . $tit . "'";
 	}
 	//Set where each image links and handle any interference with the show_lightbox parameter
-	switch($a['link_location'])
+	if(has_post_thumbnail())
 	{
-		case "image":
-			$lnk = $thumbnail[0];
-			break;
-		case "thumbnail":
-			$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail');
-			$lnk = $lnka[0];
-			break;
-		case "medium":
-			$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium');
-			$lnk = $lnka[0];
-			break;
-		case "large":
-			$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large');
-			$lnk = $lnka[0];
-			break;
-		case "full":
-			$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full');
-			$lnk = $lnka[0];
-			break;
-		case "none":
-			$lnk = "";
-			$link_type = "div";
-			$a['show_lightbox'] = false;
-			break;
-		default:
-			$lnk = get_permalink();	
-			$a['show_lightbox'] = false;
+		switch($a['link_location'])
+		{
+			case "image":
+				$lnk = $thumbnail[0];
+				break;
+			case "thumbnail":
+				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail');
+				$lnk = $lnka[0];
+				break;
+			case "medium":
+				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium');
+				$lnk = $lnka[0];
+				break;
+			case "large":
+				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large');
+				$lnk = $lnka[0];
+				break;
+			case "full":
+				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full');
+				$lnk = $lnka[0];
+				break;
+			case "none":
+				$lnk = "";
+				$link_type = "div";
+				$a['show_lightbox'] = false;
+				break;
+			default:
+				$lnk = get_permalink();	
+				$a['show_lightbox'] = false;
+		}
+	}
+	else
+	{//DEFAULT IMAGE
+		switch($a['link_location'])
+		{
+			case "image":
+				$lnk = $thumbnail[0];
+				break;
+			case "thumbnail":
+				$lnka = wp_get_attachment_image_src($a['default_image_id'],'thumbnail');
+				$lnk = $lnka[0];
+				break;
+			case "medium":
+				$lnka = wp_get_attachment_image_src($a['default_image_id'],'medium');
+				$lnk = $lnka[0];
+				break;
+			case "large":
+				$lnka = wp_get_attachment_image_src($a['default_image_id'],'large');
+				$lnk = $lnka[0];
+				break;
+			case "full":
+				$lnka = wp_get_attachment_image_src($a['default_image_id'],'full');
+				$lnk = $lnka[0];
+				break;
+			case "none":
+				$lnk = "";
+				$link_type = "div";
+				$a['show_lightbox'] = false;
+				break;
+			default:
+				$lnk = get_permalink();	
+				$a['show_lightbox'] = false;
+		}
 	}
 	if(!($a['show_lightbox'] === true))
 	{
@@ -466,12 +512,24 @@ function render_post()
 		$output .= "height: {$a['height']}; ";
 		{
 			$output .= "max-width: 100%; ";
-		}
-				
-				
-		
+		}		
 		$output .= "max-height: {$a['max_height']}; ";
-		$output .= "'/></{$link_type}>\";\n";
+		$output .= "'/>";
+		//Add the databox containing the title and excerpt
+		if($show_databox)
+		{
+			$output .= "<div class='cactus_masonry_databox'>";
+			if($a['display_post_titles'] && strlen($tit) > 0)
+			{
+				$output .= "<div class='cm_title'>{$tit}</div>";
+			}
+			if($a['display_post_excerpts'] && strlen($excerpt) > 0)
+			{
+				$output .= "<div class='cm_exerpt'>{$excerpt}</div>";
+			}
+			$output .= "</div>";		
+		}
+		$output .= "</{$link_type}>\";\n";
 		//Create DOM Element for masonry_brick DIV
 		$output .= "
 		var el = document.createElement('div');

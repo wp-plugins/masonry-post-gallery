@@ -19,6 +19,8 @@ a.masonry_brick_a, div.masonry_brick_a
 {	
 	display: table-cell;
 	vertical-align: middle;
+	position: relative;
+	overflow:hidden;
 }
 img.masonry_brick_img:hover
 {
@@ -86,4 +88,28 @@ div#MPG_Loader
 	line-height: 50px;
 	padding: 0px 10px 0px 10px;			
 	display: inline-block;
+}
+div.cactus_masonry_databox
+{
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.6);
+	width: 100%;
+	box-sizing: border-box;
+	display: block;
+	padding: 10px;
+	z-index: 1000;
+	color: #FFF;
+	text-align: left;
+	bottom: 0px;
+	pointer-events:none;
+}
+
+div.cactus_masonry_databox div.cm_title
+{
+	font-size: 1.35em;
+}
+
+div.cactus_masonry_databox div.cm_exerpt
+{
+	font-size: 0.90em;
 }
