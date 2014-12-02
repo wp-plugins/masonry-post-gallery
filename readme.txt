@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.1
-Stable tag: 0.3.8.0b
+Stable tag: 0.3.8.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.8.1b =
+* Fixed a bug that can cause the plugin to not function due to an uncommon interaction with WordPress's wpautop 'feature'
 
 = 0.3.8.0b =
 * Added the ability to display a title and/or an exerpt on each image in a gallery
@@ -226,6 +229,9 @@ Did you manually install a version of the plugin prior to 0.3.7.3b?  If so updat
 
 
 == Upgrade Notice ==
+
+= 0.3.8.1b =
+Upgrade to fix an uncommon bug that can cause the plugin to not function on certain WordPress configurations
 
 = 0.3.8.0b =
 Upgrade for the ability to display titles and/or custom excepts in the Cactus Masonry gallery.  The update includes a bugfix for the lightbox gallery.
