@@ -37,6 +37,19 @@ function cmpg_instructions_page()
 	<p>
 		It may still look complex, but never fear!  We have created a special shortcode generator that will help you set up the plugin just how you want.  Just copy the shortcode from the generator and into your WordPress website and it will be good to go.
 	</p>
+	<h3>Cactus Masonry is only showing square cropped images in the gallery</h3>
+	<p>
+		The gallery can only the images available on your site.  If WordPress is cropping your images to be squares - then Cactus Masonry will only show squares.  
+	</p>
+	<p>
+		In WordPress, under Settings | Media, there is the option to "Crop thumbnail to exact dimensions (normally thumbnails are proportional)".  Deselecting this will allow Cactus Masonry to function normally.  You may also want to specify some more relevant (and larger) thumbnail sizes here to optimize performance.
+	</p>
+	<p>
+		If changes here seem to have no effect on the gallery, try hard refreshing the page to remove old versions of the thumbnails from your browsers cache - i.e. Ctrl+F5.
+	</p>
+	<p>
+		If there is still no improvement, you will need to rebuild your media thumbnails.  This can easily be done by installing and running a plugin such as "Regenerate Thumbnails".  Try hard refreshing the gallery again to see the new non-cropped thumbnails.
+	</p>
 	<h3>Important Links:</h3>
 	<ul style="list-style: none; font-size:1.1em;">
 		<li>

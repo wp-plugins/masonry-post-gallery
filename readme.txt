@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.1
-Stable tag: 0.3.8.1b
+Stable tag: 0.3.8.2b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,11 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.8.2b =
+* Applied some CSS enhancements to make the plugin's styling more robust on a variety of different web environments
+* Made additions to the plugin's FAQ section
+* Added screenshots to the WordPress plugin documentation
 
 = 0.3.8.1b =
 * Fixed a bug that can cause the plugin to not function due to an uncommon interaction with WordPress's wpautop 'feature'
@@ -216,6 +221,15 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 == Frequently Asked Questions == 
 
+= All of the images in the gallery are cropped to squares =
+The gallery only shows the images available on your site.  If WordPress is cropping your images to be squares - then Cactus Masonry will only show squares.  
+
+In WordPress, under Settings | Media, there is the option to "Crop thumbnail to exact dimensions (normally thumbnails are proportional)".  Deselecting this will allow Cactus Masonry to function normally.  You may also want to specify some more relevant (and larger) thumbnail sizes here too.
+
+If changes here seem to have no effect on the gallery, try hard refreshing the page to remove old versions of the thumbnails from your browsers cache - i.e. Ctrl+F5.
+
+If there is still no improvement, you will need to rebuild your media thumbnails.  This can easily be done by installing and running a plugin such as "Regenerate Thumbnails".
+
 = Can I change the hover animation speed when the user's mouse passes over a gallery image? =
 Yes, you can with CSS.  You can do many things with CSS and some of them are documented on the [Custom CSS page](http://cactuscomputers.com.au/masonry/custom-css/) of the Cactus Masonry website.
 
@@ -229,6 +243,9 @@ Did you manually install a version of the plugin prior to 0.3.7.3b?  If so updat
 
 
 == Upgrade Notice ==
+
+= 0.3.8.2b =
+Upgrade for some more robust default styling and documentation improvements.
 
 = 0.3.8.1b =
 Upgrade to fix an uncommon bug that can cause the plugin to not function on certain WordPress configurations
