@@ -305,3 +305,20 @@ Upgrade for fixed broken sort parameters, improved default sizing and spacing va
 == Screenshots ==
 
 Check out the [Cactus Masonry Website](http://cactuscomputers.com.au/masonry) to see the plugin in action!
+
+1. The [Shortcode Generator](http://cactuscomputers.com.au/masonry/shortcode-generator/) webpage
+
+2. The [Shortcode Generator](http://cactuscomputers.com.au/masonry/shortcode-generator/) webpage
+
+3. A gallery with the following shortcode: [cactus-masonry link_location='medium' post_orderby='rand' width='50%' horizontal_spacing='20' vertical_spacing='20' border_thickness='5px' border_color='white' outer_border_thickness='5px' show_lightbox='true']
+
+4. A gallery with the following shortcode: [cactus-masonry width='25%' horizontal_spacing='0' vertical_spacing='0']
+
+5. A gallery with the following shortcode: [cactus-masonry width='33.33%']
+
+6. A gallery with the following shortcode: [cactus-masonry display_post_titles='true' display_post_excerpts='true' width='33.33%']
+
+7. A gallery with the following shortcode: [cactus-masonry width='50%' horizontal_spacing='20' vertical_spacing='20' border_thickness='5px' border_color='white' outer_border_thickness='5px']
+
+8. A gallery with the following shortcode: [cactus-masonry width='250px' horizontal_spacing='20' vertical_spacing='20']
+
