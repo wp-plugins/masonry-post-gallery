@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.8.2b
+ * @version 0.3.8.3b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.8.2b
+ * Version: 0.3.8.3b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -27,7 +27,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-$CM_version = "0.3.8.2b";
+$CM_version = "0.3.8.3b";
 $a = null;
 //Add Shortcode
 add_action('wp_head', 'cmpg_prep_JS_globals');
@@ -387,8 +387,8 @@ function render_post()
 	global $a;
 	global $post;
 	$output = "";
-	$tit = trim(str_replace("'", "&#39;", get_post_field("post_title",($post->ID), "display")));
-	$excerpt = trim(str_replace("'", "&#39;", get_post_field("post_excerpt",($post->ID), "display")));
+	$tit = trim(wptexturize(get_post_field("post_title",($post->ID), "display")));
+	$excerpt = trim(wptexturize(get_post_field("post_excerpt",($post->ID), "display")));
 	$show_databox = (($a['display_post_titles'] && strlen($tit) > 0) || ($a['display_post_excerpts'] && strlen($excerpt) > 0));
 	if(has_post_thumbnail())
 	{
