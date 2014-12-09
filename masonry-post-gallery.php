@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.8.3b
+ * @version 0.3.8.4b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.8.3b
+ * Version: 0.3.8.4b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -27,7 +27,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-$CM_version = "0.3.8.3b";
+$CM_version = "0.3.8.4b";
 $a = null;
 //Add Shortcode
 add_action('wp_head', 'cmpg_prep_JS_globals');
@@ -296,7 +296,6 @@ function masonrypostgallery_handler($atts)
 	$a['fit_width'] = cmpg_fix_boolean($a['fit_width'], $MPG_FIT_WIDTH);
 	$a['infinite_scroll'] = cmpg_fix_boolean($a['infinite_scroll'], $MPG_INFINITE_SCROLL);
 	$a['show_loader'] = cmpg_fix_boolean($a['show_loader'], $MPG_SHOW_LOADER);
-	$a['show_browser_warning'] = cmpg_fix_boolean($a['show_browser_warning'], $MPG_SHOW_BROWSER_WARNING);
 	$a['test_mode'] = cmpg_fix_boolean($a['test_mode'], $MPG_TEST);
 	$a['show_pages'] = cmpg_fix_boolean($a['show_pages'], $MPG_SHOW_PAGES);
 	$a['show_posts'] = cmpg_fix_boolean($a['show_posts'], $MPG_SHOW_POSTS);

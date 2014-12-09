@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.0.1
-Stable tag: 0.3.8.3b
+Stable tag: 0.3.8.4b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.3.8.4b =
+* Fixed a bug that can cause a PHP warning
 
 = 0.3.8.3b =
 * A bug fix for an issue that stops posts with certain characters in their titles from appearing in the gallery.
@@ -246,6 +249,9 @@ Did you manually install a version of the plugin prior to 0.3.7.3b?  If so updat
 
 
 == Upgrade Notice ==
+
+= 0.3.8.4b = 
+Upgrade to fix a bug that can cause a PHP warning.
 
 = 0.3.8.3b =
 Upgrade to fix a bug that occurs when certain characters exist in a post's title.
