@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.1
-Stable tag: 0.4.0.0b
+Stable tag: 0.4.0.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.4.0.1b =
+* Removed a reference to the lightbox map file to fix a 404 warning in compatible browsers
 
 = 0.4.0.0b =
 * WARNING:  This update modifies Cactus Masonry's CSS behaviour.  There are a number of changes in place to support new features and handle Internet Explorer issues.  For one, the #masonry_post_gallery selector has been changed to div.masonry_post_gallery.  These changes will not affect the gallery's default appearance - but they may affect custom CSS styling.  Be sure to check your site's appearance after updating.
@@ -253,6 +256,9 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 Please refer to the [FAQ page](http://cactuscomputers.com.au/masonry/frequently-asked-questions/) of the Cactus Masonry website.
 
 == Upgrade Notice ==
+
+= 0.4.0.1b =
+WARNING: The 0.4 updates change the #masonry_post_gallery to div.masonry_post_gallery which could affect your custom CSS.  The latest update fixes a 404 warning for lightbox.min.map.
 
 = 0.4.0.0b =
 WARNING: This update changes the #masonry_post_gallery to div.masonry_post_gallery and could affect your custom CSS.  Upgrade for numerous bug fixes, new features, and efficiency improvements.
