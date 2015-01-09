@@ -3,8 +3,8 @@ Contributors: bortpress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactus%40cactuscomputers%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
-Tested up to: 4.0.1
-Stable tag: 0.3.8.4b
+Tested up to: 4.1
+Stable tag: 0.4.0.0b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,11 +63,34 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 == Changelog ==
 
+= 0.4.0.0b =
+* WARNING:  This update modifies Cactus Masonry's CSS behaviour.  There are a number of changes in place to support new features and handle Internet Explorer issues.  For one, the #masonry_post_gallery selector has been changed to div.masonry_post_gallery.  These changes will not affect the gallery's default appearance - but they may affect custom CSS styling.  Be sure to check your site's appearance after updating.
+* Added the ability to select post/page-like custom post types in the gallery
+* Eliminated unnecessary site overhead caused by the plugin
+* Added the ability to manually handle the loading of external scripts to improve AJAX loading time
+* Added an override for the automatic width setting that can cause the gallery to resize its contents after external image resizing
+* Added the ability to crop images to fill each brick
+* Added the ability to specify an image background colour for added flexibility around transparent images when using the different hover colours
+* Added the option to specify an additional custom class name for the link elements in the gallery to increase compatibility with other plugins.
+* Multiple instances of Cactus Gallery can now run at the same time on the same page
+* Improved gallery functionality when masonry is switched off
+* Fixed a layout bug that may occur on some IE installs
+* Modified how image spacing works to address IE11's inability to render basic CSS
+* Fixed some minor style issues that could cause bugs in older IE browsers
+* Fixed a major bug in IE8 to IE11 caused by (in)compatibility mode
+* Fixed a bug where the title/excerpt box can appear above the loading box
+* Fixed a bug where borders would be cut off an image with a set max-width/max-height
+* Fixed a bug where excerpts containing a line feed or carriage return would break the plugin
+* Fixed a bug where the search_start and page_size parameters fail to function correctly when there are posts present with no featured image and default_image_id is unspecified
+* Various large efficiency improvements
+* Changed how fixed (non-percentage) widths are handled to improve efficiency
+* Improved gallery functionality in situations with extremely large numbers of posts
+
 = 0.3.8.4b =
 * Fixed a bug that can cause a PHP warning
 
 = 0.3.8.3b =
-* A bug fix for an issue that stops posts with certain characters in their titles from appearing in the gallery.
+* A bug fix for an issue that stops posts with certain characters in their titles and excerpts from appearing in the gallery.
 
 = 0.3.8.2b =
 * Applied some CSS enhancements to make the plugin's styling more robust on a variety of different web environments
@@ -227,31 +250,12 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 == Frequently Asked Questions == 
 
-= All of the images in the gallery are cropped to squares =
-The gallery only shows the images available on your site.  If WordPress is cropping your images to be squares - then Cactus Masonry will only show squares.  
-
-In WordPress, under Settings | Media, there is the option to "Crop thumbnail to exact dimensions (normally thumbnails are proportional)".  Deselecting this will allow Cactus Masonry to function normally.  You may also want to specify some more relevant (and larger) thumbnail sizes here too.
-
-If changes here seem to have no effect on the gallery, try hard refreshing the page to remove old versions of the thumbnails from your browsers cache - i.e. Ctrl+F5.
-
-If there is still no improvement, you will need to rebuild your media thumbnails.  This can easily be done by installing and running a plugin such as "Regenerate Thumbnails".
-
-= Can I change the hover animation speed when the user's mouse passes over a gallery image? =
-Yes, you can with CSS.  You can do many things with CSS and some of them are documented on the [Custom CSS page](http://cactuscomputers.com.au/masonry/custom-css/) of the Cactus Masonry website.
-
-= The plugin isn't loading any images.  It's just blank! =
-This plugin only displays post and page featured images (formerly known as thumbnails).  If you have no posts or pages with thumbnails, then the gallery will have nothing to show.  If you only have pages with thumbnails, make sure you are using the show_pages='true' parameter.
-
-= The plugin isn't loading any images.  It just says "loading..." in plain text! =
-This can happen when important .js (JavaScript) files are missing from the plugin.  Perhaps the files are protected or inaccessible on the server.  Perhaps they are missing.
-
-Did you manually install a version of the plugin prior to 0.3.7.3b?  If so update the plugin or move it to the correct folder as per the manual install instructions.  You should always place Cactus Masonry in a folder called masonry-post-gallery within the WordPress plugin directory to ensure that WordPress knows where to send future updates.  By default the plugin should be in wp-content/plugins/masonry-post-gallery/.
-
+Please refer to the [FAQ page](http://cactuscomputers.com.au/masonry/frequently-asked-questions/) of the Cactus Masonry website.
 
 == Upgrade Notice ==
 
-= 0.3.8.4b = 
-Upgrade to fix a bug that can cause a PHP warning.
+= 0.4.0.0b =
+WARNING: This update changes the #masonry_post_gallery to div.masonry_post_gallery and could affect your custom CSS.  Upgrade for numerous bug fixes, new features, and efficiency improvements.
 
 = 0.3.8.3b =
 Upgrade to fix a bug that occurs when certain characters exist in a post's title.

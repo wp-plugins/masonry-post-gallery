@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.3.8.4b
+ * @version 0.4.0.0b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.3.8.4b
+ * Version: 0.4.0.0b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -27,337 +27,238 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-$CM_version = "0.3.8.4b";
-$a = null;
-//Add Shortcode
-add_action('wp_head', 'cmpg_prep_JS_globals');
 
-add_shortcode("cactus-masonry", "masonrypostgallery_handler");
-add_shortcode("masonry-post-gallery", "masonrypostgallery_handler");
-add_action('wp_enqueue_scripts', 'cmpg_prep_scripts');
-add_action('admin_menu', 'cmpg_add_instructions');
-$plugin = plugin_basename(__FILE__);
+/*TO DO
+- ADD TAGS
+- ADD PARENT ID 
+*/
 
-add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
-
-include_once('cactus-masonry-options.php');
-
-function plugin_settings_link($links)
-{
-	$newlink = "<a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=cactus%40cactuscomputers%2ecom%2eau&amp;lc=AU&amp;currency_code=AUD&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted'>Donate</a>";
-	array_unshift($links, $newlink);
-	$newlink = "<a href='http://cactuscomputers.com.au/masonry/' target='_blank'>Our Website</a>";
-	array_unshift($links, $newlink);
-	$newlink = "<a href='http://cactuscomputers.com.au/masonry/how-to-use/' target='_blank'>Instructions</a>";
-	array_unshift($links, $newlink);
-	return $links;
-}
-
-function cmpg_prep_scripts()
-{
-	//Register Styles
-	wp_register_style('MPG_style', plugin_dir_url(__FILE__) . 'masonry-post-gallery.css');
-	wp_register_style('Lightbox_style', plugin_dir_url(__FILE__) . 'lightbox.css');
-	//Enqueue Styles
-	wp_enqueue_style('MPG_style');
-	wp_enqueue_style('Lightbox_style');
-	//Register Scripts
-	wp_register_script('Masonry', plugin_dir_url(__FILE__) . 'masonry.pkgd.min.js');
-	wp_register_script('ImagesLoaded', plugin_dir_url(__FILE__) . 'imagesloaded.pkgd.min.js');
-	wp_register_script('Spin', plugin_dir_url(__FILE__) . 'spin.min.js');
-	wp_register_script('Lightbox', plugin_dir_url(__FILE__) . 'lightbox.min.js', array('jquery'));
-	//Enqueue Scripts
-	wp_enqueue_script('Masonry');
-	wp_enqueue_script('ImagesLoaded');
-	wp_enqueue_script('Spin');
-	wp_enqueue_script('Lightbox');
-}
-
-function cmpg_prep_JS_globals()
-{
-?>
-	<script type="text/javascript">
-		IE_LT_9 = false;//Lower than IE9
-		//DOM Array
-		elems = Array();
-		var opts = {
-			lines: 13, // The number of lines to draw
-			length: 0, // The length of each line
-			width: 6, // The line thickness
-			radius: 12, // The radius of the inner circle
-			corners: 1, // Corner roundness (0..1)
-			rotate: 0, // The rotation offset
-			direction: 1, // 1: clockwise, -1: counterclockwise
-			color: '#DFDFDF', // #rgb or #rrggbb or array of colors
-			speed: 1.2, // Rounds per second
-			trail: 100, // Afterglow percentage
-			shadow: false, // Whether to render a shadow
-			hwaccel: false, // Whether to use hardware acceleration
-			className: 'spinner', // The CSS class to assign to the spinner
-			zIndex: 2e9, // The z-index (defaults to 2000000000)
-			top: '50%', // Top position relative to parent
-			left: '50%' // Left position relative to parent
-		};
-		pageStart = 0;
-		pageEnd = 0;
-		pagePosition = 0;
-		lastImageOffset = 0;
-		MPG_Loading = false;
-		MPG_spinner = new Spinner(opts);
-		//Version Check
-	</script>
-	<!--[if lt IE 9 ]>
-		<script type="text/javascript">
-			IE_LT_9 = true;
-		</script>
-	<![endif]-->
-<?php
-}
-
-$MPG_QUALITY_DEF = "thumbnail";  //thumbnail, medium, large, full
-
-$MPG_SEARCH_START = 0;
-$MPG_PAGE_SIZE = 1000;
-
-$MPG_MAX_WIDTH_DEF = "none";
-$MPG_MAX_HEIGHT_DEF = "none";
-$MPG_WIDTH_DEF = "auto";
-$MPG_HEIGHT_DEF = "auto";
-
-$MPG_NOSCRIPT_WIDTH = "auto";
-$MPG_NOSCRIPT_HEIGHT = "auto";
-$MPG_NOSCRIPT_MAX_WIDTH = "none";
-$MPG_NOSCRIPT_MAX_HEIGHT = "none";
-
-$MPG_HOVER_COLOR = "#ffffff";
-$MPG_HOVER_INTENSITY = "0.5";
-
-$MPG_MASONRY_DEF = true;
-
-$MPG_HORIZONTAL_SPACING = 10;
-$MPG_VERTICAL_SPACING = 10;
-
-$MPG_FIT_WIDTH = false;
-
-$MPG_BORDER_WEIGHT = "0px";
-$MPG_BORDER_COLOR = "#000000";
-$MPG_OUTER_BORDER_WEIGHT = "0px";
-$MPG_OUTER_BORDER_COLOR = "#000000";
-
-$MPG_POST_CATEGORY = "";
-$MPG_POST_ORDER = "DESC";
-$MPG_POST_ORDERBY = "post_date";
-
-$MPG_GALLERY_ALIGN = "center";
-
-$MPG_UPSCALE_NARROW_IMAGES = 0;
-$MPG_UPSCALE_FLAT_IMAGES = 0;
-$MPG_UPSCALE_MAX_SIZE = "large";
-$MPG_MAX_UPSCALE_WIDTH = "none";
-$MPG_MAX_UPSCALE_HEIGHT = "none";
-
-$MPG_LINK_LOCATION = "post";
-$MPG_LINK_LIGHTBOX = false;
-$MPG_LINK_LIGHTBOX_SCROLL = false;
-$MPG_LINK_LIGHTBOX_TITLE = false;
-
-$MPG_SOFT_GUTTER = 0;
-
-$MPG_INFINITE_SCROLL = true;
-$MPG_POSTS_PER_PAGE = 30;
-$MPG_INFINITE_SCROLL_BUFFER = 400;
-
-$MPG_SHOW_LOADER = true;
-
-$MPG_TEST = false;
-$MPG_DEFAULT_IMAGE = false;
-
-$MPG_SHOW_POSTS = true;
-$MPG_SHOW_PAGES = false;
-
-$MPG_REQUIRE_JAVASCRIPT = false;
-$MPG_JAVASCRIPT_MESSAGE = 'Please enable JavaScript to properly view this page.';
-
-$MPG_DISPLAY_POST_TITLES = false;
-$MPG_DISPLAY_POST_EXCERPTS = false;
-
-function masonrypostgallery_handler($atts)
-{
-	//Prepare output variable
-	$output = "";
-	//Find global variables
-	global $a;
-	global $post;
-	global $CM_version;
-	global $MPG_SEARCH_START;
-	global $MPG_PAGE_SIZE;
-	global $MPG_QUALITY_DEF;
-	global $MPG_MAX_WIDTH_DEF;
-	global $MPG_MAX_HEIGHT_DEF;
-	global $MPG_WIDTH_DEF;
-	global $MPG_HEIGHT_DEF;
-	global $MPG_NOSCRIPT_WIDTH;
-	global $MPG_NOSCRIPT_HEIGHT;
-	global $MPG_NOSCRIPT_MAX_WIDTH;
-	global $MPG_NOSCRIPT_MAX_HEIGHT;
-	global $MPG_HOVER_COLOR;
-	global $MPG_HOVER_INTENSITY;
-	global $MPG_MASONRY_DEF;
-	global $MPG_HORIZONTAL_SPACING;
-	global $MPG_VERTICAL_SPACING;
-	global $MPG_FIT_WIDTH;
-	global $MPG_BORDER_WEIGHT;
-	global $MPG_BORDER_COLOR;
-	global $MPG_OUTER_BORDER_WEIGHT;
-	global $MPG_OUTER_BORDER_COLOR;
-	global $MPG_POST_CATEGORY;
-	global $MPG_POST_ORDER;
-	global $MPG_POST_ORDERBY;
-	global $MPG_GALLERY_ALIGN;
-	global $MPG_UPSCALE_NARROW_IMAGES;
-	global $MPG_UPSCALE_FLAT_IMAGES;
-	global $MPG_UPSCALE_MAX_SIZE;
-	global $MPG_MAX_UPSCALE_WIDTH;
-	global $MPG_MAX_UPSCALE_HEIGHT;
-	global $MPG_LINK_LOCATION;
-	global $MPG_LINK_LIGHTBOX;
-	global $MPG_LINK_LIGHTBOX_SCROLL;
-	global $MPG_LINK_LIGHTBOX_TITLE;
-	global $MPG_SOFT_GUTTER;
-	global $MPG_INFINITE_SCROLL;
-	global $MPG_POSTS_PER_PAGE;
-	global $MPG_SHOW_LOADER;
-	global $MPG_TEST;
-	global $MPG_DEFAULT_IMAGE;
-	global $MPG_SHOW_POSTS;
-	global $MPG_SHOW_PAGES;
-	global $MPG_REQUIRE_JAVASCRIPT;
-	global $MPG_JAVASCRIPT_MESSAGE;
-	global $MPG_INFINITE_SCROLL_BUFFER;
-	global $MPG_DISPLAY_POST_TITLES;
-	global $MPG_DISPLAY_POST_EXCERPTS;
+class Cactus_Masonry
+{	
+	private static $id = "CM_GALLERY_";
+	private static $CM_version = "0.4.0.0b";
+	private static $a = null;
+	private static $post_count = 0;
 	
-	//Accept input parameters
-	$a = shortcode_atts(array(
-		'quality' => $MPG_QUALITY_DEF, 
-		'masonry' => $MPG_MASONRY_DEF,
-		'max_width' => $MPG_MAX_WIDTH_DEF, 
-		'max_height' => $MPG_MAX_HEIGHT_DEF, 
-		'width' => $MPG_WIDTH_DEF,
-		'height' => $MPG_HEIGHT_DEF, 
-		'horizontal_spacing' => $MPG_HORIZONTAL_SPACING,
-		'vertical_spacing' => $MPG_VERTICAL_SPACING, 
-		'fit_width' => $MPG_FIT_WIDTH,
-		'border_color' => $MPG_BORDER_COLOR, 
-		'border_thickness' => $MPG_BORDER_WEIGHT,
-		'outer_border_color' => $MPG_OUTER_BORDER_COLOR, 
-		'outer_border_thickness' => $MPG_OUTER_BORDER_WEIGHT,
-		'post_category' => $MPG_POST_CATEGORY, 
-		'post_order' => $MPG_POST_ORDER, 
-		'post_orderby' => $MPG_POST_ORDERBY, 
-		'gallery_align' => $MPG_GALLERY_ALIGN,
-		'hover_color' => $MPG_HOVER_COLOR, 
-		'hover_intensity' => $MPG_HOVER_INTENSITY,
-		'upscale_narrow_images' => $MPG_UPSCALE_NARROW_IMAGES, 
-		'upscale_short_images' => $MPG_UPSCALE_FLAT_IMAGES, 
-		'max_upscale_quality' => $MPG_UPSCALE_MAX_SIZE,
-		'noscript_width' => $MPG_NOSCRIPT_WIDTH, 
-		'noscript_height' => $MPG_NOSCRIPT_HEIGHT,
-		'noscript_max_width' => $MPG_NOSCRIPT_MAX_WIDTH,
-		'noscript_max_height' => $MPG_NOSCRIPT_MAX_HEIGHT,
-		'upscale_max_width' => $MPG_MAX_UPSCALE_WIDTH, 
-		'upscale_max_height' => $MPG_MAX_UPSCALE_HEIGHT,
-		'link_location' => $MPG_LINK_LOCATION, 
-		'show_lightbox' => $MPG_LINK_LIGHTBOX,
-		'browse_with_lightbox' => $MPG_LINK_LIGHTBOX_SCROLL, 
-		'show_lightbox_title' => $MPG_LINK_LIGHTBOX_TITLE, 
-		'soft_gutter' => $MPG_SOFT_GUTTER,
-		'infinite_scroll' => $MPG_INFINITE_SCROLL, 
-		'posts_per_page' => $MPG_POSTS_PER_PAGE,
-		'show_loader' => $MPG_SHOW_LOADER, 
-		'search_start' => $MPG_SEARCH_START, 
-		'page_size' => $MPG_PAGE_SIZE, 
-		'test_mode' => $MPG_TEST, 
-		'default_image_id' => $MPG_DEFAULT_IMAGE, 
-		'show_posts' => $MPG_SHOW_POSTS,
-		'show_pages' => $MPG_SHOW_PAGES,
-		'require_javascript' => $MPG_REQUIRE_JAVASCRIPT,
-		'javascript_error_message' => $MPG_JAVASCRIPT_MESSAGE,
-		'infinite_scroll_buffer' => $MPG_INFINITE_SCROLL_BUFFER,
-		'display_post_titles' => $MPG_DISPLAY_POST_TITLES,
-		'display_post_excerpts' => $MPG_DISPLAY_POST_EXCERPTS
-		), $atts);
+	private static $noscript_text;
+	private static $nomasonry_text;
 	
-	//Fix boolean parameter values
-	$a['show_lightbox'] = cmpg_fix_boolean($a['show_lightbox'], $MPG_LINK_LIGHTBOX);
-	$a['browse_with_lightbox'] = cmpg_fix_boolean($a['browse_with_lightbox'], $MPG_LINK_LIGHTBOX_SCROLL);
-	$a['show_lightbox_title'] = cmpg_fix_boolean($a['show_lightbox_title'], $MPG_LINK_LIGHTBOX_TITLE);
-	$a['masonry'] = cmpg_fix_boolean($a['masonry'], $MPG_MASONRY_DEF);
-	$a['fit_width'] = cmpg_fix_boolean($a['fit_width'], $MPG_FIT_WIDTH);
-	$a['infinite_scroll'] = cmpg_fix_boolean($a['infinite_scroll'], $MPG_INFINITE_SCROLL);
-	$a['show_loader'] = cmpg_fix_boolean($a['show_loader'], $MPG_SHOW_LOADER);
-	$a['test_mode'] = cmpg_fix_boolean($a['test_mode'], $MPG_TEST);
-	$a['show_pages'] = cmpg_fix_boolean($a['show_pages'], $MPG_SHOW_PAGES);
-	$a['show_posts'] = cmpg_fix_boolean($a['show_posts'], $MPG_SHOW_POSTS);
-	$a['require_javascript'] = cmpg_fix_boolean($a['require_javascript'], $MPG_REQUIRE_JAVASCRIPT);
-	$a['display_post_titles'] = cmpg_fix_boolean($a['display_post_titles'], $MPG_DISPLAY_POST_TITLES);
-	$a['display_post_excerpts'] = cmpg_fix_boolean($a['display_post_excerpts'], $MPG_DISPLAY_POST_EXCERPTS);
+	static public function init()
+	{
+		include_once('cactus-masonry-options.php');
+		add_shortcode("cactus-masonry", array(__CLASS__, "masonrypostgallery_handler"));
+		add_shortcode("masonry-post-gallery", array(__CLASS__, "masonrypostgallery_handler"));
+		add_action("wp_headers", array(__CLASS__, "cmpg_add_header"));
+		add_action("wp_enqueue_scripts", array(__CLASS__, "cmpg_add_dependencies"));
+		//ADD JQUERY TO HEAD
+		add_action('admin_menu', 'cmpg_add_instructions');
+		$plugin = plugin_basename(__FILE__);
+		add_filter("plugin_action_links_$plugin", array(__CLASS__, 'plugin_settings_link'));
+	}
+
+	static public function cmpg_add_dependencies()
+	{
+		wp_enqueue_script('jquery');
+	}
 	
-	//Disable masonry in IE 7 and lower
-	if(preg_match('/(?i)msie [5-7]/',$_SERVER['HTTP_USER_AGENT']))
+	//Attempts to stop iNTERNET eXPLORER!!!!!! from entering incompatibility mode
+	static public function cmpg_add_header($head)
 	{
-		$a['masonry'] = false;
-	}	
-	//Start the Main DIV
-	$output = "
-	<div id='masonry_post_gallery' class='{$CM_version}'>";
-	$output .= cmpg_create_styles();
-	if($a['javascript_error_message'] != "")
-	{
-		$output.= "
-		<noscript>
-			<h3 class='cmpg_javascript_error'>{$a['javascript_error_message']}</h3>			
-		</noscript>";
+		if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) $head['X-UA-Compatible'] = 'IE=edge,chrome=1';
+		return $head;
 	}
-	$output .= "
-		<script type='text/javascript'>
-			elems = Array();
-			pageStart = 0;
-			pageEnd = 0;
-			pagePosition = 0;
-			lastImageOffset = 0;
-		</script>\n";
-	//Prepare & Execute WordPress query
-	$post_type = array('cactus_none');
-	if($a['show_pages'])
+	
+	static public function plugin_settings_link($links)
 	{
-		array_push($post_type, 'page');
+		$newlink = "<a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=cactus%40cactuscomputers%2ecom%2eau&amp;lc=AU&amp;currency_code=AUD&amp;bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted'>Donate</a>";
+		array_unshift($links, $newlink);
+		$newlink = "<a href='http://cactuscomputers.com.au/masonry/' target='_blank'>Our Website</a>";
+		array_unshift($links, $newlink);
+		$newlink = "<a href='http://cactuscomputers.com.au/masonry/how-to-use/' target='_blank'>Instructions</a>";
+		array_unshift($links, $newlink);
+		return $links;
 	}
-	if($a['show_posts'])
+
+	static private function cmpg_prep_JS_globals()
 	{
-		array_push($post_type, 'post');
+		return "
+			<script type='text/javascript'>
+				IE_LT_9" . self::$id . " = false;//Lower than IE9
+			</script>
+			<!--[if lt IE 9 ]>
+				<script type='text/javascript'>
+					IE_LT_9" . self::$id . " = true;
+				</script>
+			<![endif]-->
+		";
 	}
-	$args = array(	'posts_per_page' => $a['page_size'], 
-					'offset' => $a['search_start'], 
-					'category_name' => $a['post_category'], 
-					'orderby' => fix_sort_column($a['post_orderby']), 
-					'order' => $a['post_order'],
-					'post_type' => $post_type);
-	$lastposts = get_posts($args);
-	//For each post found by the query:
-	foreach($lastposts as $post)
+
+	static public function masonrypostgallery_handler($atts)
 	{
-		setup_postdata($post);
-		if(has_post_thumbnail($post->ID) || !($a['default_image_id'] === false))
-		{	
-			$output.=render_post();
-		}	
-	}
-	wp_reset_postdata();
-	//Close off the masonry gallery main div
-	$output .= "		</div>";
-	//Draw loading box
-	$output .= "
+		global $CM_JS_MSG_COUNTER;
+		global $CM_LOADER_COUNTER;
+		if(!isset($CM_LOADER_COUNTER)) $CM_LOADER_COUNTER = 0;
+		if(!isset($CM_JS_MSG_COUNTER)) $CM_JS_MSG_COUNTER = 0;
+		self::$id = "CM_GALLERY_" . mt_rand(10000,99999);
+		self::$post_count = 0;
+		//Prepare output variable
+		$output = self::cmpg_prep_JS_globals();
+		//Find global variable
+		global $post;
+		//Accept input parameters
+		self::$a = shortcode_atts(array(
+			'quality' 					=> 	"thumbnail", 
+			'masonry' 					=> 	true,
+			'max_width'					=> 	"none", 
+			'max_height' 				=> 	"none", 
+			'width' 					=> 	"auto",
+			'height'					=> 	"auto", 
+			'horizontal_spacing' 		=> 	10,
+			'vertical_spacing' 			=> 	10, 
+			'fit_width' 				=> 	false,
+			'border_color' 				=>	"#000000", 
+			'border_thickness' 			=>	"0px",
+			'outer_border_color' 		=>	"#000000",  
+			'outer_border_thickness'	=>	"0px",
+			'post_category' 			=>	"", 
+			'post_order'				=>	"DESC", 
+			'post_orderby' 				=> 	"post_date", 
+			'gallery_align' 			=> 	"center",
+			'image_background_color' 	=> 	"#ffffff", 
+			'hover_color' 				=> 	"#ffffff", 
+			'hover_intensity' 			=> 	"0.5",
+			'upscale_narrow_images'		=> 0, 
+			'upscale_short_images' 		=> 0, 
+			'max_upscale_quality' 		=> "large",
+			'noscript_width' 			=> "auto", 
+			'noscript_height' 			=> "auto",
+			'noscript_max_width' 		=> "none",
+			'noscript_max_height' 		=> "none",
+			'upscale_max_width' 		=> "none", 
+			'upscale_max_height' 		=> "none",
+			'link_location' 			=> "post", 
+			'show_lightbox' 			=> false,
+			'browse_with_lightbox' 		=> false, 
+			'show_lightbox_title' 		=> false, 
+			'soft_gutter' 				=> 0,
+			'infinite_scroll' 			=> true, 
+			'posts_per_page' 			=> 30,
+			'show_loader' 				=> true, 
+			'search_start'				=> 0, 
+			'page_size' 				=> 1000, 
+			'test_mode' 				=> false, 
+			'default_image_id' 			=> false, 
+			'show_posts' 				=> true,
+			'show_pages' 				=> false,
+			'require_javascript' 		=> false,
+			'javascript_error_message' 	=> 'Please enable JavaScript to properly view this page.',
+			'infinite_scroll_buffer' 	=> 400,
+			'display_post_titles' 		=> false,
+			'display_post_excerpts' 	=> false,
+			'custom_post_types' 		=> "",
+			'load_js'					=> true,
+			'force_auto_width'			=> false,
+			'crop_images'				=> false,
+			'ajax_mode'					=> false,
+			'link_custom_class'			=> ''
+			), $atts);
+		
+		//Fix boolean parameter values
+		self::$a['show_lightbox'] = self::cmpg_fix_boolean(self::$a['show_lightbox'], false);
+		self::$a['browse_with_lightbox'] = self::cmpg_fix_boolean(self::$a['browse_with_lightbox'], false);
+		self::$a['show_lightbox_title'] = self::cmpg_fix_boolean(self::$a['show_lightbox_title'], false);
+		self::$a['masonry'] = self::cmpg_fix_boolean(self::$a['masonry'], true);
+		self::$a['fit_width'] = self::cmpg_fix_boolean(self::$a['fit_width'], false);
+		self::$a['infinite_scroll'] = self::cmpg_fix_boolean(self::$a['infinite_scroll'], true);
+		self::$a['show_loader'] = self::cmpg_fix_boolean(self::$a['show_loader'], true);
+		self::$a['test_mode'] = self::cmpg_fix_boolean(self::$a['test_mode'], false);
+		self::$a['show_pages'] = self::cmpg_fix_boolean(self::$a['show_pages'], false);
+		self::$a['show_posts'] = self::cmpg_fix_boolean(self::$a['show_posts'], true);
+		self::$a['require_javascript'] = self::cmpg_fix_boolean(self::$a['require_javascript'], false);
+		self::$a['display_post_titles'] = self::cmpg_fix_boolean(self::$a['display_post_titles'], false);
+		self::$a['display_post_excerpts'] = self::cmpg_fix_boolean(self::$a['display_post_excerpts'], false);
+		self::$a['load_js'] = self::cmpg_fix_boolean(self::$a['load_js'], true);
+		self::$a['force_auto_width'] = self::cmpg_fix_boolean(self::$a['force_auto_width'], true);
+		self::$a['crop_images'] = self::cmpg_fix_boolean(self::$a['crop_images'], true);
+		self::$a['ajax_mode'] = self::cmpg_fix_boolean(self::$a['ajax_mode'], true);
+		//Load external libraries
+		if(self::$a['load_js'])
+		{
+			wp_enqueue_style('MPG_style', plugin_dir_url(__FILE__) . 'masonry-post-gallery.css');
+			wp_enqueue_style('Lightbox_style', plugin_dir_url(__FILE__) . 'lightbox.css');
+			wp_enqueue_script('Masonry', plugin_dir_url(__FILE__) . 'masonry.pkgd.min.js');
+			wp_enqueue_script('ImagesLoaded', plugin_dir_url(__FILE__) . 'imagesloaded.pkgd.min.js');
+			wp_enqueue_script('Spin', plugin_dir_url(__FILE__) . 'spin.min.js');
+			wp_enqueue_script('CactusMasonry', plugin_dir_url(__FILE__) . 'cactus-masonry.js');
+			wp_enqueue_script('Lightbox',plugin_dir_url(__FILE__) . 'lightbox.min.js', array('jquery'));
+		}
+		//Disable masonry in IE 7 and lower
+		if(preg_match('/(?i)msie [5-7]/',$_SERVER['HTTP_USER_AGENT'])) self::$a['masonry'] = false;
+		//Start the Main DIV
+		$output .= "
+	<div class='CM_area' data-plugin='Cactus Masonry' data-version='" . self::$CM_version . "'>" . self::cmpg_create_styles() . "
+		<div data-version='" . self::$CM_version . "' class='masonry_post_gallery'>
+			<noscript>";
+		if(self::$a['javascript_error_message'] != "" && self::$a['masonry'])
+		{
+			if($CM_JS_MSG_COUNTER == 0) $output .= "
+				<h3 class='cmpg_javascript_error'>" . self::$a['javascript_error_message'] . "</h3>";
+			$CM_JS_MSG_COUNTER++;
+		}
+		//Prepare & Execute WordPress query
+		$post_type = array('cactus_none');
+		if(self::$a['show_pages']) array_push($post_type, 'page');
+		if(self::$a['show_posts']) array_push($post_type, 'post');
+		//Set up custom post types
+		echo self::$a['custom_post_types'];
+		$args = array(	'posts_per_page' => -1, 
+						'offset' => 0,
+						'category_name' => self::$a['post_category'], 
+						'orderby' => self::fix_sort_column(self::$a['post_orderby']), 
+						'order' => self::$a['post_order'],
+						'post_type' => array_merge($post_type, explode(',', self::$a['custom_post_types'])));
+		$lastposts = get_posts($args);
+		//For each post found by the query:
+		$script_text = "";
+		self::$noscript_text = "";
+		self::$nomasonry_text = "";
+		foreach($lastposts as $post)
+		{
+			setup_postdata($post);
+			if(has_post_thumbnail($post->ID) || !(self::$a['default_image_id'] === false))
+			{	
+				if($post_count >= self::$a['search_start'] && $post_count < self::$a['page_size']) $script_text .= self::render_post();
+				$post_count++;
+			}	
+		}
+		$output .= self::$noscript_text . "
+			</noscript>
+		</div>";
+		self::$noscript_text = "";
+		if(self::$a['masonry']) 
+		{
+			$output .= "
+			<script>
+				var elems" . self::$id . " = Array();
+				var timer" . self::$id . " = null;
+				var s = '';
+				var el = null;\n";
+		
+			$output .= $script_text . "</script>";
+		}
+		$output .= "
+		<div id='" . self::$id . "' data-version='" . self::$CM_version . "' class='masonry_post_gallery'>";
+		if(!self::$a['masonry']) $output .= self::$nomasonry_text;
+		self::$nomasonry_text = "";
+		$output .= "
+		</div>";
+		$script_text = "";
+		wp_reset_postdata();
+		//Draw loading box
+		if(self::$a['show_loader'] && $CM_LOADER_COUNTER == 0)
+		{
+			$CM_LOADER_COUNTER++;
+			$output .= "
 		<div id='MPG_Loader_Container'>
 			<div id='MPG_Loader_Color'>
 				<div id='MPG_Spin_Box'>
@@ -367,513 +268,390 @@ function masonrypostgallery_handler($atts)
 				</div>
 			</div>
 		</div>";
-	//Send Header and Footer JS and CSS
-	add_action('wp_footer','cmpg_create_javascript');
-	return $output;
-}
+		}
+		$output .= "
+	</div>";
+		return $output . self::cmpg_create_javascript();
+	}
 
-function fix_sort_column($col)
-{
-	if($col == 'author' || $col ==  'date' || $col ==  'modified' || $col ==  'parent' || $col == 'title' || $col == 'excerpt' || $col == 'content')
+	static private function fix_sort_column($col)
 	{
-		return 'post_' . $col;
+		if($col == 'author' || $col ==  'date' || $col ==  'modified' || $col ==  'parent' || $col == 'title' || $col == 'excerpt' || $col == 'content') return 'post_' . $col;
+		return $col;
 	}
-	return $col;
-}
 
-function render_post()
-{
-	global $a;
-	global $post;
-	$output = "";
-	$tit = trim(wptexturize(get_post_field("post_title",($post->ID), "display")));
-	$excerpt = trim(wptexturize(get_post_field("post_excerpt",($post->ID), "display")));
-	$show_databox = (($a['display_post_titles'] && strlen($tit) > 0) || ($a['display_post_excerpts'] && strlen($excerpt) > 0));
-	if(has_post_thumbnail())
+	static private function remove_special_chars($str, $hide_new_lines = true)
 	{
-		$iid = get_post_thumbnail_id($post->ID);
+		$str = trim($str);
+		$str = str_replace("'", "&#39;", $str);
+		$str = str_replace('‘', "&lsquo;", $str);
+		$str = str_replace('’', "&rsquo;", $str);
+		$str = str_replace('“', "&ldquo;", $str);
+		$str = str_replace('”', "&rdquo;", $str);
+		if($hide_new_lines) $str = str_replace(array("\r\n","\r","\n"), "", $str);
+		else $str = str_replace(array("\r\n","\r","\n"), "<br/>", $str);
+		return wptexturize($str);
 	}
-	else
-	{
-		$iid = $a['default_image_id'];
-	}
-	$thumbnail = cmpg_upsize_image($iid, $a['quality'], $a['max_upscale_quality'], $a['upscale_max_width'], $a['upscale_max_height'], $a['upscale_narrow_images'], $a['upscale_short_images']);		
 	
-	if(!$thumbnail)
+	static private function render_post()
 	{
-		$output.="<script>console.log('Cactus Masonry Error: -{$a['default_image_id']}- Image with ID={$iid} cannot be found');</script>";
-		return $output;
-	}
-	$link_type = "a";
-	$lightbox_text = " data-lightbox='";
-	if($a['browse_with_lightbox'] === true)
-	{
-		$lightbox_text .= "thispage'";
-	}
-	else
-	{
-		$lightbox_text .= $post->ID . "'";
-	}
-	if($a['show_lightbox_title'] === true)
-	{
-		$lightbox_text .= " data-title='" . $tit . "'";
-	}
-	//Set where each image links and handle any interference with the show_lightbox parameter
-	if(has_post_thumbnail())
-	{
-		switch($a['link_location'])
+		global $post;
+		$output = "";
+		$data_text = "";
+		$tit = self::remove_special_chars(get_post_field("post_title",($post->ID), "display"));
+		$excerpt = self::remove_special_chars(get_post_field("post_excerpt",($post->ID), "display"), false);
+		$show_databox = ((self::$a['display_post_titles'] && strlen($tit) > 0) || (self::$a['display_post_excerpts'] && strlen($excerpt) > 0));
+		if(has_post_thumbnail()) $iid = get_post_thumbnail_id($post->ID);
+		else $iid = self::$a['default_image_id'];
+		$thumbnail = self::cmpg_upsize_image($iid, self::$a['quality'], self::$a['max_upscale_quality'], self::$a['upscale_max_width'], self::$a['upscale_max_height'], self::$a['upscale_narrow_images'], self::$a['upscale_short_images']);		
+		if(!$thumbnail)
 		{
+			$output.="<script>console.log('Cactus Masonry Error: -" . self::$a['default_image_id'] . "- Image with ID={$iid} cannot be found');</script>";
+			return $output;
+		}
+		$link_type = "a";
+		$link_class = "masonry_brick_a";
+		if(self::$a['link_custom_class'] != '') $link_class .= " " . self::$a['link_custom_class'];
+		$link_class = "class='{$link_class}'";
+		$lightbox_text = " data-lightbox='";
+		if(self::$a['browse_with_lightbox'] === true) $lightbox_text .= "thispage'";
+		else $lightbox_text .= $post->ID . "'";
+		if(self::$a['show_lightbox_title'] === true) $lightbox_text .= " data-title='" . $tit . "'";
+		//Set where each image links and handle any interference with the show_lightbox parameter
+		if(has_post_thumbnail())
+		{
+			switch(self::$a['link_location'])
+			{
+				case "image":
+					$lnk = $thumbnail[0];
+					break;
+				case "thumbnail":
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail');
+					$lnk = $lnka[0];
+					break;
+				case "medium":
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium');
+					$lnk = $lnka[0];
+					break;
+				case "large":
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large');
+					$lnk = $lnka[0];
+					break;
+				case "full":
+					$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full');
+					$lnk = $lnka[0];
+					break;
+				case "none":
+					$lnk = "";
+					$link_type = "div";
+					self::$a['show_lightbox'] = false;
+					break;
+				default:
+					$lnk = get_permalink();	
+					self::$a['show_lightbox'] = false;
+			}
+		}
+		else switch(self::$a['link_location'])
+		{//Default Image
 			case "image":
 				$lnk = $thumbnail[0];
 				break;
 			case "thumbnail":
-				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'thumbnail');
+				$lnka = wp_get_attachment_image_src(self::$a['default_image_id'],'thumbnail');
 				$lnk = $lnka[0];
 				break;
 			case "medium":
-				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'medium');
+				$lnka = wp_get_attachment_image_src(self::$a['default_image_id'],'medium');
 				$lnk = $lnka[0];
 				break;
 			case "large":
-				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'large');
+				$lnka = wp_get_attachment_image_src(self::$a['default_image_id'],'large');
 				$lnk = $lnka[0];
 				break;
 			case "full":
-				$lnka = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full');
+				$lnka = wp_get_attachment_image_src(self::$a['default_image_id'],'full');
 				$lnk = $lnka[0];
 				break;
 			case "none":
 				$lnk = "";
 				$link_type = "div";
-				$a['show_lightbox'] = false;
+				self::$a['show_lightbox'] = false;
 				break;
 			default:
 				$lnk = get_permalink();	
-				$a['show_lightbox'] = false;
+				self::$a['show_lightbox'] = false;
 		}
-	}
-	else
-	{//DEFAULT IMAGE
-		switch($a['link_location'])
-		{
-			case "image":
-				$lnk = $thumbnail[0];
-				break;
-			case "thumbnail":
-				$lnka = wp_get_attachment_image_src($a['default_image_id'],'thumbnail');
-				$lnk = $lnka[0];
-				break;
-			case "medium":
-				$lnka = wp_get_attachment_image_src($a['default_image_id'],'medium');
-				$lnk = $lnka[0];
-				break;
-			case "large":
-				$lnka = wp_get_attachment_image_src($a['default_image_id'],'large');
-				$lnk = $lnka[0];
-				break;
-			case "full":
-				$lnka = wp_get_attachment_image_src($a['default_image_id'],'full');
-				$lnk = $lnka[0];
-				break;
-			case "none":
-				$lnk = "";
-				$link_type = "div";
-				$a['show_lightbox'] = false;
-				break;
-			default:
-				$lnk = get_permalink();	
-				$a['show_lightbox'] = false;
-		}
-	}
-	if(!($a['show_lightbox'] === true))
-	{
-		$lightbox_text = "";
-	}
-	if($a['masonry'] === true)
-	{
-		/*
-			DRAW JAVASCRIPT BOX
-		*/
-		//Start script <script ...>
-		$output .= "		<script type='text/javascript'>\n";
-		//Write the JavaScript
-		//Start with the innerHTML of the masonry_brick DIVs
-		$output .= "			var s = \"<{$link_type} {$lightbox_text} class='masonry_brick_a' style='display: block;' href=\'{$lnk}\'><img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
-		if(!($thumbnail[5] && strpos($a['upscale_max_width'], '%') !== false) && ($a['width'] != 'auto'))
-		{
-			$output .= "width: 100%; ";
-		}
-		$output .= "height: {$a['height']}; ";
-		{
-			$output .= "max-width: 100%; ";
-		}		
-		$output .= "max-height: {$a['max_height']}; ";
-		$output .= "'/>";
-		//Add the databox containing the title and excerpt
+		if(!(self::$a['show_lightbox'] === true)) $lightbox_text = "";
+		//Sort out databox
 		if($show_databox)
 		{
-			$output .= "<div class='cactus_masonry_databox'>";
-			if($a['display_post_titles'] && strlen($tit) > 0)
-			{
-				$output .= "<div class='cm_title'>{$tit}</div>";
-			}
-			if($a['display_post_excerpts'] && strlen($excerpt) > 0)
-			{
-				$output .= "<div class='cm_exerpt'>{$excerpt}</div>";
-			}
-			$output .= "</div>";		
+			$data_text = "<div class='cactus_masonry_databox'>";
+			if(self::$a['display_post_titles'] && strlen($tit) > 0) $data_text .= "<div class='cm_title'>{$tit}</div>";
+			if(self::$a['display_post_excerpts'] && strlen($excerpt) > 0) $data_text .= "<div class='cm_exerpt'>{$excerpt}</div>";
+			$data_text .= "</div>";	
 		}
-		$output .= "</{$link_type}>\";";
-		//Create DOM Element for masonry_brick DIV
-		$output .= "
-			var el = document.createElement('div');
-			el.innerHTML = s;
-			el.className = 'masonry_brick';
-			el.style.display = 'table';
-			el.style.opacity = '0';
-			el.style.display = 'inline-block';
-			el.style.height = '{$a['height']}';\n";
-		if($thumbnail[5] && strpos($a['upscale_max_width'], '%') !== false)
+		//Get div max dimensions
+		if($thumbnail[4]) $max_height = self::$a['upscale_max_height'];
+		else $max_height = self::$a['max_height'];
+		if($thumbnail[5]) $max_width = self::$a['upscale_max_width'];
+		else $max_width = self::$a['max_width'];
+		//Add borders to max-heights if px values
+		if(substr(strtoupper($max_width), -2) == 'PX')
 		{
-			$output .= "			el.style.width = 'auto';\n";
+			$tmw = (int)(substr($max_width, 0, -2));
+			if(substr(strtoupper(self::$a['border_thickness']), -2) == 'PX') $tmw += (int)(substr(self::$a['border_thickness'], 0, -2));
+			if(substr(strtoupper(self::$a['outer_border_thickness']), -2) == 'PX') $tmw += (int)(substr(self::$a['outer_border_thickness'], 0, -2));
+			$max_width = "" . $tmw . "px";
 		}
-		else
+		if(substr(strtoupper($max_height), -2) == 'PX')
 		{
-			$output .= "			el.style.width = '{$a['width']}';\n";
+			$tmh = (int)(substr($max_height, 0, -2));
+			if(substr(strtoupper(self::$a['border_thickness']), -2) == 'PX') $tmh += (int)(substr(self::$a['border_thickness'], 0, -2));
+			if(substr(strtoupper(self::$a['outer_border_thickness']), -2) == 'PX') $tmh += (int)(substr(self::$a['outer_border_thickness'], 0, -2));
+			$max_height = "" . $tmh . "px";
 		}
-		//Do max heights
-		if($thumbnail[4])
+		//Get div normal dimensions
+		$norm_width = self::$a['width'];
+		$norm_height = self::$a['height'];
+		if(substr(strtoupper($norm_width), -2) == 'PX')
 		{
-			$output .= "			el.style.maxHeight = '{$a['upscale_max_height']}';\n";
+			$tmw = (int)(substr($norm_width, 0, -2));
+			if(substr(strtoupper(self::$a['border_thickness']), -2) == 'PX') $tmw += (int)(substr(self::$a['border_thickness'], 0, -2));
+			if(substr(strtoupper(self::$a['outer_border_thickness']), -2) == 'PX') $tmw += (int)(substr(self::$a['outer_border_thickness'], 0, -2));
+			$norm_width = "" . $tmw . "px";
 		}
-		else
+		if(substr(strtoupper($norm_height), -2) == 'PX')
 		{
-			$output .= "			el.style.maxHeight = '{$a['max_height']}';\n";
+			$tmh = (int)(substr($norm_height, 0, -2));
+			if(substr(strtoupper(self::$a['border_thickness']), -2) == 'PX') $tmh += (int)(substr(self::$a['border_thickness'], 0, -2));
+			if(substr(strtoupper(self::$a['outer_border_thickness']), -2) == 'PX') $tmh += (int)(substr(self::$a['outer_border_thickness'], 0, -2));
+			$norm_height = "" . $tmh . "px";
 		}
-		if($thumbnail[5])
+		if(self::$a['masonry'] === true)
 		{
-			$output .= "			el.style.maxWidth = '{$a['upscale_max_width']}';\n";
-		}
-		else
-		{
-			$output .= "			el.style.maxWidth = '{$a['max_width']}';\n";
-		}
-		$output .= "			elems.push(el);\n";
-		$output .= "		</script>";
-		/*
-			DRAW NOSCRIPT BOX
-		*/
-		if(!$a['require_javascript'])
-		{
+			/*
+				DRAW JAVASCRIPT BOX
+			*/
+			//Write the JavaScript
+			//Start with the innerHTML of the masonry_brick DIVs
+			$output .= "				s = \"<{$link_type} {$lightbox_text} {$link_class} style='display: block;' href='{$lnk}'><img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
+			if(!($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) && (self::$a['width'] != 'auto')) $output .= "width: 100%; ";
+			$output .= "height: " . self::$a['height'] . "; ";		
+			$output .= "max-height: " . self::$a['max_height'] . "; ";
+			if(self::$a['crop_images']) $output .= "visibility: hidden; ";
+			$output .= "'/>";
+			if(self::$a['crop_images']) $output .= "<div class='cactus_masonry_cropped' style='background-image: url({$thumbnail[0]});'></div>";
+			//Add the databox containing the title and excerpt
+			if($show_databox) $output .= $data_text;
+			$output .= "</{$link_type}>\";";
+			//Create DOM Element for masonry_brick DIV
 			$output .= "
-			<noscript>		
-				<div class='masonry_brick' style='height: {$a['noscript_height']}; width: {$a['noscript_width']};	max-height: {$a['noscript_max_height']}; max-width: {$a['noscript_max_width']};'><!--
-					--><{$link_type} class='masonry_brick_a' style='display: block; height: 100%; width: 100%' href='{$lnk}'><!--
-						--><img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'/><!--
-					--></{$link_type}><!--
-				--></div>
-			</noscript>\n";
+				el = document.createElement('div');
+				el.innerHTML = s;
+				el.className = 'masonry_brick';
+				el.style.opacity = '0';
+				el.style.display = 'inline-block';
+				el.style.height = '" . $norm_height . "';\n";
+			//Set width
+			if($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) $output .= "			el.style.width = 'auto';\n";
+			else $output .= "				el.style.width = '" . $norm_width . "';\n";
+			$output .= "				el.style.maxWidth = '" . $max_width . "';\n";
+			$output .= "				el.style.maxHeight = '" . $max_height . "';\n";
+
+			$output .= "				elems" . self::$id . ".push(el);\n";
+			/*
+				DRAW NOSCRIPT BOX
+			*/
+			if(!self::$a['require_javascript'])
+			{
+				self::$noscript_text .= "		
+					<div class='masonry_brick' style='height: " . self::$a['noscript_height'] . "; width: " . self::$a['noscript_width'] . ";	max-height: " . self::$a['noscript_max_height'] . "; max-width: " . self::$a['noscript_max_width'] . ";'>
+						<{$link_type} {$link_class} style='display: block; height: 100%; width: 100%' href='{$lnk}'>
+							<img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'/>
+						</{$link_type}>
+					</div>";
+			}
+		/*
+			MASONRY IS OFF
+		*/
 		}
-	/*
-		MASONRY IS OFF
-	*/
-	}
-	else if(!$a['masonry'])//Masonry OFF
-	{
-		$output .= "<div class='masonry_brick'><!--
-		--><{$link_type} {$lightbox_text} class='masonry_brick_a' href='{$lnk}'><!--
-			--><img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'><!--
-		--></{$link_type}><!--
-	--></div>\n";
-	}
-	return $output;
-}
-
-
-function cmpg_bool_to_string($bool)
-{
-	return ($bool) ? "true" : "false";
-}
-
-function cmpg_fix_boolean($val, $default)
-{
-	if($val === true || $val === false)
-	{
-		return $val;
-	}
-	if($val == "true")
-	{
-		return true;
-	}
-	if($val == "false")
-	{
-		return false;
-	}
-	return $default;
-}
-
-function cmpg_search_array_for_index($value, $arr, $default)
-{
-	for($i = 0; $i < count($arr); $i++)
-	{
-		if($arr[$i] == $value)
+		else if(!self::$a['masonry'])//Masonry OFF
 		{
-			return $i;
+			self::$nomasonry_text .= "
+			<div class='masonry_brick' style='display: inline-block; width: {$norm_width}; height: {$norm_height}; max-width: {$max_width}; max-height: {$max_height};' >
+			<{$link_type} {$lightbox_text} {$link_class} href='{$lnk}'>
+				<img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}' style='";
+			if(!($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) && (self::$a['width'] != 'auto')) self::$nomasonry_text .= "width: 100%; ";
+			if(self::$a['crop_images']) self::$nomasonry_text .= "visibility: hidden; ";
+			self::$nomasonry_text .= "height: " . self::$a['height'] . "; ";		
+			self::$nomasonry_text .= "max-height: " . self::$a['max_height'] . "; ";
+			self::$nomasonry_text .= "'/>";
+			if(self::$a['crop_images']) self::$nomasonry_text .= "<div class='cactus_masonry_cropped' style='background-image: url({$thumbnail[0]});'></div>";
+			if($show_databox) self::$nomasonry_text .= $data_text;
+			self::$nomasonry_text .= "
+			</{$link_type}>
+		</div>\n";
 		}
+		return $output;
 	}
-	return $default;
-}
 
-function cmpg_get_next_image_size($original, $max)
-{
-	$sizes = array("thumbnail", "medium", "large", "full");
-	//Get index of $max size - this will be as far as we search
-	$max_size_index = cmpg_search_array_for_index($max, $sizes, count($sizes)-1)+1;
-	//Return the next index value after the original element
-	$found = false;
-	for($i = 0; $i < $max_size_index; $i++)
+	static private function cmpg_bool_to_string($bool)
 	{
-		if($found)
+		return ($bool) ? "true" : "false";
+	}
+
+	static private function cmpg_fix_boolean($val, $default)
+	{
+		if($val === true || $val === false) return $val;
+		if($val == "true") return true;
+		if($val == "false") return false;
+		return $default;
+	}
+
+	static private function cmpg_search_array_for_index($value, $arr, $default)
+	{
+		for($i = 0; $i < count($arr); $i++)
 		{
-			return $sizes[$i];
+			if($arr[$i] == $value) return $i;
 		}
-		$found = ($sizes[$i] == $original);
+		return $default;
 	}
-	return $original;
-}
 
-function cmpg_text_to_number($txt)
-{
-	$out = filter_var($txt, FILTER_SANITIZE_NUMBER_INT);
-	if($out == "")
+	static private function cmpg_get_next_image_size($original, $max)
 	{
-		return 0;
+		$sizes = array("thumbnail", "medium", "large", "full");
+		//Get index of $max size - this will be as far as we search
+		$max_size_index = cmpg_search_array_for_index($max, $sizes, count($sizes)-1)+1;
+		//Return the next index value after the original element
+		$found = false;
+		for($i = 0; $i < $max_size_index; $i++)
+		{
+			if($found) return $sizes[$i];
+			$found = ($sizes[$i] == $original);
+		}
+		return $original;
 	}
-	return $out;
-}
 
-function cmpg_upsize_image($ID, $quality, $max_quality, $max_width, $max_height, $min_width, $min_height)
-{
-	$thumb = wp_get_attachment_image_src($ID,$quality);
-	if(!$thumb)
+	static private function cmpg_text_to_number($txt)
 	{
-		return false;
+		$out = filter_var($txt, FILTER_SANITIZE_NUMBER_INT);
+		if($out == "") return 0;
+		return $out;
 	}
-	//1 - width - 2 - height
-	//Exit if required
-	if(($min_width == 0 && $min_height == 0) || ($thumb[1] >= $min_width && $thumb[2] >= $min_height))
+
+	static private function cmpg_upsize_image($ID, $quality, $max_quality, $max_width, $max_height, $min_width, $min_height)
 	{
-		array_push($thumb, false);
-		array_push($thumb, false);
+		$thumb = wp_get_attachment_image_src($ID,$quality);
+		if(!$thumb) return false;
+		//1 - width - 2 - height
+		//Exit if required
+		if(($min_width == 0 && $min_height == 0) || ($thumb[1] >= $min_width && $thumb[2] >= $min_height))
+		{
+			array_push($thumb, false);
+			array_push($thumb, false);
+			return $thumb;
+		}
+		$nextsize = cmpg_get_next_image_size($quality, $max_quality);
+		//Sanitize maximums
+		$max_height = cmpg_text_to_number($max_height);
+		$max_width = cmpg_text_to_number($max_width);
+		//Record nature of upsize
+		$width_resize = (($thumb[1] < $min_width) && ($thumb[1] < $max_width || $max_width == 0));
+		$height_resize = (($thumb[2] < $min_height) && ($thumb[2] < $max_height || $max_height == 0));
+		//While
+		//	- Either thumb width or height is less than minimum
+		//	- There is a larger size thumbnail available
+		//	- Both thumb width and height are less than maximum (unless maximum is 0)
+		while(($thumb[1] < $min_width || $thumb[2] < $min_height) && ($nextsize != $quality) && ($thumb[1] < $max_width || $max_width == 0) && ($thumb[2] < $max_height || $max_height == 0))
+		{
+			$quality = $nextsize;
+			$thumb = wp_get_attachment_image_src(get_post_thumbnail_id($ID),$nextsize);	
+			$nextsize = cmpg_get_next_image_size($quality, $max_quality);
+		}
+		if(!$thumb) return false;
+		array_push($thumb, $width_resize);
+		array_push($thumb, $height_resize);
 		return $thumb;
 	}
-	$nextsize = cmpg_get_next_image_size($quality, $max_quality);
-	//Sanitize maximums
-	$max_height = cmpg_text_to_number($max_height);
-	$max_width = cmpg_text_to_number($max_width);
-	//Record nature of upsize
-	$width_resize = (($thumb[1] < $min_width) && ($thumb[1] < $max_width || $max_width == 0));
-	$height_resize = (($thumb[2] < $min_height) && ($thumb[2] < $max_height || $max_height == 0));
-	//While
-	//	- Either thumb width or height is less than minimum
-	//	- There is a larger size thumbnail available
-	//	- Both thumb width and height are less than maximum (unless maximum is 0)
-	while(($thumb[1] < $min_width || $thumb[2] < $min_height) && ($nextsize != $quality) && ($thumb[1] < $max_width || $max_width == 0) && ($thumb[2] < $max_height || $max_height == 0))
-	{
-		$quality = $nextsize;
-		$thumb = wp_get_attachment_image_src(get_post_thumbnail_id($ID),$nextsize);	
-		$nextsize = cmpg_get_next_image_size($quality, $max_quality);
-	}
-	if(!$thumb)
-	{
-		return false;
-	}
-	array_push($thumb, $width_resize);
-	array_push($thumb, $height_resize);
-	return $thumb;
-}
 
-/**		Creates the stylesheet for the gallery		**/
-function cmpg_create_styles()
-{
-	global $a;
-	return "
-	<style scoped>
-		div.masonry_brick
-		{
-			margin-bottom: " . round($a['vertical_spacing']/2,1) . "px;
-			padding-right: " . round($a['horizontal_spacing']/2,1) . "px;
-			padding-left: " . round($a['horizontal_spacing']/2,1) . "px;
-			margin-top: " . round($a['vertical_spacing']/2,1) . "px;
-			display: block;
-		}
-		.masonry_brick_a
-		{
-			border-width: {$a['outer_border_thickness']};
-			border-color: {$a['outer_border_color']};
-			background-color: {$a['hover_color']};
-		}
-		img.masonry_brick_img:hover
-		{
-			opacity: {$a['hover_intensity']};
-		}
-		div#masonry_post_gallery
-		{
- 			" . cmpg_return_if_true($a['gallery_align'] == "left" || $a['gallery_align'] == "center", "margin-right: auto;") . "
- 			" . cmpg_return_if_true($a['gallery_align'] == "right" || $a['gallery_align'] == "center", "margin-left: auto;") . "
-		}
-		img.masonry_brick_img
-		{
-			border-width: {$a['border_thickness']};
-			border-color: {$a['border_color']};
-		}
-	</style>";
-}
-
-function cmpg_return_if_true($test, $text_if_true, $text_if_false = "")
-{
-	if($test)
+	/**		Creates the stylesheet for the gallery		**/
+	static private function cmpg_create_styles()
 	{
-		return $text_if_true;
-	}
-	return $text_if_false;
-}
-
-function cmpg_create_javascript()
-{
-	global $a;
-	//Show loading bar
-	if($a['masonry'] === true)
-	{
-	?>
-	<script type='text/javascript'>
-<?php
-	if($a['show_loader'] === true)
-	{
-?>
-		if(!IE_LT_9) 
-		{
-			var spinbox = document.getElementById('MPG_Spin_Box');
-			spinbox.style.width = '50px';
-			spinbox.appendChild(MPG_spinner.spin().el);
-		}
-		var spincontainer = document.getElementById('MPG_Loader_Container');
-		spincontainer.style.display = 'block';
-<?php
-	}
-?>
-		//If there is anything to display - Start loading
-		if(elems.length > 0)//elems = array of HTML elements containing masonry objects to add
-		{
-			MPG_Loading = true;
-			pageStart = 0;
-			pageEnd = <?php echo cmpg_return_if_true($a['infinite_scroll'], "Math.min(elems.length, {$a['posts_per_page']})", "elems.length"); ?>;
-			pagePosition = 0;
-			add_elem(0);//Start infinite scroll
-		}
-		else //Otherwise, nothing to see here
-		{
-			document.getElementById('MPG_Loader_Container').style.display = 'none';
-		}	
-		//The greatest common denominator
-		function gcd(o){
-			if(!o.length)
-				return 0;
-			for(var r, a, i = o.length - 1, b = o[i]; i;)
-				for(a = o[--i]; r = a % b; a = b, b = r);
-			return b;
-		};
-		//Get the widths of columns.  This is used to set the col_width to the highest amount possible to improve masonry performance
-		function getColumnWidth()
-		{
-			var colWidths = new Array();
-			var elems = document.getElementsByClassName('masonry_brick');
-			for(var o = 0; o < elems.length; o++)
+		return "
+		<style scoped>
+			div.masonry_brick
 			{
-				colWidths.push(elems[o].offsetWidth);
+				margin-bottom: " . round(self::$a['vertical_spacing']/2,1) . "px;
+				padding-right: " . round(self::$a['horizontal_spacing']/2,1) . "px;
+				padding-left: " . round(self::$a['horizontal_spacing']/2,1) . "px;
+				margin-top: " . round(self::$a['vertical_spacing']/2,1) . "px;
+				display: block;
 			}
-			return gcd(colWidths);	
-		}
-		//Add an element to the masonry display
-		function add_elem(count)
+			.masonry_brick_a
+			{
+				border-width: " . self::$a['outer_border_thickness'] . ";
+				border-color: " . self::$a['outer_border_color'] . ";
+				background-color: " . self::$a['hover_color'] . ";
+			}
+			img.masonry_brick_img:hover
+			{
+				opacity: " . self::$a['hover_intensity'] . ";
+			}
+			div.masonry_post_gallery
+			{
+				" . self::cmpg_return_if_true(self::$a['gallery_align'] == "left" || self::$a['gallery_align'] == "center", "margin-right: auto;") . "
+				" . self::cmpg_return_if_true(self::$a['gallery_align'] == "right" || self::$a['gallery_align'] == "center", "margin-left: auto;") . "
+			}
+			img.masonry_brick_img, div.cactus_masonry_cropped
+			{
+				border-width: " . self::$a['border_thickness'] . ";
+				border-color: " . self::$a['border_color'] . ";
+				background-color: " . self::$a['image_background_color'] . ";
+			}
+		</style>";
+	}
+
+	static private function cmpg_return_if_true($test, $text_if_true, $text_if_false = "")
+	{
+		if($test) return $text_if_true;
+		return $text_if_false;
+	}
+
+	static private function cmpg_create_javascript()
+	{
+		$output = "";
+		if(self::$a['masonry'] === true)
 		{
-			MPG_Loading = true;
-			document.getElementById('masonry_post_gallery').appendChild(elems[count]);//Add element
-			imagesLoaded('#masonry_post_gallery', function() //Once the appended image has loaded:
-			{//Apply masonry to newly loaded image
-				var msnry = new Masonry('#masonry_post_gallery', {columnWidth: <?php if(strpos($a['width'],'%') !== false){echo "'.masonry_brick'";}else{echo "getColumnWidth()";} ?>, gutter: <?php echo $a['soft_gutter']; ?>, isFitWidth: <?php echo cmpg_bool_to_string($a['fit_width']); ?>});
-				elems[count].style.transition = 'opacity 0.5s';
-				elems[count].style.opacity = '1';
-				if(count+1 < elems.length && (! <?php echo cmpg_bool_to_string($a['infinite_scroll']); ?> || pagePosition < pageEnd))
-				{
-					if(MPG_end_of_page(MPG_getOffsetTop(elems[count])))
-					{
-						pageEnd = <?php echo cmpg_return_if_true($a['infinite_scroll'], "Math.min(elems.length, pageEnd+1)", "elems.length"); ?>;
-					}
-					pagePosition++;
-					add_elem(count+1);
-					document.getElementById('MPG_Loader').innerHTML = 'Loading (' + ((((count-pageStart)/(pageEnd-pageStart))*100) | 0) + '%)';
+			//JavaScript to load the gallery.  If the gallery is AJAXed, then the external JS files may not be ready.
+			//   So, set the load on a timer and check for readiness if not already uh.. ready...
+			$output .= "
+		<script type='text/javascript'>";
+			if(!self::$a['ajax_mode']) $output .= "
+			jQuery(document).ready(function()
+			{";
+			$output .= "
+				function cm" . self::$id . "_drawGallery()
+				{				
+					var cm" . self::$id . " = new Cactus_Masonry(" . self::cmpg_bool_to_string(self::$a['show_loader']) . ", " . self::cmpg_bool_to_string(self::$a['infinite_scroll']) . ", " . self::$a['posts_per_page'] . ", '" . self::$id . "', IE_LT_9" .self::$id . ", '" . self::$a['width'] . "', " . self::$a['soft_gutter'] . ", " . self::cmpg_bool_to_string(self::$a['fit_width']) . ", " . self::cmpg_bool_to_string(self::$a['force_auto_width']) . ");
+					cm" . self::$id . ".drawGallery(elems" . self::$id . ");	
 				}
-				else
+				function cm" . self::$id . "_testGallery()
 				{
-					document.getElementById('MPG_Loader').innerHTML = 'Loaded (100%)';
-					document.getElementById('MPG_Loader_Container').style.opacity = '0';
-					if(IE_LT_9)
+					if(typeof Cactus_Masonry === 'function')
 					{
-						document.getElementById('MPG_Loader_Container').style.visibility = 'hidden';
-					}	
-					if(!IE_LT_9) MPG_spinner.stop();
-<?php if($a['infinite_scroll']){ ?>
-					if(pagePosition+1 < elems.length)
-					{
-						pageStart = pageEnd;
-						pageEnd = Math.min(pageStart + <?php echo $a['posts_per_page'];?>,elems.length);
-						lastImageOffset = MPG_getOffsetTop(elems[count]);
-						window.onscroll = MPG_scroll_listener;
+						window.clearInterval(timer" . self::$id . ");
+						cm" . self::$id . "_drawGallery();
 					}
-<?php }?>
-					MPG_Loading = false;
 				}
-			});
+				if(typeof Cactus_Masonry === 'function') cm" . self::$id . "_drawGallery();
+				else timer" . self::$id . " = window.setInterval(cm" . self::$id . "_testGallery,10);";
+		if(!self::$a['ajax_mode']) $output .= "
+			});";
+			$output .= "
+		</script>\n";
 		}
-		function MPG_getOffsetTop(element)
-		{
-			var y = 0;
-			while(element && !isNaN(element.offsetLeft) && !isNaN(element.offsetTop))
-			{
-				y += element.offsetTop - element.scrollTop;
-				element = element.offsetParent;	
-			}
-			return y;
-		}
-		function MPG_end_of_page(datum)
-		{
-			if(typeof(window.innerHeight) == 'number') return (window.pageYOffset + window.innerHeight*1.25 >= datum);//Everyone
-			return (document.documentElement.scrollTop + document.documentElement.clientHeight*1.25 >= datum);//IE8
-		}
-<?php if($a['infinite_scroll']) { ?>
-		function MPG_scroll_listener(e)
-		{
-			MPG_load_next_section();
-		}
-		function MPG_load_next_section()
-		{
-			if(MPG_end_of_page(lastImageOffset))
-			{
-				MPG_Loading = true;
-				if(!IE_LT_9) document.getElementById('MPG_Spin_Box').appendChild(MPG_spinner.spin().el);
-				document.getElementById('MPG_Loader_Container').style.opacity = '1';
-				if(IE_LT_9)
-				{
-					document.getElementById('MPG_Loader_Container').style.visibility = 'visible';
-				}					
-				window.onscroll = null;
-				add_elem(pagePosition);
-			}
-		}			
-<?php } ?>
-	</script>
-<?php
+		return $output;
 	}
 }
+Cactus_Masonry::init();
 ?>
