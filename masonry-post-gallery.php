@@ -625,11 +625,9 @@ class Cactus_Masonry
 			//JavaScript to load the gallery.  If the gallery is AJAXed, then the external JS files may not be ready.
 			//   So, set the load on a timer and check for readiness if not already uh.. ready...
 			$output .= "
-		<script type='text/javascript'>";
-			if(!self::$a['ajax_mode']) $output .= "
+		<script type='text/javascript'>
 			jQuery(document).ready(function()
-			{";
-			$output .= "
+			{
 				function cm" . self::$id . "_drawGallery()
 				{				
 					var cm" . self::$id . " = new Cactus_Masonry(" . self::cmpg_bool_to_string(self::$a['show_loader']) . ", " . self::cmpg_bool_to_string(self::$a['infinite_scroll']) . ", " . self::$a['posts_per_page'] . ", '" . self::$id . "', IE_LT_9" .self::$id . ", '" . self::$a['width'] . "', " . self::$a['soft_gutter'] . ", " . self::cmpg_bool_to_string(self::$a['fit_width']) . ", " . self::cmpg_bool_to_string(self::$a['force_auto_width']) . ");
@@ -644,10 +642,8 @@ class Cactus_Masonry
 					}
 				}
 				if(typeof Cactus_Masonry === 'function') cm" . self::$id . "_drawGallery();
-				else timer" . self::$id . " = window.setInterval(cm" . self::$id . "_testGallery,10);";
-		if(!self::$a['ajax_mode']) $output .= "
-			});";
-			$output .= "
+				else timer" . self::$id . " = window.setInterval(cm" . self::$id . "_testGallery,10);
+			});
 		</script>\n";
 		}
 		return $output;
