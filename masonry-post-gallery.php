@@ -36,7 +36,7 @@
 class Cactus_Masonry
 {	
 	private static $id = "CM_GALLERY_";
-	private static $CM_version = "0.4.0.1b";
+	private static $CM_version = "0.4.0.3b";
 	private static $a = null;
 	private static $post_count = 0;
 	
