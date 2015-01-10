@@ -63,6 +63,10 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 
 == Changelog ==
 
+= 0.4.0.2b =
+* Fixed a bug with the console error caused by an non-existent image id set as the default image id
+* Fixed a major bug that may cause problems due to code changes caused by wptexturize on some sites...  uh... wptexturize...
+
 = 0.4.0.1b =
 * Removed a reference to the lightbox map file to fix a 404 warning in compatible browsers
 
@@ -256,6 +260,9 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 Please refer to the [FAQ page](http://cactuscomputers.com.au/masonry/frequently-asked-questions/) of the Cactus Masonry website.
 
 == Upgrade Notice ==
+
+= 0.4.0.2b =
+WARNING: The 0.4 updates change the #masonry_post_gallery to div.masonry_post_gallery which could affect your custom CSS.  Fixed a major bug caused by an interaction with wptexturize.
 
 = 0.4.0.1b =
 WARNING: The 0.4 updates change the #masonry_post_gallery to div.masonry_post_gallery which could affect your custom CSS.  The latest update fixes a 404 warning for lightbox.min.map.

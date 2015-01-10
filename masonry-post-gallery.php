@@ -306,17 +306,17 @@ class Cactus_Masonry
 		$thumbnail = self::cmpg_upsize_image($iid, self::$a['quality'], self::$a['max_upscale_quality'], self::$a['upscale_max_width'], self::$a['upscale_max_height'], self::$a['upscale_narrow_images'], self::$a['upscale_short_images']);		
 		if(!$thumbnail)
 		{
-			$output.="<script>console.log('Cactus Masonry Error: -" . self::$a['default_image_id'] . "- Image with ID={$iid} cannot be found');</script>";
+			$output.="console.log('Cactus Masonry Error: -" . self::$a['default_image_id'] . "- Image with ID={$iid} cannot be found');";
 			return $output;
 		}
 		$link_type = "a";
 		$link_class = "masonry_brick_a";
 		if(self::$a['link_custom_class'] != '') $link_class .= " " . self::$a['link_custom_class'];
-		$link_class = "class='{$link_class}'";
-		$lightbox_text = " data-lightbox='";
-		if(self::$a['browse_with_lightbox'] === true) $lightbox_text .= "thispage'";
-		else $lightbox_text .= $post->ID . "'";
-		if(self::$a['show_lightbox_title'] === true) $lightbox_text .= " data-title='" . $tit . "'";
+		$link_class = "class=\"{$link_class}\"";
+		$lightbox_text = " data-lightbox=\"";
+		if(self::$a['browse_with_lightbox'] === true) $lightbox_text .= "thispage\"";
+		else $lightbox_text .= $post->ID . "\"";
+		if(self::$a['show_lightbox_title'] === true) $lightbox_text .= " data-title=\"" . $tit . "\"";
 		//Set where each image links and handle any interference with the show_lightbox parameter
 		if(has_post_thumbnail())
 		{
@@ -385,9 +385,9 @@ class Cactus_Masonry
 		//Sort out databox
 		if($show_databox)
 		{
-			$data_text = "<div class='cactus_masonry_databox'>";
-			if(self::$a['display_post_titles'] && strlen($tit) > 0) $data_text .= "<div class='cm_title'>{$tit}</div>";
-			if(self::$a['display_post_excerpts'] && strlen($excerpt) > 0) $data_text .= "<div class='cm_exerpt'>{$excerpt}</div>";
+			$data_text = "<div class=\"cactus_masonry_databox\">";
+			if(self::$a['display_post_titles'] && strlen($tit) > 0) $data_text .= "<div class=\"cm_title\">{$tit}</div>";
+			if(self::$a['display_post_excerpts'] && strlen($excerpt) > 0) $data_text .= "<div class=\"cm_exerpt\">{$excerpt}</div>";
 			$data_text .= "</div>";	
 		}
 		//Get div max dimensions
@@ -434,16 +434,16 @@ class Cactus_Masonry
 			*/
 			//Write the JavaScript
 			//Start with the innerHTML of the masonry_brick DIVs
-			$output .= "				s = \"<{$link_type} {$lightbox_text} {$link_class} style='display: block;' href='{$lnk}'><img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
+			$output .= "				s = '<{$link_type} {$lightbox_text} {$link_class} style=\"display: block;\" href=\"{$lnk}\"><img class=\"masonry_brick_img size-thumbnail\" src=\"{$thumbnail[0]}\" alt=\"{$tit}\" style=\"";
 			if(!($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) && (self::$a['width'] != 'auto')) $output .= "width: 100%; ";
 			$output .= "height: " . self::$a['height'] . "; ";		
 			$output .= "max-height: " . self::$a['max_height'] . "; ";
 			if(self::$a['crop_images']) $output .= "visibility: hidden; ";
-			$output .= "'/>";
-			if(self::$a['crop_images']) $output .= "<div class='cactus_masonry_cropped' style='background-image: url({$thumbnail[0]});'></div>";
+			$output .= "\"/>";
+			if(self::$a['crop_images']) $output .= "<div class=\"cactus_masonry_cropped\" style=\"background-image: url({$thumbnail[0]});\"></div>";
 			//Add the databox containing the title and excerpt
 			if($show_databox) $output .= $data_text;
-			$output .= "</{$link_type}>\";";
+			$output .= "</{$link_type}>';";
 			//Create DOM Element for masonry_brick DIV
 			$output .= "
 				el = document.createElement('div');
