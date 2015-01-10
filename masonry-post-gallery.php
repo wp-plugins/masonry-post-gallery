@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.4.0.2b
+ * @version 0.4.0.3b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.4.0.2b
+ * Version: 0.4.0.3b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -122,45 +122,45 @@ class Cactus_Masonry
 			'outer_border_thickness'	=>	"0px",
 			'post_category' 			=>	"", 
 			'post_order'				=>	"DESC", 
-			'post_orderby' 				=> 	"post_date", 
-			'gallery_align' 			=> 	"center",
-			'image_background_color' 	=> 	"#ffffff", 
-			'hover_color' 				=> 	"#ffffff", 
-			'hover_intensity' 			=> 	"0.5",
-			'upscale_narrow_images'		=> 0, 
-			'upscale_short_images' 		=> 0, 
-			'max_upscale_quality' 		=> "large",
-			'noscript_width' 			=> "auto", 
-			'noscript_height' 			=> "auto",
-			'noscript_max_width' 		=> "none",
-			'noscript_max_height' 		=> "none",
-			'upscale_max_width' 		=> "none", 
-			'upscale_max_height' 		=> "none",
-			'link_location' 			=> "post", 
-			'show_lightbox' 			=> false,
-			'browse_with_lightbox' 		=> false, 
-			'show_lightbox_title' 		=> false, 
-			'soft_gutter' 				=> 0,
-			'infinite_scroll' 			=> true, 
-			'posts_per_page' 			=> 30,
-			'show_loader' 				=> true, 
-			'search_start'				=> 0, 
-			'page_size' 				=> 1000, 
-			'test_mode' 				=> false, 
-			'default_image_id' 			=> false, 
-			'show_posts' 				=> true,
-			'show_pages' 				=> false,
-			'require_javascript' 		=> false,
-			'javascript_error_message' 	=> 'Please enable JavaScript to properly view this page.',
-			'infinite_scroll_buffer' 	=> 400,
-			'display_post_titles' 		=> false,
-			'display_post_excerpts' 	=> false,
-			'custom_post_types' 		=> "",
-			'load_js'					=> true,
-			'force_auto_width'			=> false,
-			'crop_images'				=> false,
-			'ajax_mode'					=> false,
-			'link_custom_class'			=> ''
+			'post_orderby' 				=>	"post_date", 
+			'gallery_align' 			=>	"center",
+			'image_background_color' 	=>	"#ffffff", 
+			'hover_color' 				=>	"#ffffff", 
+			'hover_intensity' 			=>	"0.5",
+			'upscale_narrow_images'		=>	0, 
+			'upscale_short_images' 		=>	0, 
+			'max_upscale_quality' 		=>	"large",
+			'noscript_width' 			=>	"auto", 
+			'noscript_height' 			=>	"auto",
+			'noscript_max_width' 		=>	"none",
+			'noscript_max_height' 		=>	"none",
+			'upscale_max_width' 		=>	"none", 
+			'upscale_max_height' 		=>	"none",
+			'link_location' 			=>	"post", 
+			'show_lightbox' 			=>	false,
+			'browse_with_lightbox' 		=>	false, 
+			'show_lightbox_title' 		=>	false, 
+			'soft_gutter' 				=>	0,
+			'infinite_scroll' 			=>	true, 
+			'posts_per_page' 			=>	30,
+			'show_loader' 				=>	true, 
+			'search_start'				=>	0, 
+			'page_size' 				=>	1000, 
+			'test_mode' 				=>	false, 
+			'default_image_id' 			=>	false, 
+			'show_posts' 				=>	true,
+			'show_pages' 				=>	false,
+			'require_javascript' 		=>	false,
+			'javascript_error_message' 	=>	'Please enable JavaScript to properly view this page.',
+			'infinite_scroll_buffer' 	=>	400,
+			'display_post_titles' 		=>	false,
+			'display_post_excerpts' 	=>	false,
+			'custom_post_types' 		=>	"",
+			'load_js'					=>	true,
+			'force_auto_width'			=>	false,
+			'crop_images'				=>	false,
+			'ajax_mode'					=>	false,
+			'link_custom_class'			=>	''
 			), $atts);
 		
 		//Fix boolean parameter values
@@ -227,8 +227,8 @@ class Cactus_Masonry
 			setup_postdata($post);
 			if(has_post_thumbnail($post->ID) || !(self::$a['default_image_id'] === false))
 			{	
-				if($post_count >= self::$a['search_start'] && $post_count < self::$a['page_size']) $script_text .= self::render_post();
-				$post_count++;
+				if(self::$post_count >= self::$a['search_start'] && self::$post_count < self::$a['search_start']+self::$a['page_size']) $script_text .= self::render_post();
+				self::$post_count++;
 			}	
 		}
 		$output .= self::$noscript_text . "
@@ -312,11 +312,18 @@ class Cactus_Masonry
 		$link_type = "a";
 		$link_class = "masonry_brick_a";
 		if(self::$a['link_custom_class'] != '') $link_class .= " " . self::$a['link_custom_class'];
-		$link_class = "class=\"{$link_class}\"";
-		$lightbox_text = " data-lightbox=\"";
-		if(self::$a['browse_with_lightbox'] === true) $lightbox_text .= "thispage\"";
-		else $lightbox_text .= $post->ID . "\"";
-		if(self::$a['show_lightbox_title'] === true) $lightbox_text .= " data-title=\"" . $tit . "\"";
+		$lightbox_text = " data-lightbox='";
+		if(self::$a['browse_with_lightbox'] === true)
+		{
+			$lightbox_text .= "thispage'";
+			$data_lightbox = "thispage";
+		}
+		else 
+		{
+			$lightbox_text .= $post->ID . "'";
+			$data_lightbox = $post->ID;
+		}
+		if(self::$a['show_lightbox_title'] === true) $lightbox_text .= " data-title='" . $tit . "'";
 		//Set where each image links and handle any interference with the show_lightbox parameter
 		if(has_post_thumbnail())
 		{
@@ -381,13 +388,17 @@ class Cactus_Masonry
 				$lnk = get_permalink();	
 				self::$a['show_lightbox'] = false;
 		}
-		if(!(self::$a['show_lightbox'] === true)) $lightbox_text = "";
+		if(!(self::$a['show_lightbox'] === true)) 
+		{
+			$lightbox_text = "";
+			$data_lightbox = "";
+		}
 		//Sort out databox
 		if($show_databox)
 		{
-			$data_text = "<div class=\"cactus_masonry_databox\">";
-			if(self::$a['display_post_titles'] && strlen($tit) > 0) $data_text .= "<div class=\"cm_title\">{$tit}</div>";
-			if(self::$a['display_post_excerpts'] && strlen($excerpt) > 0) $data_text .= "<div class=\"cm_exerpt\">{$excerpt}</div>";
+			$data_text = "<div class='cactus_masonry_databox'>";
+			if(self::$a['display_post_titles'] && strlen($tit) > 0) $data_text .= "<div class='cm_title'>{$tit}</div>";
+			if(self::$a['display_post_excerpts'] && strlen($excerpt) > 0) $data_text .= "<div class='cm_exerpt'>{$excerpt}</div>";
 			$data_text .= "</div>";	
 		}
 		//Get div max dimensions
@@ -434,24 +445,35 @@ class Cactus_Masonry
 			*/
 			//Write the JavaScript
 			//Start with the innerHTML of the masonry_brick DIVs
-			$output .= "				s = '<{$link_type} {$lightbox_text} {$link_class} style=\"display: block;\" href=\"{$lnk}\"><img class=\"masonry_brick_img size-thumbnail\" src=\"{$thumbnail[0]}\" alt=\"{$tit}\" style=\"";
+			$output .= "				s = \"<img class='masonry_brick_img size-thumbnail' src='{$thumbnail[0]}' alt='{$tit}' style='";
 			if(!($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) && (self::$a['width'] != 'auto')) $output .= "width: 100%; ";
 			$output .= "height: " . self::$a['height'] . "; ";		
 			$output .= "max-height: " . self::$a['max_height'] . "; ";
 			if(self::$a['crop_images']) $output .= "visibility: hidden; ";
-			$output .= "\"/>";
-			if(self::$a['crop_images']) $output .= "<div class=\"cactus_masonry_cropped\" style=\"background-image: url({$thumbnail[0]});\"></div>";
+			$output .= "'/>";
+			if(self::$a['crop_images']) $output .= "<div class='cactus_masonry_cropped' style='background-image: url({$thumbnail[0]});'></div>";
 			//Add the databox containing the title and excerpt
 			if($show_databox) $output .= $data_text;
-			$output .= "</{$link_type}>';";
 			//Create DOM Element for masonry_brick DIV
+			$output .= "\";
+				lk = document.createElement('{$link_type}');
+				lk.className = '{$link_class}';
+				lk.style.display = 'block';
+				lk.href = \"{$lnk}\";";
+			if($data_lightbox != "")
+				$output .= "
+				lk.setAttribute('data-lightbox', '{$data_lightbox}');";
+			if(self::$a['show_lightbox_title'] === true)
+				$output .= "
+				lk.setAttribute('data-title', \"{$tit}\");";
 			$output .= "
+				lk.innerHTML = s;
 				el = document.createElement('div');
-				el.innerHTML = s;
 				el.className = 'masonry_brick';
 				el.style.opacity = '0';
 				el.style.display = 'inline-block';
-				el.style.height = '" . $norm_height . "';\n";
+				el.style.height = '" . $norm_height . "';
+				el.appendChild(lk);\n";
 			//Set width
 			if($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) $output .= "			el.style.width = 'auto';\n";
 			else $output .= "				el.style.width = '" . $norm_width . "';\n";
@@ -466,7 +488,7 @@ class Cactus_Masonry
 			{
 				self::$noscript_text .= "		
 					<div class='masonry_brick' style='height: " . self::$a['noscript_height'] . "; width: " . self::$a['noscript_width'] . ";	max-height: " . self::$a['noscript_max_height'] . "; max-width: " . self::$a['noscript_max_width'] . ";'>
-						<{$link_type} {$link_class} style='display: block; height: 100%; width: 100%' href='{$lnk}'>
+						<{$link_type} class='{$link_class}' style='display: block; height: 100%; width: 100%' href='{$lnk}'>
 							<img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'/>
 						</{$link_type}>
 					</div>";
