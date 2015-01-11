@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.1
-Stable tag: 0.4.0.3b
+Stable tag: 0.4.0.4b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.4.0.4b =
+* Fixed encoding to UTF8
 
 = 0.4.0.3b =
 * Further fixes for the wptexturize bug which should no longer interfere with other plugins
@@ -264,6 +267,9 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 Please refer to the [FAQ page](http://cactuscomputers.com.au/masonry/frequently-asked-questions/) of the Cactus Masonry website.
 
 == Upgrade Notice ==
+
+= 0.4.0.4b =
+WARNING: The 0.4 updates change the #masonry_post_gallery to div.masonry_post_gallery which could affect your custom CSS.  Fixed encoding to UTF8.
 
 = 0.4.0.3b =
 WARNING: The 0.4 updates change the #masonry_post_gallery to div.masonry_post_gallery which could affect your custom CSS.  Fixed a major bug caused by an interaction with wptexturize.

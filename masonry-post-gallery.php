@@ -1,13 +1,13 @@
-<?php
+Ôªø<?php
 /**
  * @package Cactus Masonry
- * @version 0.4.0.3b
+ * @version 0.4.0.4b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.4.0.3b
+ * Version: 0.4.0.4b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -36,7 +36,7 @@
 class Cactus_Masonry
 {	
 	private static $id = "CM_GALLERY_";
-	private static $CM_version = "0.4.0.3b";
+	private static $CM_version = "0.4.0.4b";
 	private static $a = null;
 	private static $post_count = 0;
 	
@@ -284,10 +284,10 @@ class Cactus_Masonry
 	{
 		$str = trim($str);
 		$str = str_replace("'", "&#39;", $str);
-		$str = str_replace('ë', "&lsquo;", $str);
-		$str = str_replace('í', "&rsquo;", $str);
-		$str = str_replace('ì', "&ldquo;", $str);
-		$str = str_replace('î', "&rdquo;", $str);
+		$str = str_replace('‚Äò', "&lsquo;", $str);
+		$str = str_replace('‚Äô', "&rsquo;", $str);
+		$str = str_replace('‚Äú', "&ldquo;", $str);
+		$str = str_replace('‚Äù', "&rdquo;", $str);
 		if($hide_new_lines) $str = str_replace(array("\r\n","\r","\n"), "", $str);
 		else $str = str_replace(array("\r\n","\r","\n"), "<br/>", $str);
 		return wptexturize($str);
