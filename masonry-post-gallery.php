@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.4.0.5b
+ * @version 0.4.0.6b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.4.0.5b
+ * Version: 0.4.0.6b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -36,7 +36,7 @@
 class Cactus_Masonry
 {	
 	private static $id = "CM_GALLERY_";
-	private static $CM_version = "0.4.0.5b";
+	private static $CM_version = "0.4.0.6b";
 	private static $a = null;
 	private static $post_count = 0;
 	
@@ -210,7 +210,6 @@ class Cactus_Masonry
 		if(self::$a['show_pages']) array_push($post_type, 'page');
 		if(self::$a['show_posts']) array_push($post_type, 'post');
 		//Set up custom post types
-		echo self::$a['custom_post_types'];
 		$args = array(	'posts_per_page' => -1, 
 						'offset' => 0,
 						'category_name' => self::$a['post_category'], 
@@ -231,6 +230,9 @@ class Cactus_Masonry
 				self::$post_count++;
 			}	
 		}
+		//Broadcast post count
+		global $GLOBALS; 
+		$GLOBALS['cactus_masonry_post_count'] = self::$post_count;
 		$output .= self::$noscript_text . "
 			</noscript>
 		</div>";
