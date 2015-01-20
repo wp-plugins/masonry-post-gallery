@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.4.0.6b
+ * @version 0.4.0.7b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.4.0.6b
+ * Version: 0.4.0.7b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -31,12 +31,13 @@
 /*TO DO
 - ADD TAGS
 - ADD PARENT ID 
+- FIX NO JS
 */
 
 class Cactus_Masonry
 {	
 	private static $id = "CM_GALLERY_";
-	private static $CM_version = "0.4.0.6b";
+	private static $CM_version = "0.4.0.7b";
 	private static $a = null;
 	private static $post_count = 0;
 	
@@ -503,7 +504,7 @@ class Cactus_Masonry
 		{
 			self::$nomasonry_text .= "
 			<div class='masonry_brick' style='display: inline-block; width: {$norm_width}; height: {$norm_height}; max-width: {$max_width}; max-height: {$max_height};' >
-			<{$link_type} {$lightbox_text} {$link_class} href='{$lnk}'>
+			<{$link_type} {$lightbox_text} class='{$link_class}' href='{$lnk}'>
 				<img class='masonry_brick_img' src='{$thumbnail[0]}' alt='{$tit}' style='";
 			if(!($thumbnail[5] && strpos(self::$a['upscale_max_width'], '%') !== false) && (self::$a['width'] != 'auto')) self::$nomasonry_text .= "width: 100%; ";
 			if(self::$a['crop_images']) self::$nomasonry_text .= "visibility: hidden; ";

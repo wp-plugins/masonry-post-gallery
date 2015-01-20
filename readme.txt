@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.1
-Stable tag: 0.4.0.6b
+Stable tag: 0.4.0.7b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.4.0.7b =
+* Fixed a bug where the title and excerpt databox would appear incorrectly when masonry=false
 
 = 0.4.0.6b =
 * Fixed a bug with custom post types
