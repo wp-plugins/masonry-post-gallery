@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactu
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
 Tested up to: 4.1
-Stable tag: 0.4.0.7b
+Stable tag: 0.4.0.8b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,13 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.4.0.8b =
+* Added the ability to search for posts by tag slug.  The new tag parameter supports a tag slug or comma separated list of tag slugs.
+* You can now search for child posts of a given post only.  Specify the parent post's ID using the post_parent_id parameter.
+* Added the ability to perform a basic search using a custom taxonomy and term.
+* Added title and excerpt display to galleries where JavaScript is disabled.
+* Fixed a bug where inner borders won't show when gallery images are cropped
 
 = 0.4.0.7b =
 * Fixed a bug where the title and excerpt databox would appear incorrectly when masonry=false
@@ -277,6 +284,12 @@ Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/mason
 Please refer to the [FAQ page](http://cactuscomputers.com.au/masonry/frequently-asked-questions/) of the Cactus Masonry website.
 
 == Upgrade Notice ==
+
+= 0.4.0.8b =
+Upgrade for a bug fix and the new ability to search by parent ID, Tag, or basic taxonomy terms (thanks Eric).
+
+= 0.4.0.7b =
+Update for a fix that can cause the title and excerpts to display incorrecly when masonry is set to false
 
 = 0.4.0.6b =
 Fixed a bug with the custom_post_types parameter - thanks Bjørn for bringing this to my attention.  Added a global variable to help with external pagination.

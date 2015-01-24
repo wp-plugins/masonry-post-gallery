@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.4.0.7b
+ * @version 0.4.0.8b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.4.0.7b
+ * Version: 0.4.0.8b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
  * License: Licenced to Thrill
@@ -28,16 +28,10 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/*TO DO
-- ADD TAGS
-- ADD PARENT ID 
-- FIX NO JS
-*/
-
 class Cactus_Masonry
 {	
 	private static $id = "CM_GALLERY_";
-	private static $CM_version = "0.4.0.7b";
+	private static $CM_version = "0.4.0.8b";
 	private static $a = null;
 	private static $post_count = 0;
 	
@@ -161,7 +155,11 @@ class Cactus_Masonry
 			'force_auto_width'			=>	false,
 			'crop_images'				=>	false,
 			'ajax_mode'					=>	false,
-			'link_custom_class'			=>	''
+			'link_custom_class'			=>	'',
+			'post_parent_id'			=>	'',
+			'post_tag_slug'				=>	'',
+			'post_taxonomy'				=>	'',
+			'post_taxonomy_term'		=>	'',
 			), $atts);
 		
 		//Fix boolean parameter values
@@ -210,13 +208,17 @@ class Cactus_Masonry
 		$post_type = array('cactus_none');
 		if(self::$a['show_pages']) array_push($post_type, 'page');
 		if(self::$a['show_posts']) array_push($post_type, 'post');
-		//Set up custom post types
+		//Set up query
 		$args = array(	'posts_per_page' => -1, 
 						'offset' => 0,
 						'category_name' => self::$a['post_category'], 
 						'orderby' => self::fix_sort_column(self::$a['post_orderby']), 
 						'order' => self::$a['post_order'],
-						'post_type' => array_merge($post_type, explode(',', self::$a['custom_post_types'])));
+						'post_parent' => self::$a['post_parent_id'],
+						'tag' => self::$a['post_tag_slug'],
+						'post_type' => array_merge($post_type, explode(',', self::$a['custom_post_types'])),
+						self::$a['post_taxonomy'] => self::$a['post_taxonomy_term']
+						);
 		$lastposts = get_posts($args);
 		//For each post found by the query:
 		$script_text = "";
@@ -225,8 +227,11 @@ class Cactus_Masonry
 		foreach($lastposts as $post)
 		{
 			setup_postdata($post);
-			if(has_post_thumbnail($post->ID) || !(self::$a['default_image_id'] === false))
+			//Count and render post if it fits the search term
+			//						HAS THUMBNAIL OR DEFAULT THUMBNAIL IS SET
+			if((has_post_thumbnail($post->ID) || !(self::$a['default_image_id'] === false)))
 			{	
+				//Only render post if its within the page count
 				if(self::$post_count >= self::$a['search_start'] && self::$post_count < self::$a['search_start']+self::$a['page_size']) $script_text .= self::render_post();
 				self::$post_count++;
 			}	
@@ -491,8 +496,10 @@ class Cactus_Masonry
 			{
 				self::$noscript_text .= "		
 					<div class='masonry_brick' style='height: " . self::$a['noscript_height'] . "; width: " . self::$a['noscript_width'] . ";	max-height: " . self::$a['noscript_max_height'] . "; max-width: " . self::$a['noscript_max_width'] . ";'>
-						<{$link_type} class='{$link_class}' style='display: block; height: 100%; width: 100%' href='{$lnk}'>
-							<img class='masonry_brick_img' style='display: block; height: 100%; width: 100%' src='{$thumbnail[0]}' alt='{$tit}'/>
+						<{$link_type} class='{$link_class}' style='display: block; height: 100%; width: 100%;' href='{$lnk}'>
+							<img class='masonry_brick_img' style='display: block; height: 100%; width: 100%;' src='{$thumbnail[0]}' alt='{$tit}'/>";
+				if($show_databox) self::$noscript_text .= $data_text;		
+				self::$noscript_text .= "
 						</{$link_type}>
 					</div>";
 			}

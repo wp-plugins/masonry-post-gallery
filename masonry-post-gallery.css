@@ -47,7 +47,7 @@ div.masonry_post_gallery, div.masonry_brick, a.masonry_brick_a, div.masonry_bric
 	max-width: none;
 }
 
-a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img
+a.masonry_brick_a, div.masonry_brick_a, img.masonry_brick_img, .masonry_brick_a div.cactus_masonry_cropped
 {
 	display: block;
 	padding: 0px;
