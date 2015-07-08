@@ -3,8 +3,8 @@ Contributors: bortpress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cactus%40cactuscomputers%2ecom%2eau&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted
 Tags: Posts, Gallery, Masonry, Image, Post Gallery, Thumbnail Gallery
 Requires at least: 3.9.1
-Tested up to: 4.1
-Stable tag: 0.4.0.8b
+Tested up to: 4.2.2
+Stable tag: 0.4.0.9b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,16 @@ For a full list of Cactus Masonry’s shortcode parameters, visit the [Shortcode
 Alternately, visit the [Shortcode Generator](http://cactuscomputers.com.au/masonry/short-code-generator) to have your shortcode made for you! 
 
 == Changelog ==
+
+= 0.4.0.9b =
+* WARNING:  Many users have manually altered the plugin to suit their particular niche needs.  If you have modified the plugin, contact us before updating, and we will try to help with the migration.
+* Updated spin.js, masonry.js, imagesLoaded.js, and lightbox.js dependencies
+* Updated licensing terms.
+* Added the ability to specify a custom link rel attribute.  Added by request to help with some plugin interactions.  Not generally useful.
+* Set the default transition duration to zero to improve resize performance.  This can be altered with the transitionDuration parameter, but setting this value may cause layout and performance issues.
+* Added the ability to open each item in a new window with the open_in_new_windows parameter
+* Fixed issue where lightbox.js was loaded even when the lightbox was switched off
+
 
 = 0.4.0.8b =
 * Added the ability to search for posts by tag slug.  The new tag parameter supports a tag slug or comma separated list of tag slugs.
@@ -285,11 +295,14 @@ Please refer to the [FAQ page](http://cactuscomputers.com.au/masonry/frequently-
 
 == Upgrade Notice ==
 
+= 0.4.0.9b =
+Updates and new features.  DO NOT UPDATE if you have customized the plugin yourself.  Contact us first!
+
 = 0.4.0.8b =
 Upgrade for a bug fix and the new ability to search by parent ID, Tag, or basic taxonomy terms (thanks Eric).
 
 = 0.4.0.7b =
-Update for a fix that can cause the title and excerpts to display incorrecly when masonry is set to false
+Update for a fix that can cause the title and excerpts to display incorrectly when masonry is set to false
 
 = 0.4.0.6b =
 Fixed a bug with the custom_post_types parameter - thanks Bjørn for bringing this to my attention.  Added a global variable to help with external pagination.

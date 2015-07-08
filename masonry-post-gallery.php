@@ -1,16 +1,16 @@
 <?php
 /**
  * @package Cactus Masonry
- * @version 0.4.0.8b
+ * @version 0.4.0.9b
  */
 /*
  * Plugin Name: Cactus Masonry
  * Plugin URI: http://cactuscomputers.com.au/masonry
  * Description: A highly customizable masonry styled gallery of post thumbnails.  Please refer to the <a href="http://cactuscomputers.com.au/masonry">plugin Home Page</a> for detailed instructions.
- * Version: 0.4.0.8b
+ * Version: 0.4.0.9b
  * Author: N. E - Cactus Computers
  * Author URI: http://www.cactuscomputers.com.au/masonry
- * License: Licenced to Thrill
+ * License: Licenced to Thrill... but also GPLv2.
  */
  /*  Copyright 2014  Cactus Computers  (email : cactus@cactuscomputers.com.au)
 
@@ -26,7 +26,28 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+	
+	Simply put - from the author:  This plugin is designed to be helpful,
+	and we will take all reasonable efforts to maintain the plugin's quality for all
+	those who use it.
+	
+	However, there is no guarantee as to the effectiveness of the plugin, nor is 
+	there any guarantee that the plugin will be supported indefinitely.  One day the plugin
+	may become insecure or obsolete due to changing online conditions and/or a lack of 
+	updates.  This plugin also relies on third party JavaScript modules and thus may 
+	become ineffective due to these modules becoming obsolete.
+	
+	Any loss arising directly or indirectly from the plugin is unfortunate and unintentional.
+	However, by using this plugin you agree to accept any risk of loss caused and not
+	hold the authors or distributors liable for any such loss.  This plugin is supplied
+	with the best of intentions, free of charge, to help those who wish to use it.
+	
+	By using this plugin you agree to accept this risk of loss caused and not hold the
+	author responsible.
+	
+	I really hope this plugin can help you and that you have a great experience with it!
 */
+
 
 class Cactus_Masonry
 {	
@@ -84,8 +105,7 @@ class Cactus_Masonry
 				<script type='text/javascript'>
 					IE_LT_9" . self::$id . " = true;
 				</script>
-			<![endif]-->
-		";
+			<![endif]-->";
 	}
 
 	static public function masonrypostgallery_handler($atts)
@@ -154,12 +174,14 @@ class Cactus_Masonry
 			'load_js'					=>	true,
 			'force_auto_width'			=>	false,
 			'crop_images'				=>	false,
-			'ajax_mode'					=>	false,
 			'link_custom_class'			=>	'',
 			'post_parent_id'			=>	'',
 			'post_tag_slug'				=>	'',
 			'post_taxonomy'				=>	'',
 			'post_taxonomy_term'		=>	'',
+			'link_custom_rel'			=>	'',
+			'transition_duration'		=>	0,
+			'open_in_new_windows'		=>	false
 			), $atts);
 		
 		//Fix boolean parameter values
@@ -179,20 +201,22 @@ class Cactus_Masonry
 		self::$a['load_js'] = self::cmpg_fix_boolean(self::$a['load_js'], true);
 		self::$a['force_auto_width'] = self::cmpg_fix_boolean(self::$a['force_auto_width'], true);
 		self::$a['crop_images'] = self::cmpg_fix_boolean(self::$a['crop_images'], true);
-		self::$a['ajax_mode'] = self::cmpg_fix_boolean(self::$a['ajax_mode'], true);
+		self::$a['open_in_new_windows'] = self::cmpg_fix_boolean(self::$a['open_in_new_windows'], false);
 		//Load external libraries
 		if(self::$a['load_js'])
 		{
 			wp_enqueue_style('MPG_style', plugin_dir_url(__FILE__) . 'masonry-post-gallery.css');
-			wp_enqueue_style('Lightbox_style', plugin_dir_url(__FILE__) . 'lightbox.css');
+			if(self::$a['show_lightbox']) wp_enqueue_style('Lightbox_style', plugin_dir_url(__FILE__) . 'lightbox.css');
 			wp_enqueue_script('Masonry', plugin_dir_url(__FILE__) . 'masonry.pkgd.min.js');
 			wp_enqueue_script('ImagesLoaded', plugin_dir_url(__FILE__) . 'imagesloaded.pkgd.min.js');
 			wp_enqueue_script('Spin', plugin_dir_url(__FILE__) . 'spin.min.js');
 			wp_enqueue_script('CactusMasonry', plugin_dir_url(__FILE__) . 'cactus-masonry.js');
-			wp_enqueue_script('Lightbox',plugin_dir_url(__FILE__) . 'lightbox.min.js', array('jquery'));
+			if(self::$a['show_lightbox']) wp_enqueue_script('Lightbox',plugin_dir_url(__FILE__) . 'lightbox.min.js', array('jquery'));
 		}
 		//Disable masonry in IE 7 and lower
 		if(preg_match('/(?i)msie [5-7]/',$_SERVER['HTTP_USER_AGENT'])) self::$a['masonry'] = false;
+		//Fix transition duration
+		if(self::$a['transition_duration'] != 0) self::$a['transition_duration'] = "'".self::$a['transition_duration']."'";
 		//Start the Main DIV
 		$output .= "
 	<div class='CM_area' data-plugin='Cactus Masonry' data-version='" . self::$CM_version . "'>" . self::cmpg_create_styles() . "
@@ -465,8 +489,10 @@ class Cactus_Masonry
 			//Create DOM Element for masonry_brick DIV
 			$output .= "\";
 				lk = document.createElement('{$link_type}');
-				lk.className = '{$link_class}';
-				lk.style.display = 'block';
+				lk.className = '{$link_class}';\n";
+			if(self::$a['link_custom_rel'] != "") $output .= "lk.rel = '" . self::$a['link_custom_rel'] . "';\n";
+			if(self::$a['open_in_new_windows']) $output .=  "lk.setAttribute('target', '_blank');\n";
+			$output .= "				lk.style.display = 'block';
 				lk.href = \"{$lnk}\";";
 			if($data_lightbox != "")
 				$output .= "
@@ -487,7 +513,6 @@ class Cactus_Masonry
 			else $output .= "				el.style.width = '" . $norm_width . "';\n";
 			$output .= "				el.style.maxWidth = '" . $max_width . "';\n";
 			$output .= "				el.style.maxHeight = '" . $max_height . "';\n";
-
 			$output .= "				elems" . self::$id . ".push(el);\n";
 			/*
 				DRAW NOSCRIPT BOX
@@ -662,7 +687,7 @@ class Cactus_Masonry
 			{
 				function cm" . self::$id . "_drawGallery()
 				{				
-					var cm" . self::$id . " = new Cactus_Masonry(" . self::cmpg_bool_to_string(self::$a['show_loader']) . ", " . self::cmpg_bool_to_string(self::$a['infinite_scroll']) . ", " . self::$a['posts_per_page'] . ", '" . self::$id . "', IE_LT_9" .self::$id . ", '" . self::$a['width'] . "', " . self::$a['soft_gutter'] . ", " . self::cmpg_bool_to_string(self::$a['fit_width']) . ", " . self::cmpg_bool_to_string(self::$a['force_auto_width']) . ");
+					var cm" . self::$id . " = new Cactus_Masonry(" . self::cmpg_bool_to_string(self::$a['show_loader']) . ", " . self::cmpg_bool_to_string(self::$a['infinite_scroll']) . ", " . self::$a['posts_per_page'] . ", '" . self::$id . "', IE_LT_9" .self::$id . ", '" . self::$a['width'] . "', " . self::$a['soft_gutter'] . ", " . self::cmpg_bool_to_string(self::$a['fit_width']) . ", " . self::cmpg_bool_to_string(self::$a['force_auto_width']) . ", " . self::$a['transition_duration'] . ");
 					cm" . self::$id . ".drawGallery(elems" . self::$id . ");	
 				}
 				function cm" . self::$id . "_testGallery()
